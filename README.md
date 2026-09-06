@@ -12,12 +12,18 @@ There is no code here and there will be none. An adapter is mappings, schemas,
 fixtures and a manifest; the thing that runs it is a Bridge. Nothing in this
 repository executes.
 
+It is written against a **pinned revision of the Cascade Bridge Specification**,
+[cascade-bridge-spec](https://github.com/jayostis/cascade-bridge-spec), named by
+`bridge:specPin` in the crate, and it validates itself against that revision in
+its own CI. The specification does not know this adapter exists; the arrow runs
+this way and only this way.
+
 ## Status
 
-**Phase 1, version 0.1.0: the adapter laid out.** Manifest, pinned schema,
-fixtures with recorded provenance, references to the large datasets, editor
-configuration. No mapping, no runner. Done when the repository opens in
-VS Code with everything validating and nothing executes.
+**Phase 1, version 0.2.0: the adapter laid out, and checked against the
+specification it pins.** Manifest, pinned schema, fixtures with recorded
+provenance, references to the large datasets, editor configuration, and a
+workflow that calls the specification's published lint. No mapping, no runner.
 
 | phase | what | where | done when |
 |---|---|---|---|
@@ -67,6 +73,8 @@ cascade-bridge-adapter-clinvar/
   ro-crate-metadata.json     the adapter manifest, and provenance for every committed fixture, schema and document, and every remote dataset (RO-Crate 1.2)
   .gitattributes             LF everywhere; verbatim copies never normalised
   .editorconfig
+  .github/workflows/
+    validate.yml             calls the specification's lint at the pinned tag; no logic of its own
   .vscode/
     extensions.json          XML, XSLT/XPath, Turtle, EditorConfig, Kaoto
     settings.json            XSD association for fixtures/in
@@ -76,9 +84,6 @@ cascade-bridge-adapter-clinvar/
   schema/
     ClinVar_VCV_2.6.xsd      NCBI's schema, pinned byte for byte (md5 a7b65e5a166dc5f36a7eea9127d56f4e)
     ClinVarResult-Set.xsd    the efetch envelope root NCBI's schema does not declare; includes the above
-    manifest/
-      bridge.ttl             the bridge: Cascade Bridge vocabulary: adapter terms, and test terms on top of W3C's mf:
-      bridge.shapes.ttl      SHACL shapes for the crate's root entity and envelopes, and for fixtures/manifest.ttl
   fixtures/
     manifest.ttl             the test manifest: the cases and how to judge each
     in/                      four conformance inputs and NCBI's official sample
@@ -143,9 +148,8 @@ the outcomes:
 - **The cases are a W3C-style test manifest in Turtle**,
   `fixtures/manifest.ttl`, not a YAML dialect of the project's own. Every W3C
   RDF-family test suite is an `mf:` manifest whose entry type carries the
-  comparison rule; the test terms of the `bridge:` vocabulary on top of it
-  (`schema/manifest/bridge.ttl`, constrained by `bridge.shapes.ttl`) are the
-  seed of the Bridge specification's test vocabulary. The manifest and the
+  comparison rule; the test terms of the `bridge:` vocabulary on top of it live
+  in the Cascade Bridge Specification, which this adapter seeded. The manifest and the
   crate load as one graph, so a dataset test names the release by the
   crate's own IRI, an action names its envelope by the crate's entity, and a
   query walks from a test to its input's digest and licence; validation is
@@ -169,6 +173,22 @@ the outcomes:
   efetch response. `schema/ClinVarResult-Set.xsd` includes NCBI's schema
   unchanged and adds that one element; the crate's `#envelope-efetch` names
   it as the envelope's document schema.
+- **The specification is pinned, and the pin is checked.** The crate's
+  `bridge:specPin` names a commit of
+  [cascade-bridge-spec](https://github.com/jayostis/cascade-bridge-spec), and
+  `conformsTo` names the adapter profile IRI beside the RFC: the profile is the
+  machine-checkable claim a validator tests, the RFC is the standard being
+  implemented, and RO-Crate permits both. `.github/workflows/validate.yml`
+  calls that repository's published lint at the tag pointing at the same
+  commit, so the pin the reader sees and the pin the machine uses are held to
+  agreeing. Until 0.2.0 this adapter carried its own copies of the `bridge:`
+  vocabulary and SHACL shapes under `schema/manifest/`; they were the seed of
+  that repository, and once it existed a copy here was a second statement of a
+  contract, which is a statement that can disagree with it. They are deleted.
+- **A lint is not a test run.** "No tests here" stands: executing this
+  adapter's fixtures is a Bridge's job, and no Bridge exists. Checking that the
+  package is well formed is a lint, it belongs where the package lives, and it
+  is one `uses:` line.
 - **Five committed inputs**: the four conformance oracles, whose fetch date
   and method were never recorded and whose crate entries say so, and NCBI's
   official sample, the one input whose provenance is unimpeachable, committed
@@ -179,25 +199,30 @@ the outcomes:
 
 ## Verification
 
-There is no test suite here by design. What can be checked before a Bridge
-exists, with generic tools:
+There is no test suite here by design, and there is still nothing here that
+executes an adapter's fixtures: that is a Bridge's job. What can be checked
+before a Bridge exists is a lint, and most of it now runs in CI.
 
-- every JSON and Turtle file parses; the crate (parsed as JSON-LD) and
-  `fixtures/manifest.ttl`, loaded into one graph with their own locations as
-  base, validate, conforming, against `schema/manifest/bridge.shapes.ttl`
-  with a SHACL engine that supports SHACL-SPARQL (pySHACL or Jena). The
-  shapes check the links between the two: every `bridge:envelope` in a test
-  action is one the root lists, the manifest's `bridge:adapter` is the root
-  and the root's `bridge:testManifest` is the manifest, and every
-  `bridge:dataset` is a crate `Dataset` with a `contentUrl`;
-- that the SHACL run above already covers every IRI naming a committed file:
-  `bridge:input`, `bridge:graph`, `bridge:findings`, `bridge:sourceSchema` and
-  each `bridge:documentSchema` must be a crate `File` entity, so a typo that
-  names nothing fails the shapes rather than passing quietly. What SHACL
-  cannot see is the filesystem, so the one thing still to check by hand is
-  that each of those crate `File`s exists on disk;
-- the crate validates with the RO-Crate validator
-  (`rocrate-validator validate . --profile-identifier ro-crate-1.2`);
+**CI runs three checks on every pull request**, by calling the
+specification's published lint: the crate is a valid RO-Crate 1.2; the crate
+and `fixtures/manifest.ttl`, loaded as one graph with their own locations as
+base, conform to that repository's SHACL shapes at the pinned commit, which
+also holds the crate's `bridge:specPin` to naming the revision the workflow
+calls; and every git-tracked file is either described by the crate with a
+declared `encodingFormat` in the allowed set, or is one of the four repository
+documents, `ro-crate-metadata.json` or a dotfile. That last check is what makes
+"no code here" measured rather than claimed.
+
+The shapes carry more than the cardinalities: every IRI naming a committed file
+— `bridge:input`, `bridge:graph`, `bridge:findings`, `bridge:sourceSchema` and
+each `bridge:documentSchema` — must be a crate `File` entity, so a typo that
+names nothing fails rather than passing quietly, and the links between the crate
+and the manifest are checked in both directions.
+
+What CI does not do, and a contributor should still run before pushing, because
+SHACL cannot see the filesystem and none of it needs a Bridge:
+
+- that each crate `File` the shapes accept exists on disk;
 - every `fixtures/in/*.xml` validates against `schema/ClinVarResult-Set.xsd`,
   and the detect XPath is true for each of them and for the root of the
   monthly release;

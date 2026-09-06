@@ -1,0 +1,35 @@
+# This adapter validates itself against the specification it pins.
+#
+# There is no logic here on purpose. The checks live in the Cascade Bridge
+# Specification and are published from it as an action; this workflow checks
+# out the package and calls that action. Copying the checks into every adapter
+# would be a second statement of a contract, which is a statement that can
+# disagree with it.
+#
+# The ref below and the bridge:specPin in ro-crate-metadata.json name the same
+# commit of cascade-bridge-spec, one for the machine and one for the reader.
+# The lint compares them and fails the run if they differ, so they move
+# together, in the pull request that needs them (docs/alignment.md there).
+#
+# This is a lint, not a fixture run. CLAUDE.md's "no tests here" stands:
+# executing this adapter's fixtures is a Bridge's job, no Bridge exists, and
+# nothing below runs a mapping or compares a graph. What runs is the check that
+# this package is well formed, which belongs where the package lives.
+name: validate
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  adapter:
+    name: the adapter package against the specification it pins
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: jayostis/cascade-bridge-spec/.github/actions/validate-adapter@v0.2.0

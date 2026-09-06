@@ -5,6 +5,83 @@ All notable changes to this adapter are recorded here. The format follows
 semantic versioning and are the root entity's `version` in
 `ro-crate-metadata.json`.
 
+## [0.2.0] - 2026-09-06
+
+[#4](https://github.com/jayostis/cascade-bridge-adapter-clinvar/issues/4): the
+adapter says which specification it is written against, validates itself against
+that specification in its own CI, and stops carrying a copy of it. Closes
+[#3](https://github.com/jayostis/cascade-bridge-adapter-clinvar/issues/3).
+
+Three states were correct while this adapter was the only thing that existed and
+are wrong now that
+[cascade-bridge-spec](https://github.com/jayostis/cascade-bridge-spec) does:
+nothing checked this repository, it carried its own copies of that
+specification's vocabulary and shapes, and it did not say which specification it
+was written against. No mapping yet; still nothing here executes.
+
+### Added
+
+- `bridge:specPin` on the crate's root entity, naming
+  [`0af0fc9`](https://github.com/jayostis/cascade-bridge-spec/commit/0af0fc970f75360d4f84acc2203c26b5fd9d6d23)
+  of `cascade-bridge-spec`, tagged `v0.2.0` there, as a `SoftwareSourceCode`
+  entity with `codeRepository` and `version` — the shape `bridge:vocabularyPin`
+  already used. That commit is tagged, which is the condition
+  `docs/alignment.md` there sets for a pin: a pin to an untagged commit is a bet
+  on nobody rewriting a branch.
+- `.github/workflows/validate.yml`, which checks out this repository and calls
+  `jayostis/cascade-bridge-spec/.github/actions/validate-adapter@v0.2.0`. It has
+  no logic of its own and must not grow any. The ref and `bridge:specPin` name
+  the same commit, one for the machine and one for the reader; the lint compares
+  them and fails the run when they differ, so they move together.
+- The adapter profile IRI,
+  `https://ns.cascadeprotocol.org/bridge/v1-draft/adapter-profile/`, in the root
+  entity's `conformsTo`, with a contextual entity describing it. **The RFC issue
+  URL stays alongside it**, deliberately: the profile is the machine-checkable
+  claim a validator tests, the RFC is the standard being implemented, RO-Crate
+  permits several `conformsTo` values, and dropping the RFC would lose the only
+  link from this crate to the document the whole design answers to. The profile
+  IRI does not dereference yet, which that repository's README records.
+
+### Removed
+
+- `schema/manifest/bridge.ttl` and `schema/manifest/bridge.shapes.ttl`, and the
+  `schema/manifest/` directory. They were the seed of `cascade-bridge-spec`'s
+  `vocab/` and `shapes/`, and once that repository existed a copy here was a
+  second statement of a contract, which is a statement that can disagree with
+  it — and the two had already begun to. The lint fetches the specification at
+  the pinned commit and validates against the shapes there.
+
+  The two improvements made here during
+  [#2](https://github.com/jayostis/cascade-bridge-adapter-clinvar/pull/2)'s
+  review were carried up first, and were checked to be present at the pinned
+  commit before anything was deleted: `sh:class schema:MediaObject` on the five
+  file-valued property shapes, and the findings comparison as a multiset.
+- The crate's `hasPart` entries and data entities for those two files, and every
+  reference to `schema/manifest/` in `README.md`, `CLAUDE.md`,
+  `fixtures/manifest.ttl`'s header, `.vscode/settings.json` and
+  `.vscode/extensions.json`.
+
+### Changed
+
+- `README.md` and `CLAUDE.md`: the adapter pins a specification and is validated
+  against it in CI; the vocabulary and shapes live in `cascade-bridge-spec`, not
+  here; the verification list says which three checks CI runs and which a
+  contributor should still run locally before pushing.
+- `CLAUDE.md`'s rules state explicitly why a lint workflow does not break "no
+  tests here", rather than leaving a reader to infer it from a workflow file:
+  **running an adapter's fixtures is a Bridge's job; checking that the package
+  is well formed is a lint, and it belongs where the package lives.** Nothing in
+  the workflow runs a mapping or compares a graph.
+- `CLAUDE.md` gains `../cascade-bridge-spec` as a sibling checkout and gains the
+  rule that no copy of the specification is kept here.
+- The root entity's `version` is `0.2.0`.
+
+### Unchanged, and checked
+
+- Nothing under `fixtures/in/`, `fixtures/expected/`, `fixtures/findings/` or
+  `schema/ClinVar_VCV_2.6.xsd` changed by a byte, and every `sha256` in the
+  crate still matches its file.
+
 ## [0.1.0] - 2026-09-06
 
 Phase 1 of [#1](https://github.com/jayostis/cascade-bridge-adapter-clinvar/issues/1):
@@ -111,4 +188,5 @@ the adapter laid out, with no mapping and nothing that executes.
   is insensitive to everything the format does not mean. Blank node labels on
   the graph side, element order on the findings side.
 
+[0.2.0]: https://github.com/jayostis/cascade-bridge-adapter-clinvar/releases/tag/v0.2.0
 [0.1.0]: https://github.com/jayostis/cascade-bridge-adapter-clinvar/releases/tag/v0.1.0

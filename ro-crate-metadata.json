@@ -5,6 +5,7 @@
       "md5": "https://w3id.org/ro/terms/workflow-run#md5",
       "bridge": "https://ns.cascadeprotocol.org/bridge/v1-draft#",
       "bridge:profileRequired": "bridge:profileRequired",
+      "bridge:specPin": "bridge:specPin",
       "bridge:vocabularyPin": "bridge:vocabularyPin",
       "bridge:vocabulary": "bridge:vocabulary",
       "bridge:sourceMediaType": "bridge:sourceMediaType",
@@ -33,15 +34,20 @@
       "@type": ["Dataset", "bridge:Adapter"],
       "identifier": "clinvar",
       "name": "ClinVar VCV XML",
-      "version": "0.1.0",
+      "version": "0.2.0",
       "description": "The Cascade Bridge Adapter for ClinVar VCV XML: the package of data a Cascade Bridge runs to turn NCBI ClinVar variation records into Cascade RDF, the pilot adapter section 16 of the Cascade Bridge RFC (the-cascade-protocol/spec#43) proposes. Import-only. Phase 1 (0.1.0) has no mapping and nothing that executes. This crate is the adapter's manifest: a Bridge reads the root entity first, for the format id (identifier, the same string cascade-cli accepts for --from, from src/lib/clinvar-converter/registry-entry.ts), the source schema, the two envelopes, the unit, the detect rule, the profile the Bridge must offer, the vocabulary pin and the test manifest; the data entities carry provenance for every committed fixture, schema and document and for every remote dataset the adapter references. Committed inputs carry a sha256 computed locally over the committed bytes. Remote datasets carry the md5 NCBI publishes in the .md5 file beside each release. Four inputs and their expected graphs and findings are copied byte for byte from the conformance repository; their fetch date and method were not recorded when they were captured, and each entry says so. Dates and sizes for remote files were read from ftp.ncbi.nlm.nih.gov on 2026-09-06. The phase 2 mapping (mainEntity, Workflow RO-Crate), tables (bridge:table) and extension vocabulary (bridge:extensionVocabulary) are absent until the files exist; nothing for the export direction is declared, because ClinVar is import-only.",
       "datePublished": "2026-09-06",
       "license": {
         "@id": "https://spdx.org/licenses/Apache-2.0"
       },
-      "conformsTo": {
-        "@id": "https://github.com/the-cascade-protocol/spec/issues/43"
-      },
+      "conformsTo": [
+        {
+          "@id": "https://ns.cascadeprotocol.org/bridge/v1-draft/adapter-profile/"
+        },
+        {
+          "@id": "https://github.com/the-cascade-protocol/spec/issues/43"
+        }
+      ],
       "isBasedOn": {
         "@id": "https://github.com/jayostis/conformance/tree/0ea48bb1c044ac9bf8086d456601357135cf79e6/fixtures/genomics/clinvar"
       },
@@ -50,6 +56,9 @@
           "@id": "bridge:xslt-3"
         }
       ],
+      "bridge:specPin": {
+        "@id": "https://github.com/jayostis/cascade-bridge-spec/commit/0af0fc970f75360d4f84acc2203c26b5fd9d6d23"
+      },
       "bridge:vocabularyPin": {
         "@id": "https://github.com/jayostis/spec/commit/e77ba5e8004bf57f34d42a1bee69d1cfb95f86e3"
       },
@@ -84,12 +93,6 @@
         },
         {
           "@id": "schema/ClinVarResult-Set.xsd"
-        },
-        {
-          "@id": "schema/manifest/bridge.ttl"
-        },
-        {
-          "@id": "schema/manifest/bridge.shapes.ttl"
         },
         {
           "@id": "fixtures/manifest.ttl"
@@ -143,6 +146,9 @@
           "@id": "https://github.com/jayostis/spec/commit/e77ba5e8004bf57f34d42a1bee69d1cfb95f86e3"
         },
         {
+          "@id": "https://github.com/jayostis/cascade-bridge-spec/commit/0af0fc970f75360d4f84acc2203c26b5fd9d6d23"
+        },
+        {
           "@id": "docs/format.md"
         },
         {
@@ -171,13 +177,32 @@
       "@id": "bridge:xslt-3",
       "@type": "bridge:Profile",
       "name": "xslt-3",
-      "description": "The optional Bridge profile (RFC section 9) under which a Bridge runs an adapter's XSLT 3 mapping. Required here because the phase 2 mapping is XSLT 3, one module per record class. Declared in schema/manifest/bridge.ttl."
+      "description": "The optional Bridge profile (RFC section 9) under which a Bridge runs an adapter's XSLT 3 mapping. Required here because the phase 2 mapping is XSLT 3, one module per record class. Declared in the Cascade Bridge Specification's vocabulary, vocab/bridge.ttl in cascade-bridge-spec at the commit bridge:specPin names."
+    },
+    {
+      "@id": "https://ns.cascadeprotocol.org/bridge/v1-draft/adapter-profile/",
+      "@type": ["CreativeWork", "Profile"],
+      "name": "Cascade Bridge Adapter profile",
+      "description": "The RO-Crate 1.2 Profile Crate a conforming adapter package names in conformsTo: the machine-checkable claim that this crate is an adapter package, whose constraints resource is the SHACL shapes in cascade-bridge-spec. The IRI does not dereference yet, which that repository's README records; the Profile Crate describing it is profile/ro-crate-metadata.json there, and bridge:specPin says at which commit. Named beside the RFC rather than instead of it: the profile is what a validator checks, the RFC is the standard being implemented, and RO-Crate permits both."
+    },
+    {
+      "@id": "https://github.com/jayostis/cascade-bridge-spec/commit/0af0fc970f75360d4f84acc2203c26b5fd9d6d23",
+      "@type": ["SoftwareSourceCode", "File"],
+      "name": "cascade-bridge-spec at 0af0fc9",
+      "codeRepository": {
+        "@id": "https://github.com/jayostis/cascade-bridge-spec"
+      },
+      "version": "0af0fc970f75360d4f84acc2203c26b5fd9d6d23",
+      "license": {
+        "@id": "https://spdx.org/licenses/Apache-2.0"
+      },
+      "description": "The revision of the Cascade Bridge Specification this adapter is written against: the merge commit of cascade-bridge-spec PR #7, released as v0.2.0, which removed that repository's catalogue of adapters and published its lint as a reusable action. The tag v0.2.0 points at this SHA and keeps it reachable if the branch is later reset or rebased, which is why an untagged commit is not pinned (docs/alignment.md there). The same revision is named twice on purpose: here for the reader, and in .github/workflows/validate.yml as the ref the lint is called at, for the machine; the lint fails the run if the two disagree, and they move together in the same pull request. This is also the revision whose vocab/bridge.ttl and shapes/bridge.shapes.ttl replaced this adapter's own copies under schema/manifest/, which were the seed of them. Read on 2026-09-06. A web-based data entity, referenced and not committed, the way the vocabulary pin is: the RO-Crate 1.2 validator reads every SoftwareSourceCode as a script that must be a File in hasPart."
     },
     {
       "@id": "https://github.com/the-cascade-protocol/spec/issues/43",
       "@type": ["CreativeWork", "Profile"],
       "name": "Cascade Bridge RFC (draft)",
-      "description": "The Bridge specification this adapter is written against, the profile the root entity conforms to. No numbered specification exists yet; the RFC stands in for it. Its section 6 sketches the adapter layout with an adapter.yaml; this crate departs from that sketch by being the manifest itself, which is a finding for the RFC."
+      "description": "The Bridge RFC this adapter is written against, named in conformsTo beside the adapter profile. It is the standard being implemented; the profile IRI is the machine-checkable claim, and bridge:specPin names the revision of the specification that holds both. Its section 6 sketches the adapter layout with an adapter.yaml; this crate departs from that sketch by being the manifest itself, which is a finding for the RFC."
     },
     {
       "@id": "https://github.com/jayostis/spec/commit/e77ba5e8004bf57f34d42a1bee69d1cfb95f86e3",
@@ -234,31 +259,11 @@
       "description": "Includes NCBI's ClinVar_VCV_2.6.xsd unchanged and declares the one document root NCBI's schema leaves undeclared, ClinVarResult-Set, so a whole efetch response validates and not only the records inside it. The document schema of the efetch envelope (#envelope-efetch); .vscode/settings.json associates fixtures/in/*.xml with it."
     },
     {
-      "@id": "schema/manifest/bridge.ttl",
-      "@type": "File",
-      "name": "Cascade Bridge vocabulary",
-      "encodingFormat": "text/turtle",
-      "license": {
-        "@id": "https://spdx.org/licenses/Apache-2.0"
-      },
-      "description": "The bridge: vocabulary (https://ns.cascadeprotocol.org/bridge/v1-draft#): the adapter terms this crate's root entity and envelopes use, and the test terms fixtures/manifest.ttl uses on top of W3C's mf: test-manifest vocabulary, each with an rdfs:comment. The seed of the Bridge specification's vocabulary; no cascade: or genomics: term is minted in it."
-    },
-    {
-      "@id": "schema/manifest/bridge.shapes.ttl",
-      "@type": "File",
-      "name": "Cascade Bridge shapes",
-      "encodingFormat": "text/turtle",
-      "license": {
-        "@id": "https://spdx.org/licenses/Apache-2.0"
-      },
-      "description": "SHACL shapes for the adapter (this crate's root entity and its envelopes) and for the test manifest, validated together as one graph: the crate parsed as JSON-LD plus fixtures/manifest.ttl, against this file."
-    },
-    {
       "@id": "fixtures/manifest.ttl",
       "@type": "File",
       "name": "Test manifest",
       "encodingFormat": "text/turtle",
-      "description": "The cases a Bridge's harness executes and how each is judged: a W3C-style test manifest (mf: test-manifest vocabulary) whose entries are typed with the bridge: vocabulary, declared in schema/manifest/bridge.ttl and constrained by the SHACL shapes in schema/manifest/bridge.shapes.ttl. Every input, expected graph, findings file, dataset and envelope it names is described in this crate, by the same IRI, and it names this crate's root entity as its adapter, so the manifest and this crate load as one graph.",
+      "description": "The cases a Bridge's harness executes and how each is judged: a W3C-style test manifest (mf: test-manifest vocabulary) whose entries are typed with the bridge: vocabulary and constrained by the SHACL shapes, both of them in the Cascade Bridge Specification at the commit bridge:specPin names (vocab/bridge.ttl and shapes/bridge.shapes.ttl in cascade-bridge-spec). This adapter carried copies of the two until 0.2.0; they were the seed of that repository, and a second statement of a contract is one that can disagree with it. Every input, expected graph, findings file, dataset and envelope this manifest names is described in this crate, by the same IRI, and it names this crate's root entity as its adapter, so the manifest and this crate load as one graph.",
       "license": {
         "@id": "https://spdx.org/licenses/Apache-2.0"
       }

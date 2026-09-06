@@ -1,9 +1,10 @@
 # The cases a Bridge's harness executes for this adapter, and how each is
 # judged, as a test manifest in the shape every W3C RDF test suite uses:
 # W3C's mf: test-manifest vocabulary, and on top of it the test terms of the
-# Cascade Bridge vocabulary bridge:, declared in ../schema/manifest/bridge.ttl
-# and constrained by ../schema/manifest/bridge.shapes.ttl (SHACL), the way
-# the SHACL test suite adds sht:. Each entry has a type, an mf:action (the
+# Cascade Bridge vocabulary bridge:, declared and constrained by the Cascade
+# Bridge Specification (vocab/bridge.ttl and shapes/bridge.shapes.ttl in
+# cascade-bridge-spec, at the commit this adapter's bridge:specPin names), the
+# way the SHACL test suite adds sht:. Each entry has a type, an mf:action (the
 # input) and an mf:result (the expected output); the comparison rule is
 # carried by the entry's type. Nothing here executes in this repository:
 # version 1 of the harness runs in bridge-engine-java, version 2 in
