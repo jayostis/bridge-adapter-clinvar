@@ -60,7 +60,10 @@ the adapter laid out, with no mapping and nothing that executes.
   difference is one optional attribute.
 - `schema/ClinVarResult-Set.xsd`, a wrapper that includes NCBI's schema and
   declares the efetch envelope root NCBI's schema leaves undeclared, so a
-  whole efetch response validates and not only the records inside it.
+  whole efetch response validates and not only the records inside it. The root
+  holds either one or more `VariationArchive` elements or the single empty
+  `set` element efetch returns when a query matched no record, which is a
+  response and not an error.
 - `fixtures/manifest.ttl`, a W3C-style test manifest in Turtle: the four
   conformance oracles as `bridge:IsomorphicConversionTest` (blank nodes
   relabelled, IRIs and literals exact, the stamp predicates ignored, findings

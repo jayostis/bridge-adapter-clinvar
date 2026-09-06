@@ -116,6 +116,17 @@ elements too. It does not declare `ClinVarResult-Set`. So:
 
 XSD 1.0 is enough; the schema uses nothing from XSD 1.1.
 
+**An efetch response that matched nothing is still a response.** Asked for an
+id no record carries, efetch answers
+`<ClinVarResult-Set><set/></ClinVarResult-Set>`: an empty `set` element in
+place of the records, not an error and not an empty root. Observed on
+2026-09-06 for three such queries, with and without `is_variationid`. The
+wrapper schema therefore allows the root to hold either one or more
+`VariationArchive` elements or a single empty `set`, so a Bridge validating a
+whole response accepts this one and yields zero units. Rejecting it would
+report a finding against NCBI for answering truthfully. Anything else inside
+the root, including a `set` carrying content, is still rejected.
+
 ## Releases
 
 Under `pub/clinvar/xml/`:

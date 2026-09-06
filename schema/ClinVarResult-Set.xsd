@@ -28,9 +28,22 @@
       <xs:documentation>The element efetch groups VariationArchive elements in. Not declared by NCBI's schema.</xs:documentation>
     </xs:annotation>
     <xs:complexType>
-      <xs:sequence>
+      <xs:choice>
         <xs:element ref="VariationArchive" minOccurs="1" maxOccurs="unbounded"/>
-      </xs:sequence>
+        <xs:element name="set" minOccurs="1" maxOccurs="1">
+          <xs:annotation>
+            <xs:documentation>What efetch returns in place of records when the query matched none: the
+            whole response is &lt;ClinVarResult-Set&gt;&lt;set/&gt;&lt;/ClinVarResult-Set&gt;. Observed on
+            2026-09-06 for three queries against ids matching no record, with and without
+            is_variationid. It is a well-formed response and not an error, so a Bridge validating a
+            whole efetch response must accept it and yield zero units; rejecting it would report a
+            finding against NCBI for answering a question truthfully. The element is empty in every
+            response observed, and is declared empty here rather than permissively, so that a future
+            response carrying content inside it is reported rather than passed over in silence.</xs:documentation>
+          </xs:annotation>
+          <xs:complexType/>
+        </xs:element>
+      </xs:choice>
     </xs:complexType>
   </xs:element>
 </xs:schema>
