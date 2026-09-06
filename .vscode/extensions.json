@@ -15,6 +15,10 @@
     // fixtures/expected/. (stardog-union.stardog-rdf-grammars is the
     // grammar-only alternative.)
     "faubulous.mentor",
+    // EditorConfig: without it VS Code ignores .editorconfig, and its
+    // path-scoped rules are what keep the verbatim copies under fixtures/
+    // and the pinned XSD untouched on save (see settings.json).
+    "EditorConfig.EditorConfig",
     // Kaoto: the Apache Camel route designer and DataMapper, so the route in
     // bridge-engine-java opens beside this adapter once that repository exists.
     "redhat.vscode-kaoto"

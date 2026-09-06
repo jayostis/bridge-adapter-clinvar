@@ -31,11 +31,14 @@ unit validates on its own; the Bridge need not validate the multi-gigabyte
 release as a single document.
 
 **Content-Based Router.** The rule is the document element (one of the two
-envelope roots) plus the presence of the unit. cascade-cli's detector accepts
-three further roots (`ReleaseSet`, `ClinVarSet`, `VariationReport`) that
-belong to older or different ClinVar shapes; the adapter declares only the two
-NCBI publishes today, and a document in another shape is routed elsewhere or
-reported, never guessed at.
+envelope roots) plus the presence of the unit. cascade-cli's detector matches
+a different set of five roots (`ClinVarResult-Set`, `ReleaseSet`,
+`ClinVarSet`, `VariationArchive`, `VariationReport`): three belong to older
+or different ClinVar shapes, one is the bare unit, and `ClinVarVariationRelease`
+is not among them, so the release envelope reaches this router untested by the
+existing converter (`docs/format.md`, "The two envelopes"). The adapter
+declares only the two roots NCBI publishes today, and a document in another
+shape is routed elsewhere or reported, never guessed at.
 
 **Message Translator and Canonical Data Model.** The mapping is the only
 format-specific thing that runs, and it runs inside an engine the Bridge

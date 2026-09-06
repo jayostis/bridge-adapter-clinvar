@@ -52,8 +52,9 @@ Expected beside this repository, as sister directories:
   in `adapter.yaml` (the same pin as `../conformance/scripts/SPEC_PIN`). The
   RFC is spec#43; the identity RFC is spec#38.
 - `../conformance` — `fixtures/genomics/clinvar/` at `0ea48bb` is where the
-  four oracle triplets are copied from. Their `.input.xml` / `.expected.ttl` /
-  `.gaps.json` naming becomes `in/` / `expected/` / `findings/` here.
+  four oracle triplets are copied from. `X.input.xml` becomes `in/X.xml`,
+  `X.expected.ttl` becomes `expected/X.ttl`, and `X.gaps.json` keeps its
+  suffix as `findings/X.gaps.json`.
 - `../cascade-cli` — `src/lib/clinvar-converter/` (about 2,200 lines) is the
   converter the adapter re-expresses as data, and
   `tests/clinvar-conformance.test.ts` is the oracle comparison the cases

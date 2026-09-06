@@ -69,10 +69,17 @@ are `ClinVarVCVRelease_YYYY-MM.xml.gz`, the retired ones were
 the schema declares and the release file confirms. The adapter names the
 element, not the file.
 
-cascade-cli's detector also accepts `ReleaseSet`, `ClinVarSet` and
-`VariationReport`. Those are RCV-era and legacy shapes and are out of scope
-here; RCV XML lives under `RCV_release/` with its own XSD under
-`xsd_public/RCV/`.
+cascade-cli's detector (`clinvar-converter/detect.ts`) matches exactly five
+roots: `ClinVarResult-Set`, `ReleaseSet`, `ClinVarSet`, `VariationArchive`
+and `VariationReport`. That set is neither a superset nor a subset of the
+adapter's two envelopes. It does not accept `ClinVarVariationRelease`, so the
+existing converter has never read a release file: the release envelope is
+exercised for the first time by the Bridge, whose router is the first thing
+that will read `ClinVarVCVRelease_YYYY-MM.xml.gz`. A bare `VariationArchive`
+root, which the cli does accept, is the unit here and not an envelope.
+`ReleaseSet`, `ClinVarSet` and `VariationReport` are RCV-era and legacy
+shapes and are out of scope; RCV XML lives under `RCV_release/` with its own
+XSD under `xsd_public/RCV/`.
 
 ## The schema, and why 2.6 is pinned
 
@@ -167,6 +174,8 @@ For orientation only; the mapping is not written yet.
 - Submitter assertion: each `ClinicalAssertionList/ClinicalAssertion` with its
   `ClinVarAccession`, `Classification`, `ClinVarSubmissionID`, submitter and
   dates.
-- The review-status strings map through a seven-row table
-  (`tables/review-status.csv`, from `review-status-map.ts`); everything with
-  no Cascade term is a findings entry or an extension term in `vocab/`.
+- The review-status strings map through a nine-row table onto seven tiers
+  (`tables/review-status.csv`, from `review-status-map.ts`: three phrasings
+  of "criteria provided, conflicting ..." that ClinVar has used over time all
+  map to `genomics:ConflictingSubmissions`); everything with no Cascade term
+  is a findings entry or an extension term in `vocab/`.

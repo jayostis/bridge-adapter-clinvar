@@ -14,8 +14,11 @@
 #   ignore-predicates  the stamp triples a Bridge adds after the mapping (RFC
 #                      section 5, "stamp"; EIP Message History), removed from
 #                      both sides first. cascade:dataProvenance and
-#                      cascade:schemaVersion are what cascade-cli's
-#                      commonTriples() writes and what the oracles carry.
+#                      cascade:schemaVersion are what cascade-cli's ClinVar
+#                      converter writes on every IRI subject (inline, in
+#                      simple-allele.ts, rcv-interpretation.ts and
+#                      scv-submitter-assertion.ts; it has no shared helper)
+#                      and what the oracles carry.
 #                      Import time is the third thing the RFC's stamp stage
 #                      names; no oracle carries one and the cli emits none, so
 #                      prov:generatedAtTime is a placeholder for the Bridge to
@@ -115,7 +118,9 @@ cases:
   - id: clinvar-vcv-weekly
     description: >-
       The weekly VCV release. On 2026-09-06 the weekly symlink resolved to
-      the 2026-09 monthly file; re-resolve before running (see the crate).
+      the 2026-09 monthly file, so the crate entity has no contentUrl of its
+      own and this case cannot be resolved until a dated weekly is recorded
+      there (see the crate). It is not a second run of the monthly.
     dataset: clinvar-vcv-weekly
     envelope: release
     expected:

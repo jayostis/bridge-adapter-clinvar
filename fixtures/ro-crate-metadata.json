@@ -365,19 +365,14 @@
       "identifier": "clinvar-vcv-weekly",
       "name": "ClinVar VCV weekly release",
       "url": "https://ftp.ncbi.nlm.nih.gov/pub/clinvar/xml/weekly_release/ClinVarVCVRelease_00-latest_weekly.xml.gz",
-      "contentUrl": "https://ftp.ncbi.nlm.nih.gov/pub/clinvar/xml/ClinVarVCVRelease_2026-09.xml.gz",
       "sameAs": {
         "@id": "https://ftp.ncbi.nlm.nih.gov/pub/clinvar/xml/ClinVarVCVRelease_2026-09.xml.gz"
       },
       "encodingFormat": "application/gzip",
-      "contentSize": "5849397646",
-      "md5": "5da42f3becdd8e9a90cd46b1727c08b8",
-      "version": "2026-09",
-      "datePublished": "2026-09-03",
       "license": {
         "@id": "https://www.ncbi.nlm.nih.gov/home/about/policies/"
       },
-      "description": "Weekly releases are named ClinVarVCVRelease_YYYY-MMDD.xml.gz under weekly_release/, and NCBI clears that directory when the monthly release is generated. Listed over FTP on 2026-09-06, the directory held only the symlink ClinVarVCVRelease_00-latest_weekly.xml.gz -> ../ClinVarVCVRelease_2026-09.xml.gz and its .md5 (same digest as the monthly), so the weekly currently resolves to the monthly file and is recorded by that dated name. Re-resolve the symlink before a run; the first dated weekly of the month replaces this entry's contentUrl, md5, size and date."
+      "description": "Weekly releases are named ClinVarVCVRelease_YYYY-MMDD.xml.gz under weekly_release/, and NCBI clears that directory when the monthly release is generated. Listed over FTP on 2026-09-06, the directory held only the symlink ClinVarVCVRelease_00-latest_weekly.xml.gz -> ../ClinVarVCVRelease_2026-09.xml.gz and its .md5 (same digest as the monthly), so the weekly is currently the monthly file (sameAs) and has no content of its own. This entity therefore carries no contentUrl, contentSize, md5, version or datePublished: a Bridge must not resolve it into a second pass over the monthly release. When a dated weekly exists, record its contentUrl, md5 (from the sibling .md5), contentSize and datePublished (from the HTTPS headers) and version here, and drop sameAs."
     },
     {
       "@id": "https://ftp.ncbi.nlm.nih.gov/pub/clinvar/xsd_public/ClinVar_VCV_2.6.xsd",

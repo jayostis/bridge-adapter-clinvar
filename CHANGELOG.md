@@ -37,9 +37,11 @@ the adapter laid out, with no mapping and nothing that executes.
   releases as dataset cases whose record count and output digest are `null`
   until the first run.
 - `fixtures/ro-crate-metadata.json` (RO-Crate 1.2): provenance, digest,
-  version, date and licence for every committed fixture file, the two remote
-  releases and the pinned XSD. It states that the four oracle inputs have no
-  recorded fetch date or method.
+  version, date and licence for every committed fixture file, the monthly
+  release and the pinned XSD. The weekly release is an entity with a `url`
+  and a `sameAs` to the monthly file it currently resolves to, and no
+  content fields of its own until a dated weekly exists. It states that the
+  four oracle inputs have no recorded fetch date or method.
 - `fixtures/in/`: the four conformance inputs, byte-identical to
   `conformance/fixtures/genomics/clinvar/` at `0ea48bb`, and NCBI's sample
   `VCV_XML_VCV000091629.xml`. `fixtures/expected/` and `fixtures/findings/`:
@@ -48,8 +50,9 @@ the adapter laid out, with no mapping and nothing that executes.
   `docs/stages.md`, the RFC's engine stages named with their Enterprise
   Integration Patterns equivalents.
 - Editor configuration: `.vscode/extensions.json` (XML, XSLT/XPath, YAML,
-  Turtle, Kaoto), `.vscode/settings.json` (XSD association for
-  `fixtures/in/`, YAML schema associations), `.editorconfig`,
+  Turtle, EditorConfig, Kaoto), `.vscode/settings.json` (XSD association for
+  `fixtures/in/`, YAML schema associations, no save-time rewriting of XML
+  or Turtle), `.editorconfig`,
   `.gitattributes` (LF everywhere; verbatim copies never normalised).
 - `LICENSE` (Apache-2.0), `README.md`, `CLAUDE.md`.
 
