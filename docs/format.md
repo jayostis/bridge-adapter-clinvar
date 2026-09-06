@@ -49,12 +49,13 @@ handles these as `simple-allele.ts`, `rcv-interpretation.ts` and
 ## The two envelopes
 
 A `VariationArchive` never arrives alone. It is wrapped in one of two roots,
-and the adapter declares both in `adapter.yaml`:
+and the adapter declares both as entities in `ro-crate-metadata.json`, which
+the test manifest refers to by IRI:
 
-| envelope id | root element | where it comes from | schema location declared |
+| envelope (crate entity) | root element | where it comes from | schema location declared |
 |---|---|---|---|
-| `efetch` | `ClinVarResult-Set` | E-utilities: `efetch.fcgi?db=clinvar&rettype=vcv&is_variationid&id=<VariationID>` | none |
-| `release` | `ClinVarVariationRelease` (attribute `ReleaseDate`) | the monthly and weekly release files | `xsi:noNamespaceSchemaLocation` pointing at the XSD on the FTP site |
+| `efetch` (`#envelope-efetch`) | `ClinVarResult-Set` | E-utilities: `efetch.fcgi?db=clinvar&rettype=vcv&is_variationid&id=<VariationID>` | none |
+| `release` (`#envelope-release`) | `ClinVarVariationRelease` (attribute `ReleaseDate`) | the monthly and weekly release files | `xsi:noNamespaceSchemaLocation` pointing at the XSD on the FTP site |
 
 All five committed inputs are `efetch` envelopes. The 2026-09 monthly release,
 read from its first 256 KB, opens
@@ -109,7 +110,8 @@ elements too. It does not declare `ClinVarResult-Set`. So:
 - an efetch response does not, at its root, though every `VariationArchive`
   inside it does;
 - `schema/ClinVarResult-Set.xsd` includes NCBI's XSD unchanged and adds that
-  one root, so that whole efetch responses validate too, and
+  one root, so that whole efetch responses validate too; the crate names it
+  as `#envelope-efetch`'s `bridge:documentSchema`, and
   `.vscode/settings.json` associates `fixtures/in/*.xml` with it.
 
 XSD 1.0 is enough; the schema uses nothing from XSD 1.1.

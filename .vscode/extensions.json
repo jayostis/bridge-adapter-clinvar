@@ -8,11 +8,8 @@
     // XSLT 3.0 / XPath 3.1 language support, and Saxon-JS tasks, for the
     // mapping that arrives in phase 2 under in/xslt/.
     "deltaxml.xslt-xpath",
-    // YAML: schema-driven completion and diagnostics for adapter.yaml, from
-    // the JSON Schema under schema/manifest/.
-    "redhat.vscode-yaml",
     // Turtle, with a language server, for the test manifest
-    // fixtures/manifest.ttl, the bt: vocabulary and SHACL shape under
+    // fixtures/manifest.ttl, the bridge: vocabulary and SHACL shapes under
     // schema/manifest/, and the expected graphs under fixtures/expected/.
     // (stardog-union.stardog-rdf-grammars is the grammar-only alternative.)
     "faubulous.mentor",

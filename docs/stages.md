@@ -10,13 +10,13 @@ phase.
 
 | RFC stage | Enterprise Integration Pattern | this adapter |
 |---|---|---|
-| read and chunk | **Splitter**, on `VariationArchive` | declares the unit (`source.unit` in `adapter.yaml`, phase 1) |
-| detect and route | **Content-Based Router** | declares the detect rule (`detect`, phase 1) |
+| read and chunk | **Splitter**, on `VariationArchive` | declares the unit (`bridge:unit` on the crate's root entity, phase 1) |
+| detect and route | **Content-Based Router** | declares the detect rule as one XPath 3.1 boolean (`bridge:detectXPath`, phase 1) |
 | transform | **Message Translator** | the XSLT under `in/xslt/` (phase 2); the same mapping as SPARQL CONSTRUCT under `in/sparql/` (phase 3) |
-| Cascade RDF as target | **Canonical Data Model** | writes it, in the vocabularies `adapter.yaml` pins |
+| Cascade RDF as target | **Canonical Data Model** | writes it, in the vocabularies the crate pins (`bridge:vocabularyPin`, `bridge:vocabulary`) |
 | link within the batch | **Aggregator** | the interpretation (RCV) and submitter assertion (SCV) records link to their Variant; the mapping emits the links, the Bridge resolves them within one import |
-| stamp | **Message History** | receives it: `cascade:dataProvenance`, `cascade:schemaVersion`, source identity, import time are added by the Bridge, and `fixtures/manifest.ttl` ignores them (`bt:ignorePredicate`) when comparing |
-| check, validate | **Message Validator**, findings to an **Invalid Message Channel** | declares the XSD every unit is validated against (`source.schema`, phase 1) |
+| stamp | **Message History** | receives it: `cascade:dataProvenance`, `cascade:schemaVersion`, source identity, import time are added by the Bridge, and `fixtures/manifest.ttl` ignores them (`bridge:ignorePredicate`) when comparing |
+| check, validate | **Message Validator**, findings to an **Invalid Message Channel** | declares the XSD every unit is validated against (`bridge:sourceSchema`, phase 1) |
 | findings | **Dead Letter Channel** / **Invalid Message Channel** | the findings sidecar, `fixtures/findings/*.gaps.json`, is the expected content of that channel |
 | re-import as no-op | **Idempotent Receiver** | follows from input-derived names, whichever way naming is decided in phase 2 |
 | vendor quirks | **Normalizer** | none: ClinVar has one publisher and no vendor dialects, so the adapter has no `quirks/` directory |
@@ -30,8 +30,10 @@ preserved. Because `VariationArchive` is a global element in NCBI's schema, a
 unit validates on its own; the Bridge need not validate the multi-gigabyte
 release as a single document.
 
-**Content-Based Router.** The rule is the document element (one of the two
-envelope roots) plus the presence of the unit. cascade-cli's detector matches
+**Content-Based Router.** The rule is one XPath 3.1 boolean expression,
+`exists(/(ClinVarResult-Set|ClinVarVariationRelease)/VariationArchive)`,
+evaluated against the document: the document element is one of the two
+envelope roots and it contains the unit. cascade-cli's detector matches
 a different set of five roots (`ClinVarResult-Set`, `ReleaseSet`,
 `ClinVarSet`, `VariationArchive`, `VariationReport`): three belong to older
 or different ClinVar shapes, one is the bare unit, and `ClinVarVariationRelease`
@@ -54,8 +56,8 @@ a name minted by the rule spec#38 settles on) is the phase 2 naming decision;
 the pattern is the same either way.
 
 **Message History.** The stamp is the Bridge's, not the adapter's. This is why
-`fixtures/manifest.ttl` declares `bt:ignorePredicate` on each
-`bt:IsomorphicConversionTest`: the oracles were produced by
+`fixtures/manifest.ttl` declares `bridge:ignorePredicate` on each
+`bridge:IsomorphicConversionTest`: the oracles were produced by
 cascade-cli, which stamps `cascade:dataProvenance` and `cascade:schemaVersion`
 itself, and a Bridge stamps its own, so the comparison removes them from both
 sides.

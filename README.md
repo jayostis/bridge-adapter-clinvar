@@ -28,12 +28,16 @@ VS Code with everything validating and nothing executes.
 
 ## How a Bridge runs it
 
-1. Reads `adapter.yaml`: format id `clinvar`, the two envelopes, the unit
-   `VariationArchive`, the detect rule, the `xslt-3` profile it must offer,
-   the vocabulary pin, and the path to the test manifest.
-2. Routes an input here when its document element is `ClinVarResult-Set`
-   (efetch) or `ClinVarVariationRelease` (a release file) and it contains a
-   `VariationArchive`.
+1. Reads `ro-crate-metadata.json`, the adapter's manifest and its provenance
+   record in one RO-Crate. The root entity is the adapter: format id
+   `clinvar`, the two envelopes (`#envelope-efetch`, `#envelope-release`),
+   the unit `VariationArchive`, the detect rule, the `xslt-3` profile it
+   must offer, the vocabulary pin, and the test manifest, every one of them
+   a link to an entity in the same graph.
+2. Routes an input here when the detect XPath,
+   `exists(/(ClinVarResult-Set|ClinVarVariationRelease)/VariationArchive)`,
+   is true: the document element is one of the two envelope roots and it
+   contains a `VariationArchive`.
 3. Splits the document on `VariationArchive` and validates each unit against
    `schema/ClinVar_VCV_2.6.xsd`. A unit that fails is a finding; it still goes
    through.
@@ -42,10 +46,10 @@ VS Code with everything validating and nothing executes.
    every predicate against the pinned vocabularies, validates with SHACL,
    and hands the graph and findings to the runtime.
 5. In test, executes `fixtures/manifest.ttl`: for each
-   `bt:IsomorphicConversionTest`, compares the produced graph with the
+   `bridge:IsomorphicConversionTest`, compares the produced graph with the
    expected one up to blank-node relabelling with the stamp predicates
    removed, and the produced findings with the expected sidecar exactly. For
-   each `bt:DatasetCompletionTest`, streams the referenced release and
+   each `bridge:DatasetCompletionTest`, streams the referenced release and
    records the record count and output digest.
 
 `docs/stages.md` names each of those stages with its Enterprise Integration
@@ -59,12 +63,12 @@ bridge-adapter-clinvar/
   LICENSE                    Apache-2.0
   CHANGELOG.md
   CLAUDE.md                  agent context: the rules and the sibling checkouts
-  adapter.yaml               the Bridge-facing manifest
+  ro-crate-metadata.json     the adapter manifest, and provenance for every file and remote dataset (RO-Crate 1.2)
   .gitattributes             LF everywhere; verbatim copies never normalised
   .editorconfig
   .vscode/
-    extensions.json          XML, XSLT/XPath, YAML, Turtle, Kaoto
-    settings.json            XSD association for fixtures/in, YAML schema association
+    extensions.json          XML, XSLT/XPath, Turtle, EditorConfig, Kaoto
+    settings.json            XSD association for fixtures/in
   docs/
     format.md                ClinVar VCV XML as the adapter sees it
     stages.md                the RFC's engine stages as Enterprise Integration Patterns
@@ -72,12 +76,10 @@ bridge-adapter-clinvar/
     ClinVar_VCV_2.6.xsd      NCBI's schema, pinned byte for byte (md5 a7b65e5a166dc5f36a7eea9127d56f4e)
     ClinVarResult-Set.xsd    the efetch envelope root NCBI's schema does not declare; includes the above
     manifest/
-      adapter.schema.json    JSON Schema for adapter.yaml
-      bridge-test.ttl        the bt: Bridge-test vocabulary, on top of W3C's mf:
-      bridge-test.shapes.ttl SHACL shapes for fixtures/manifest.ttl
+      bridge.ttl             the bridge: Cascade Bridge vocabulary: adapter terms, and test terms on top of W3C's mf:
+      bridge.shapes.ttl      SHACL shapes for the crate's root entity and envelopes, and for fixtures/manifest.ttl
   fixtures/
     manifest.ttl             the test manifest: the cases and how to judge each
-    ro-crate-metadata.json   provenance for every file under fixtures/ and every remote dataset
     in/                      four conformance inputs and NCBI's official sample
     expected/                the four expected graphs, byte-identical to conformance
     findings/                the four expected gaps sidecars, byte-identical to conformance
@@ -88,7 +90,9 @@ bridge-adapter-clinvar/
 ```
 
 The four directories marked phase 2 or 3 do not exist yet; they are named
-here and in `adapter.yaml` so the shape is visible.
+here so the shape is visible. Phase 2 adds them to the crate: the XSLT as
+the crate's `mainEntity` (Workflow RO-Crate), the tables as `bridge:table`,
+the extension vocabulary as `bridge:extensionVocabulary`.
 
 ## Decisions
 
@@ -97,32 +101,53 @@ the outcomes:
 
 - **Standards, not inventions.** Enterprise Integration Patterns for stage
   names; XSLT 3, XSD and Schematron for the map and validation; RO-Crate 1.2
-  for provenance; BagIt-style digests for inputs; W3C's test-manifest
-  vocabulary (`mf:`) for the cases and SHACL for their shape; the RFC's
-  section 6 layout; the conformance repository's input / expected / gaps
-  triplet as the fixture shape. The reason is the editor: every one of these
-  already has tooling, so the repository lights up in VS Code without anyone
-  writing a plugin, and every later choice is weighed against whether the
-  standard editor still understands it.
+  for the manifest and provenance; BagIt-style digests for inputs; W3C's
+  test-manifest vocabulary (`mf:`) for the cases and SHACL for their shape;
+  the RFC's section 6 layout; the conformance repository's input / expected /
+  gaps triplet as the fixture shape. The reason is the editor: every one of
+  these already has tooling, so the repository lights up in VS Code without
+  anyone writing a plugin, and every later choice is weighed against whether
+  the standard editor still understands it.
+- **The adapter manifest is the RO-Crate, at the root.** The RFC's section 6
+  sketch names an `adapter.yaml`; this adapter has none. Everything the
+  adapter says about itself is in one graph, `ro-crate-metadata.json`, whose
+  root entity is the adapter (`Dataset` and `bridge:Adapter`): schema.org
+  terms where they exist (`identifier`, `name`, `version`, `license`,
+  `conformsTo`), Bridge terms where they do not (tier, profiles, vocabulary
+  pin and vocabularies, source media type and schema, envelopes, unit,
+  detect rule, test manifest). The licence is the SPDX entity, the pin is
+  the commit, the vocabularies are their namespaces, the envelopes are
+  entities the test manifest refers to by IRI, and the test manifest points
+  back at the root, so every reference that used to be a string is a link
+  SHACL can check. Phase 2 has a published profile waiting: Workflow
+  RO-Crate, whose `mainEntity` is the transformation with its language
+  declared. The cost is stated: JSON-LD is less pleasant to hand-edit than
+  YAML and has no field completion; the RO-Crate validator and the shapes
+  are the checks instead. That the manifest should be an RO-Crate and not a
+  YAML dialect is a finding to report on spec#43.
+- **The detect rule is one XPath expression**,
+  `exists(/(ClinVarResult-Set|ClinVarVariationRelease)/VariationArchive)`,
+  an XPath 3.1 boolean a Bridge's content-based router evaluates against the
+  document, in place of a two-field root-element / contains rule of the
+  project's own.
 - **The cases are a W3C-style test manifest in Turtle**,
   `fixtures/manifest.ttl`, not a YAML dialect of the project's own. Every W3C
   RDF-family test suite is an `mf:` manifest whose entry type carries the
-  comparison rule; the small `bt:` vocabulary on top of it
-  (`schema/manifest/bridge-test.ttl`, constrained by
-  `bridge-test.shapes.ttl`) is the seed of the Bridge specification's test
-  vocabulary. The manifest and the crate load as one graph, so a dataset test
-  names the release by the crate's own IRI and a query walks from a test to
-  its input's digest and licence; validation is SHACL, the project's own
-  language; and every RDF engine reads the file identically, which is the
-  property the "same adapter, every runtime" claim rests on. One contract,
-  not a menu: an adapter does not choose among test conventions.
+  comparison rule; the test terms of the `bridge:` vocabulary on top of it
+  (`schema/manifest/bridge.ttl`, constrained by `bridge.shapes.ttl`) are the
+  seed of the Bridge specification's test vocabulary. The manifest and the
+  crate load as one graph, so a dataset test names the release by the
+  crate's own IRI, an action names its envelope by the crate's entity, and a
+  query walks from a test to its input's digest and licence; validation is
+  SHACL, the project's own language; and every RDF engine reads the file
+  identically, which is the property the "same adapter, every runtime" claim
+  rests on. One contract, not a menu: an adapter does not choose among test
+  conventions.
 - **Naming is deferred, and the layout does not care.** The converter mints
   record IRIs by SHA-1 over `genomics:Variant:clinvar:VCV…`; XSLT 3 has no
   hash function. Whether the mapping writes the recipe and the Bridge mints
   the name (recommended, and where [spec#38](https://github.com/the-cascade-protocol/spec/issues/38#issuecomment-5555482906)
   puts naming) or calls a Bridge-provided function is decided in phase 2.
-- **Provenance is an RO-Crate**, one `fixtures/ro-crate-metadata.json`, over
-  hand-written YAML: a published specification with validators, in JSON-LD.
 - **Licence is Apache-2.0**, what conformance and cascade-cli use, because
   XSLT executes and a content licence sits awkwardly on files that execute.
   NCBI's terms for ClinVar data are recorded per file in the crate.
@@ -132,7 +157,8 @@ the outcomes:
 - **An envelope wrapper schema exists** because NCBI's XSD declares the
   release root but not the efetch root, and every committed input is an
   efetch response. `schema/ClinVarResult-Set.xsd` includes NCBI's schema
-  unchanged and adds that one element.
+  unchanged and adds that one element; the crate's `#envelope-efetch` names
+  it as the envelope's document schema.
 - **Five committed inputs**: the four conformance oracles, whose fetch date
   and method were never recorded and whose crate entries say so, and NCBI's
   official sample, the one input whose provenance is unimpeachable, committed
@@ -146,24 +172,29 @@ the outcomes:
 There is no test suite here by design. What can be checked before a Bridge
 exists, with generic tools:
 
-- every YAML, JSON and Turtle file parses; `adapter.yaml` validates against
-  `schema/manifest/adapter.schema.json`; `fixtures/manifest.ttl` validates,
-  conforming, against `schema/manifest/bridge-test.shapes.ttl` with a SHACL
-  engine (pySHACL or Jena);
-- with the manifest and the crate loaded into one graph, every `bt:input`,
-  `bt:graph` and `bt:findings` IRI is a crate `File` entity, every
-  `bt:dataset` IRI is a crate `Dataset` entity, every `bt:envelope` is an
-  envelope id in `adapter.yaml`, and `bt:adapter` equals its `id`;
+- every JSON and Turtle file parses; the crate (parsed as JSON-LD) and
+  `fixtures/manifest.ttl`, loaded into one graph with their own locations as
+  base, validate, conforming, against `schema/manifest/bridge.shapes.ttl`
+  with a SHACL engine (pySHACL or Jena);
+- in that graph, every `bridge:envelope` in a test action is a
+  `bridge:Envelope` the root lists, the manifest's `bridge:adapter` is the
+  root and the root's `bridge:testManifest` is the manifest, every
+  `bridge:input`, `bridge:graph` and `bridge:findings` IRI is a crate `File`
+  entity, every `bridge:dataset` IRI is a crate `Dataset` entity, and
+  `bridge:sourceSchema` and each `bridge:documentSchema` are crate `File`s
+  that exist on disk;
 - the crate validates with the RO-Crate validator
-  (`rocrate-validator validate fixtures/ --profile-identifier ro-crate-1.2`);
-- every `fixtures/in/*.xml` validates against `schema/ClinVarResult-Set.xsd`;
+  (`rocrate-validator validate . --profile-identifier ro-crate-1.2`);
+- every `fixtures/in/*.xml` validates against `schema/ClinVarResult-Set.xsd`,
+  and the detect XPath is true for each of them and for the root of the
+  monthly release;
 - every `fixtures/expected/*.ttl` parses as Turtle;
 - every digest in the crate matches its file, and the XSD's md5 matches
   NCBI's published `.md5`;
 - the four oracle triplets are byte-identical to
   `conformance/fixtures/genomics/clinvar/` at `0ea48bb`;
 - opening the repository in VS Code with the recommended extensions shows
-  XSD validation on a fixture input and schema completion in `adapter.yaml`.
+  XSD validation on a fixture input and Turtle support in the manifest.
 
 The real verification is phase 2: `bridge-engine-java` runs `manifest.ttl` and
 the four graphs compare isomorphic, which is the moment the adapter is proven
@@ -185,4 +216,4 @@ rather than described.
 
 Apache-2.0 for the package. ClinVar data is NCBI's, under
 https://www.ncbi.nlm.nih.gov/home/about/policies/; each committed NCBI-derived
-file's entry in `fixtures/ro-crate-metadata.json` says so.
+file's entry in `ro-crate-metadata.json` says so.

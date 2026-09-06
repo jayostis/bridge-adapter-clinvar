@@ -10,22 +10,19 @@
     }
   ],
   "xml.validation.enabled": true,
-  // adapter.yaml carries a `# yaml-language-server: $schema=` header too; this
-  // association is the belt to that header's braces. fixtures/manifest.ttl is
-  // Turtle, validated by SHACL (schema/manifest/bridge-test.shapes.ttl), not
-  // by a JSON Schema.
-  "yaml.schemas": {
-    "./schema/manifest/adapter.schema.json": "adapter.yaml"
-  },
+  // The adapter manifest is ro-crate-metadata.json (JSON-LD) and the test
+  // manifest is fixtures/manifest.ttl (Turtle); both are validated by SHACL
+  // (schema/manifest/bridge.shapes.ttl) and the crate by the RO-Crate
+  // validator, not by a JSON Schema, so there is no schema association here.
   "files.eol": "\n",
   "files.insertFinalNewline": true,
   "files.trimTrailingWhitespace": true,
   // Verbatim copies (see .editorconfig): no save-time rewriting. A language
   // override reaches every file in that language, so only languages whose
   // files are verbatim copies (or nearly all are) get one. The .gaps.json
-  // sidecars are JSON, and a [json] override would also reach the crate and
-  // the JSON Schemas; they rely on the EditorConfig extension recommended in
-  // extensions.json, which applies .editorconfig's path-scoped rules.
+  // sidecars are JSON, and a [json] override would also reach the crate;
+  // they rely on the EditorConfig extension recommended in extensions.json,
+  // which applies .editorconfig's path-scoped rules.
   "[xml]": {
     "files.insertFinalNewline": false,
     "files.trimTrailingWhitespace": false

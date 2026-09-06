@@ -21,15 +21,22 @@ README summarises them. Do not re-derive them.
   in any directory. An adapter is data; the thing that runs it is a Bridge
   (RFC section 6, "a universal adapter contains no code"). If something seems
   to need code, it is a finding for the Bridge specification, not a file here.
+- **The manifest is the crate.** `ro-crate-metadata.json` at the root is
+  both the adapter's manifest (its root entity is a `bridge:Adapter`: format
+  id, envelopes, unit, detect XPath, profile, vocabulary pin, test manifest)
+  and the provenance record for every file and remote dataset. There is no
+  `adapter.yaml`; the RFC's section 6 sketch names one, and the departure is
+  a finding for spec#43, not a reason to add one back.
 - **No tests here.** The adapter declares its fixtures and how to judge them
   as data, in `fixtures/manifest.ttl`, a W3C-style test manifest (`mf:` plus
-  the `bt:` Bridge-test vocabulary). A Bridge's harness executes them:
-  version 1 in `bridge-engine-java`, version 2 in `bridge-engine-browser`.
-  Neither repository exists yet. Do not add a test runner, CI workflow that
-  runs fixtures, or scripts directory to this repository.
+  the test terms of the `bridge:` vocabulary). A Bridge's harness executes
+  them: version 1 in `bridge-engine-java`, version 2 in
+  `bridge-engine-browser`. Neither repository exists yet. Do not add a test
+  runner, CI workflow that runs fixtures, or scripts directory to this
+  repository.
 - **Big datasets are referenced, not committed.** Small inputs are checked in.
   A multi-gigabyte release is a URL, a version, a digest and a licence in
-  `fixtures/ro-crate-metadata.json`, and a `bt:DatasetCompletionTest` in
+  `ro-crate-metadata.json`, and a `bridge:DatasetCompletionTest` in
   `fixtures/manifest.ttl` naming that entity by its IRI.
 - **Verbatim copies are never edited.** `schema/ClinVar_VCV_2.6.xsd` and
   everything under `fixtures/in/`, `fixtures/expected/` and
@@ -45,14 +52,18 @@ README summarises them. Do not re-derive them.
 - **No Cascade terms are minted here.** Values with no Cascade term go in the
   adapter's own namespace (`vocab/`, phase 2) or in the findings sidecar;
   terms in `cascade:`, `genomics:` and the rest go through spec's RFC process.
+  The `bridge:` vocabulary under `schema/manifest/` is a Bridge-spec
+  namespace, the seed of the specification's own, and moves out unchanged
+  when a `bridge-spec` repository exists.
 
 ## Sibling checkouts this repository cites
 
 Expected beside this repository, as sister directories:
 
 - `../spec` — the vocabularies; pinned at `e77ba5e8004bf57f34d42a1bee69d1cfb95f86e3`
-  in `adapter.yaml` (the same pin as `../conformance/scripts/SPEC_PIN`). The
-  RFC is spec#43; the identity RFC is spec#38.
+  by the crate's `bridge:vocabularyPin` (the same pin as
+  `../conformance/scripts/SPEC_PIN`). The RFC is spec#43; the identity RFC
+  is spec#38.
 - `../conformance` — `fixtures/genomics/clinvar/` at `0ea48bb` is where the
   four oracle triplets are copied from. `X.input.xml` becomes `in/X.xml`,
   `X.expected.ttl` becomes `expected/X.ttl`, and `X.gaps.json` keeps its
@@ -60,7 +71,7 @@ Expected beside this repository, as sister directories:
 - `../cascade-cli` — `src/lib/clinvar-converter/` (about 2,200 lines) is the
   converter the adapter re-expresses as data, and
   `tests/clinvar-conformance.test.ts` is the oracle comparison the test
-  manifest's `bt:IsomorphicConversionTest` restates. Format id `clinvar`
+  manifest's `bridge:IsomorphicConversionTest` restates. Format id `clinvar`
   comes from its `registry-entry.ts`.
 - `../sdk-typescript` — the runtime lineage the RFC positions the Bridge
   beside; not read by anything here yet.
@@ -73,12 +84,11 @@ changing a pin; NCBI publishes a `.md5` beside every release and XSD.
 ## Layout
 
 ```
-adapter.yaml                     Bridge-facing manifest (schema/manifest/adapter.schema.json)
+ro-crate-metadata.json           the adapter manifest and the provenance of every file and dataset (RO-Crate 1.2)
 schema/ClinVar_VCV_2.6.xsd       NCBI's schema, pinned byte for byte
 schema/ClinVarResult-Set.xsd     efetch envelope wrapper: includes NCBI's, adds the root it lacks
-schema/manifest/                 JSON Schema for adapter.yaml; the bt: test vocabulary and its SHACL shapes
-fixtures/manifest.ttl            the test manifest: the cases and how each is judged (W3C mf: plus bt:)
-fixtures/ro-crate-metadata.json  provenance for every fixture file and remote dataset (RO-Crate 1.2)
+schema/manifest/                 the bridge: vocabulary (adapter and test terms) and its SHACL shapes
+fixtures/manifest.ttl            the test manifest: the cases and how each is judged (W3C mf: plus bridge:)
 fixtures/in|expected|findings/   inputs, expected graphs, expected findings
 docs/format.md                   ClinVar VCV XML as the adapter sees it
 docs/stages.md                   RFC engine stages in Enterprise Integration Patterns terms
@@ -90,22 +100,30 @@ in/xslt/, in/sparql/, tables/, vocab/   phase 2 and 3; not yet created
 There is no test suite by design. Before claiming a change works, check what
 is checkable with generic tools, and say which of these ran:
 
-- Every YAML, JSON and Turtle file parses; `adapter.yaml` validates against
-  its JSON Schema (`jsonschema`, draft 2020-12); `fixtures/manifest.ttl`
-  validates, conforming, against `schema/manifest/bridge-test.shapes.ttl`
-  with a SHACL engine (pySHACL or Jena).
-- With the manifest and the crate (JSON-LD) loaded into one graph: every
-  `bt:input`, `bt:graph` and `bt:findings` IRI is a crate `File` entity;
-  every `bt:dataset` IRI is a crate `Dataset` entity; every `bt:envelope`
-  literal is an envelope `id` in `adapter.yaml`; `bt:adapter` equals
-  `adapter.yaml` `id`. A short rdflib script or SPARQL `ASK` is the floor;
-  say which ran.
+- Every JSON and Turtle file parses. The crate (`ro-crate-metadata.json`,
+  parsed as JSON-LD with its own location as base) and `fixtures/manifest.ttl`
+  (parsed with its location as base) load as one RDF graph and validate,
+  conforming, against `schema/manifest/bridge.shapes.ttl` with a SHACL engine
+  (pySHACL or Jena).
+- In that graph: every `bridge:envelope` in a test action is a
+  `bridge:Envelope` the root entity lists; the manifest's `bridge:adapter` is
+  the root entity and the root's `bridge:testManifest` is the manifest; every
+  `bridge:input`, `bridge:graph` and `bridge:findings` IRI is a crate `File`
+  entity; every `bridge:dataset` IRI is a crate `Dataset` entity;
+  `bridge:sourceSchema` and each `bridge:documentSchema` are crate `File`s
+  that exist on disk. A short rdflib script or SPARQL `ASK` is the floor; say
+  which ran.
 - The crate validates with the RO-Crate validator
-  (`rocrate-validator validate fixtures/ --profile-identifier ro-crate-1.2`);
-  where that cannot run, a JSON-LD parse is the floor and the commit says so.
+  (`rocrate-validator validate . --profile-identifier ro-crate-1.2`, from the
+  root); where that cannot run, a JSON-LD parse is the floor and the commit
+  says so.
 - Every input under `fixtures/in/` validates against
   `schema/ClinVarResult-Set.xsd` (any XSD 1.0 validator: `xmllint --schema`,
-  lxml, the Red Hat XML extension in VS Code).
+  lxml, the Red Hat XML extension in VS Code), and the crate's
+  `bridge:detectXPath` is true for each of them (an XPath 3.1 evaluator such
+  as Saxon; XPath 1.0's
+  `boolean(/ClinVarResult-Set/VariationArchive | /ClinVarVariationRelease/VariationArchive)`
+  is an acceptable stand-in, and the note says so).
 - Every `fixtures/expected/*.ttl` parses as Turtle (`riot --validate`, rdflib).
 - Every digest in the crate matches its file (`sha256sum`), and the XSD's md5
   matches NCBI's published `.md5`.
@@ -123,6 +141,6 @@ them here.
 - Issue and document text is written impersonally, as findings and decisions,
   not as promises by a person.
 - `CHANGELOG.md` is updated in the same commit as the change it describes;
-  its version is the `version` in `adapter.yaml`.
+  its version is the root entity's `version` in `ro-crate-metadata.json`.
 - Every fact copied from NCBI or a sibling repository names its source and
   date, in the crate for data and in `docs/` for prose.

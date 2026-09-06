@@ -1,0 +1,624 @@
+{
+  "@context": [
+    "https://w3id.org/ro/crate/1.2/context",
+    {
+      "sha256": "https://w3id.org/ro/terms/workflow-run#sha256",
+      "md5": "https://w3id.org/ro/terms/workflow-run#md5",
+      "bridge": "https://ns.cascadeprotocol.org/bridge/v1-draft#",
+      "bridge:tier": "https://ns.cascadeprotocol.org/bridge/v1-draft#tier",
+      "bridge:profileRequired": "https://ns.cascadeprotocol.org/bridge/v1-draft#profileRequired",
+      "bridge:vocabularyPin": "https://ns.cascadeprotocol.org/bridge/v1-draft#vocabularyPin",
+      "bridge:vocabulary": "https://ns.cascadeprotocol.org/bridge/v1-draft#vocabulary",
+      "bridge:sourceMediaType": "https://ns.cascadeprotocol.org/bridge/v1-draft#sourceMediaType",
+      "bridge:sourceSchema": "https://ns.cascadeprotocol.org/bridge/v1-draft#sourceSchema",
+      "bridge:envelope": "https://ns.cascadeprotocol.org/bridge/v1-draft#envelope",
+      "bridge:unit": "https://ns.cascadeprotocol.org/bridge/v1-draft#unit",
+      "bridge:detectXPath": "https://ns.cascadeprotocol.org/bridge/v1-draft#detectXPath",
+      "bridge:testManifest": "https://ns.cascadeprotocol.org/bridge/v1-draft#testManifest",
+      "bridge:rootElement": "https://ns.cascadeprotocol.org/bridge/v1-draft#rootElement",
+      "bridge:documentSchema": "https://ns.cascadeprotocol.org/bridge/v1-draft#documentSchema"
+    }
+  ],
+  "@graph": [
+    {
+      "@id": "ro-crate-metadata.json",
+      "@type": "CreativeWork",
+      "conformsTo": {
+        "@id": "https://w3id.org/ro/crate/1.2"
+      },
+      "about": {
+        "@id": "./"
+      }
+    },
+    {
+      "@id": "./",
+      "@type": ["Dataset", "bridge:Adapter"],
+      "identifier": "clinvar",
+      "name": "ClinVar VCV XML",
+      "version": "0.1.0",
+      "description": "The Cascade Bridge Adapter for ClinVar VCV XML: the package of data a Cascade Bridge runs to turn NCBI ClinVar variation records into Cascade RDF, the pilot adapter section 16 of the Cascade Bridge RFC (the-cascade-protocol/spec#43) proposes. Import-only. Phase 1 (0.1.0) has no mapping and nothing that executes. This crate is the adapter's manifest: a Bridge reads the root entity first, for the format id (identifier, the same string cascade-cli accepts for --from, from src/lib/clinvar-converter/registry-entry.ts), the source schema, the two envelopes, the unit, the detect rule, the profile the Bridge must offer, the vocabulary pin and the test manifest; the data entities carry provenance for every committed fixture, schema and document and for every remote dataset the adapter references. Committed inputs carry a sha256 computed locally over the committed bytes. Remote datasets carry the md5 NCBI publishes in the .md5 file beside each release. Four inputs and their expected graphs and findings are copied byte for byte from the conformance repository; their fetch date and method were not recorded when they were captured, and each entry says so. Dates and sizes for remote files were read from ftp.ncbi.nlm.nih.gov on 2026-09-06. The phase 2 mapping (mainEntity, Workflow RO-Crate), tables (bridge:table) and extension vocabulary (bridge:extensionVocabulary) are absent until the files exist; nothing for the export direction is declared, because ClinVar is import-only.",
+      "datePublished": "2026-09-06",
+      "license": {
+        "@id": "https://spdx.org/licenses/Apache-2.0"
+      },
+      "conformsTo": {
+        "@id": "https://github.com/the-cascade-protocol/spec/issues/43"
+      },
+      "isBasedOn": {
+        "@id": "https://github.com/the-cascade-protocol/conformance/tree/0ea48bb1c044ac9bf8086d456601357135cf79e6/fixtures/genomics/clinvar"
+      },
+      "bridge:tier": {
+        "@id": "bridge:Universal"
+      },
+      "bridge:profileRequired": [
+        {
+          "@id": "bridge:xslt-3"
+        }
+      ],
+      "bridge:vocabularyPin": {
+        "@id": "https://github.com/jayostis/spec/commit/e77ba5e8004bf57f34d42a1bee69d1cfb95f86e3"
+      },
+      "bridge:vocabulary": [
+        {
+          "@id": "https://ns.cascadeprotocol.org/genomics/v1#"
+        },
+        {
+          "@id": "https://ns.cascadeprotocol.org/core/v1#"
+        }
+      ],
+      "bridge:sourceMediaType": "application/xml",
+      "bridge:sourceSchema": {
+        "@id": "schema/ClinVar_VCV_2.6.xsd"
+      },
+      "bridge:envelope": [
+        {
+          "@id": "#envelope-efetch"
+        },
+        {
+          "@id": "#envelope-release"
+        }
+      ],
+      "bridge:unit": "VariationArchive",
+      "bridge:detectXPath": "exists(/(ClinVarResult-Set|ClinVarVariationRelease)/VariationArchive)",
+      "bridge:testManifest": {
+        "@id": "fixtures/manifest.ttl"
+      },
+      "hasPart": [
+        {
+          "@id": "schema/ClinVar_VCV_2.6.xsd"
+        },
+        {
+          "@id": "schema/ClinVarResult-Set.xsd"
+        },
+        {
+          "@id": "schema/manifest/bridge.ttl"
+        },
+        {
+          "@id": "schema/manifest/bridge.shapes.ttl"
+        },
+        {
+          "@id": "fixtures/manifest.ttl"
+        },
+        {
+          "@id": "fixtures/in/VCV000007105-CFTR-deltaF508.xml"
+        },
+        {
+          "@id": "fixtures/in/VCV000017661-BRCA1.xml"
+        },
+        {
+          "@id": "fixtures/in/VCV000055448-BRCA2-pathogenic.xml"
+        },
+        {
+          "@id": "fixtures/in/VCV000208804-MLH1-LynchSyndrome.xml"
+        },
+        {
+          "@id": "fixtures/in/VCV_XML_VCV000091629.xml"
+        },
+        {
+          "@id": "fixtures/expected/VCV000007105-CFTR-deltaF508.ttl"
+        },
+        {
+          "@id": "fixtures/expected/VCV000017661-BRCA1.ttl"
+        },
+        {
+          "@id": "fixtures/expected/VCV000055448-BRCA2-pathogenic.ttl"
+        },
+        {
+          "@id": "fixtures/expected/VCV000208804-MLH1-LynchSyndrome.ttl"
+        },
+        {
+          "@id": "fixtures/findings/VCV000007105-CFTR-deltaF508.gaps.json"
+        },
+        {
+          "@id": "fixtures/findings/VCV000017661-BRCA1.gaps.json"
+        },
+        {
+          "@id": "fixtures/findings/VCV000055448-BRCA2-pathogenic.gaps.json"
+        },
+        {
+          "@id": "fixtures/findings/VCV000208804-MLH1-LynchSyndrome.gaps.json"
+        },
+        {
+          "@id": "https://ftp.ncbi.nlm.nih.gov/pub/clinvar/xml/ClinVarVCVRelease_2026-09.xml.gz"
+        },
+        {
+          "@id": "#clinvar-vcv-weekly"
+        },
+        {
+          "@id": "https://ftp.ncbi.nlm.nih.gov/pub/clinvar/xsd_public/ClinVar_VCV_2.6.xsd"
+        },
+        {
+          "@id": "https://github.com/jayostis/spec/commit/e77ba5e8004bf57f34d42a1bee69d1cfb95f86e3"
+        },
+        {
+          "@id": "docs/format.md"
+        },
+        {
+          "@id": "docs/stages.md"
+        }
+      ]
+    },
+    {
+      "@id": "#envelope-efetch",
+      "@type": "bridge:Envelope",
+      "name": "efetch",
+      "bridge:rootElement": "ClinVarResult-Set",
+      "bridge:documentSchema": {
+        "@id": "schema/ClinVarResult-Set.xsd"
+      },
+      "description": "E-utilities efetch (db=clinvar, rettype=vcv). All five committed inputs. NCBI's XSD does not declare this root; the wrapper schema named as the document schema adds it, so a whole efetch response validates."
+    },
+    {
+      "@id": "#envelope-release",
+      "@type": "bridge:Envelope",
+      "name": "release",
+      "bridge:rootElement": "ClinVarVariationRelease",
+      "description": "The monthly and weekly release files, ClinVarVCVRelease_*.xml.gz. Declared by NCBI's XSD directly, so no document schema beyond the source schema is needed. The root element is still ClinVarVariationRelease although the file name family changed to ClinVarVCVRelease in August 2025; docs/format.md, \"The two envelopes\"."
+    },
+    {
+      "@id": "bridge:Universal",
+      "@type": "bridge:Tier",
+      "name": "universal",
+      "description": "RFC section 9: no code, Core only, runs on every conforming Bridge. The other tier, bridge:Limited, names the Bridges and profiles it binds to and the code components it carries. Declared in schema/manifest/bridge.ttl."
+    },
+    {
+      "@id": "bridge:xslt-3",
+      "@type": "bridge:Profile",
+      "name": "xslt-3",
+      "description": "The optional Bridge profile (RFC section 9) under which a Bridge runs an adapter's XSLT 3 mapping. Required here because the phase 2 mapping is XSLT 3, one module per record class. Declared in schema/manifest/bridge.ttl."
+    },
+    {
+      "@id": "https://github.com/the-cascade-protocol/spec/issues/43",
+      "@type": ["CreativeWork", "Profile"],
+      "name": "Cascade Bridge RFC (draft)",
+      "description": "The Bridge specification this adapter is written against, the profile the root entity conforms to. No numbered specification exists yet; the RFC stands in for it. Its section 6 sketches the adapter layout with an adapter.yaml; this crate departs from that sketch by being the manifest itself, which is a finding for the RFC."
+    },
+    {
+      "@id": "https://github.com/jayostis/spec/commit/e77ba5e8004bf57f34d42a1bee69d1cfb95f86e3",
+      "@type": ["SoftwareSourceCode", "File"],
+      "name": "spec at e77ba5e",
+      "codeRepository": {
+        "@id": "https://github.com/jayostis/spec"
+      },
+      "version": "e77ba5e8004bf57f34d42a1bee69d1cfb95f86e3",
+      "license": {
+        "@id": "https://spdx.org/licenses/Apache-2.0"
+      },
+      "description": "The spec revision the adapter's vocabularies are pinned to: the same pin conformance/scripts/SPEC_PIN carries, the merge commit of jayostis/spec PR #53 (core v3.13, health v2.9, clinical v1.20, coverage v1.9, checkup v3.5, pots v1.5). The commit is on the fork, jayostis/spec, and not yet on the-cascade-protocol/spec: it is not an ancestor of the org's main, so naming the org would point at a revision the org does not hold. Six tags (vocab/core-v3.13, vocab/health-v2.9, vocab/clinical-v1.20, vocab/coverage-v1.9, vocab/checkup-v3.5, vocab/pots-v1.5) point at this SHA and keep it reachable if the fork's main is reset or rebased; the pin moves to the org in the same commit that re-pins to an org SHA, once the vocabulary lands there. Read from conformance/scripts/SPEC_PIN on 2026-09-06. A web-based data entity, referenced and not committed, the way the release files are: the RO-Crate 1.2 validator reads every SoftwareSourceCode as a script that must be a File in hasPart."
+    },
+    {
+      "@id": "https://ns.cascadeprotocol.org/genomics/v1#",
+      "@type": "DefinedTermSet",
+      "name": "Cascade genomics vocabulary",
+      "version": "v1-draft",
+      "description": "One of the two Cascade vocabularies the adapter writes. Pre-stable: at the pin, ontologies/genomics/v1-draft/genomics.ttl carries owl:versionInfo \"1.0-draft.0.6\"; the version recorded here is the draft label. Its terms go through spec's RFC process; none is minted in this adapter."
+    },
+    {
+      "@id": "https://ns.cascadeprotocol.org/core/v1#",
+      "@type": "DefinedTermSet",
+      "name": "Cascade core vocabulary",
+      "version": "3.13",
+      "description": "One of the two Cascade vocabularies the adapter writes. At the pin, ontologies/core/v1/core.ttl carries owl:versionInfo \"3.13\", the version spec's VOCAB_VERSIONS records. The stamp predicates the test manifest ignores when comparing (cascade:dataProvenance, cascade:schemaVersion) are its terms."
+    },
+    {
+      "@id": "schema/ClinVar_VCV_2.6.xsd",
+      "@type": "File",
+      "name": "ClinVar VCV XSD, version 2.6, pinned copy",
+      "encodingFormat": "application/xml",
+      "contentSize": "159754",
+      "sha256": "de01424a0c495babd69d08f4bed1c1271aaeed5e4f441b59d0b1e3e16793d658",
+      "md5": "a7b65e5a166dc5f36a7eea9127d56f4e",
+      "version": "2.6",
+      "isBasedOn": {
+        "@id": "https://ftp.ncbi.nlm.nih.gov/pub/clinvar/xsd_public/ClinVar_VCV_2.6.xsd"
+      },
+      "license": {
+        "@id": "https://www.ncbi.nlm.nih.gov/home/about/policies/"
+      },
+      "description": "NCBI's schema pinned byte for byte: the source schema every VariationArchive unit is validated against, and the schema schema/ClinVarResult-Set.xsd includes. Identical to the file at the isBasedOn URL, whose entity carries NCBI's date and the note on 2.5: md5 is NCBI's sibling .md5 file, sha256 is computed locally over the committed bytes. Never edited; to change it, replace it from its source and update contentSize, sha256 and md5 in the same commit. docs/format.md says why 2.6 and not 2.5 is pinned."
+    },
+    {
+      "@id": "schema/ClinVarResult-Set.xsd",
+      "@type": "File",
+      "name": "efetch envelope wrapper schema",
+      "encodingFormat": "application/xml",
+      "license": {
+        "@id": "https://spdx.org/licenses/Apache-2.0"
+      },
+      "description": "Includes NCBI's ClinVar_VCV_2.6.xsd unchanged and declares the one document root NCBI's schema leaves undeclared, ClinVarResult-Set, so a whole efetch response validates and not only the records inside it. The document schema of the efetch envelope (#envelope-efetch); .vscode/settings.json associates fixtures/in/*.xml with it."
+    },
+    {
+      "@id": "schema/manifest/bridge.ttl",
+      "@type": "File",
+      "name": "Cascade Bridge vocabulary",
+      "encodingFormat": "text/turtle",
+      "license": {
+        "@id": "https://spdx.org/licenses/Apache-2.0"
+      },
+      "description": "The bridge: vocabulary (https://ns.cascadeprotocol.org/bridge/v1-draft#): the adapter terms this crate's root entity and envelopes use, and the test terms fixtures/manifest.ttl uses on top of W3C's mf: test-manifest vocabulary, each with an rdfs:comment. The seed of the Bridge specification's vocabulary; no cascade: or genomics: term is minted in it."
+    },
+    {
+      "@id": "schema/manifest/bridge.shapes.ttl",
+      "@type": "File",
+      "name": "Cascade Bridge shapes",
+      "encodingFormat": "text/turtle",
+      "license": {
+        "@id": "https://spdx.org/licenses/Apache-2.0"
+      },
+      "description": "SHACL shapes for the adapter (this crate's root entity and its envelopes) and for the test manifest, validated together as one graph: the crate parsed as JSON-LD plus fixtures/manifest.ttl, against this file."
+    },
+    {
+      "@id": "fixtures/manifest.ttl",
+      "@type": "File",
+      "name": "Test manifest",
+      "encodingFormat": "text/turtle",
+      "description": "The cases a Bridge's harness executes and how each is judged: a W3C-style test manifest (mf: test-manifest vocabulary) whose entries are typed with the bridge: vocabulary, declared in schema/manifest/bridge.ttl and constrained by the SHACL shapes in schema/manifest/bridge.shapes.ttl. Every input, expected graph, findings file, dataset and envelope it names is described in this crate, by the same IRI, and it names this crate's root entity as its adapter, so the manifest and this crate load as one graph.",
+      "license": {
+        "@id": "https://spdx.org/licenses/Apache-2.0"
+      }
+    },
+    {
+      "@id": "fixtures/in/VCV000007105-CFTR-deltaF508.xml",
+      "@type": "File",
+      "name": "VCV000007105 (CFTR p.Phe508del), efetch envelope",
+      "encodingFormat": "application/xml",
+      "contentSize": "508386",
+      "sha256": "3dcde7680f83f735b7271cafa3321ce0767048ca7461a2a2365fed820c373c3d",
+      "identifier": "VCV000007105",
+      "version": "206",
+      "dateModified": "2026-05-03",
+      "isBasedOn": {
+        "@id": "https://www.ncbi.nlm.nih.gov/clinvar/variation/7105/"
+      },
+      "sameAs": {
+        "@id": "https://github.com/the-cascade-protocol/conformance/blob/0ea48bb1c044ac9bf8086d456601357135cf79e6/fixtures/genomics/clinvar/VCV000007105-CFTR-deltaF508.input.xml"
+      },
+      "license": {
+        "@id": "https://www.ncbi.nlm.nih.gov/home/about/policies/"
+      },
+      "description": "NM_000492.3(CFTR):c.1521_1523del (p.Phe508del); 99 submissions from 86 submitters. Copied byte for byte from the conformance repository at 0ea48bb (the file last changed at 8a5e203, 2026-05-06). version and dateModified are the VariationArchive Version and DateLastUpdated attributes in the XML. The fetch date and query were not recorded when the file was captured; the E-utilities efetch envelope (ClinVarResult-Set) is inferred from the XML, which declares no schema location."
+    },
+    {
+      "@id": "fixtures/in/VCV000017661-BRCA1.xml",
+      "@type": "File",
+      "name": "VCV000017661 (BRCA1 p.Cys61Gly), efetch envelope",
+      "encodingFormat": "application/xml",
+      "contentSize": "538917",
+      "sha256": "5fb6b0eaaebeb5d358db69b90aecbf722fd5a09f153f21a1dbe2bbabf3dae80f",
+      "identifier": "VCV000017661",
+      "version": "157",
+      "dateModified": "2026-05-03",
+      "isBasedOn": {
+        "@id": "https://www.ncbi.nlm.nih.gov/clinvar/variation/17661/"
+      },
+      "sameAs": {
+        "@id": "https://github.com/the-cascade-protocol/conformance/blob/0ea48bb1c044ac9bf8086d456601357135cf79e6/fixtures/genomics/clinvar/VCV000017661-BRCA1.input.xml"
+      },
+      "license": {
+        "@id": "https://www.ncbi.nlm.nih.gov/home/about/policies/"
+      },
+      "description": "NM_007294.4(BRCA1):c.181T>G (p.Cys61Gly); 72 submissions from 66 submitters. Copied byte for byte from the conformance repository at 0ea48bb (the file last changed at 8a5e203, 2026-05-06). version and dateModified are the VariationArchive Version and DateLastUpdated attributes in the XML. The fetch date and query were not recorded when the file was captured; the E-utilities efetch envelope (ClinVarResult-Set) is inferred from the XML, which declares no schema location."
+    },
+    {
+      "@id": "fixtures/in/VCV000055448-BRCA2-pathogenic.xml",
+      "@type": "File",
+      "name": "VCV000055448 (BRCA1 c.5193+1G>C), efetch envelope",
+      "encodingFormat": "application/xml",
+      "contentSize": "200872",
+      "sha256": "818bedd49979f2763fc7f6bf4d4cbaba4bb6a1ff558bebee6735e28794734e5f",
+      "identifier": "VCV000055448",
+      "version": "15",
+      "dateModified": "2026-04-13",
+      "isBasedOn": {
+        "@id": "https://www.ncbi.nlm.nih.gov/clinvar/variation/55448/"
+      },
+      "sameAs": {
+        "@id": "https://github.com/the-cascade-protocol/conformance/blob/0ea48bb1c044ac9bf8086d456601357135cf79e6/fixtures/genomics/clinvar/VCV000055448-BRCA2-pathogenic.input.xml"
+      },
+      "license": {
+        "@id": "https://www.ncbi.nlm.nih.gov/home/about/policies/"
+      },
+      "description": "NM_007294.4(BRCA1):c.5193+1G>C; 7 submissions from 7 submitters. The file name, which is the conformance repository's, says BRCA2; the record is a BRCA1 variant. Copied byte for byte from the conformance repository at 0ea48bb (the file last changed at 8a5e203, 2026-05-06). version and dateModified are the VariationArchive Version and DateLastUpdated attributes in the XML. The fetch date and query were not recorded when the file was captured; the E-utilities efetch envelope (ClinVarResult-Set) is inferred from the XML, which declares no schema location."
+    },
+    {
+      "@id": "fixtures/in/VCV000208804-MLH1-LynchSyndrome.xml",
+      "@type": "File",
+      "name": "VCV000208804 (VMA21 c.164-6T>G), efetch envelope",
+      "encodingFormat": "application/xml",
+      "contentSize": "11241",
+      "sha256": "21e42c201d30c44673476954bcd37592fd6eec73793d575bb83eedb1945d3e72",
+      "identifier": "VCV000208804",
+      "version": "2",
+      "dateModified": "2025-08-23",
+      "isBasedOn": {
+        "@id": "https://www.ncbi.nlm.nih.gov/clinvar/variation/208804/"
+      },
+      "sameAs": {
+        "@id": "https://github.com/the-cascade-protocol/conformance/blob/0ea48bb1c044ac9bf8086d456601357135cf79e6/fixtures/genomics/clinvar/VCV000208804-MLH1-LynchSyndrome.input.xml"
+      },
+      "license": {
+        "@id": "https://www.ncbi.nlm.nih.gov/home/about/policies/"
+      },
+      "description": "NM_001017980.4(VMA21):c.164-6T>G; 1 submission. The file name, which is the conformance repository's, says MLH1 and Lynch syndrome; the record is a VMA21 variant interpreted for MONDO:0010684. Copied byte for byte from the conformance repository at 0ea48bb (the file last changed at 8a5e203, 2026-05-06). version and dateModified are the VariationArchive Version and DateLastUpdated attributes in the XML. The fetch date and query were not recorded when the file was captured; the E-utilities efetch envelope (ClinVarResult-Set) is inferred from the XML, which declares no schema location. An efetch of the same accession on 2026-09-06 returned the same Version and DateLastUpdated but 11,326 bytes rather than 11,241, so the capture is not reproducible byte for byte from NCBI today."
+    },
+    {
+      "@id": "fixtures/in/VCV_XML_VCV000091629.xml",
+      "@type": "File",
+      "name": "VCV000091629 (BRCA1 c.4357+2T>G), NCBI's official efetch sample",
+      "encodingFormat": "application/xml",
+      "contentSize": "193155",
+      "sha256": "028c83d8bb66f9a39cb9fc044a57968c901fd351075ccea004c8ce147a57cef0",
+      "md5": "36ba763dc9b5404bc1f78faf32ba630a",
+      "identifier": "VCV000091629",
+      "version": "19",
+      "dateModified": "2026-02-15",
+      "isBasedOn": {
+        "@id": "https://www.ncbi.nlm.nih.gov/clinvar/variation/91629/"
+      },
+      "sameAs": {
+        "@id": "https://ftp.ncbi.nlm.nih.gov/pub/clinvar/xml/sample_xml/VCV_XML_VCV000091629.xml"
+      },
+      "license": {
+        "@id": "https://www.ncbi.nlm.nih.gov/home/about/policies/"
+      },
+      "description": "NM_007294.4(BRCA1):c.4357+2T>G; 6 submissions from 6 submitters. Fetched over HTTPS from ftp.ncbi.nlm.nih.gov on 2026-09-06, byte for byte. NCBI's README beside it describes it as \"a single ClinVarResult-Set, from the VCV XML and as retrieved by efetch, based on VCV000091629.19\". NCBI publishes no .md5 beside this file (sample_xml/ holds only the XML, the esummary example and README.txt), so both digests are computed locally. Input only: no expected output has been produced for it."
+    },
+    {
+      "@id": "fixtures/expected/VCV000007105-CFTR-deltaF508.ttl",
+      "@type": "File",
+      "name": "Expected graph for VCV000007105",
+      "encodingFormat": "text/turtle",
+      "contentSize": "154096",
+      "sha256": "a330c4a5b960eafff264715fa124d43b7c2e3215b864bdb8b6514154a8e3cfb9",
+      "about": {
+        "@id": "fixtures/in/VCV000007105-CFTR-deltaF508.xml"
+      },
+      "sameAs": {
+        "@id": "https://github.com/the-cascade-protocol/conformance/blob/0ea48bb1c044ac9bf8086d456601357135cf79e6/fixtures/genomics/clinvar/VCV000007105-CFTR-deltaF508.expected.ttl"
+      },
+      "license": {
+        "@id": "https://spdx.org/licenses/Apache-2.0"
+      },
+      "description": "The Cascade RDF the input produces through cascade-cli's ClinVar converter, as committed to the conformance repository at 8a5e203 (2026-05-06) and copied byte for byte from 0ea48bb. 1,486 triples, 112 IRI subjects named urn:uuid: by the converter."
+    },
+    {
+      "@id": "fixtures/expected/VCV000017661-BRCA1.ttl",
+      "@type": "File",
+      "name": "Expected graph for VCV000017661",
+      "encodingFormat": "text/turtle",
+      "contentSize": "89761",
+      "sha256": "b9bb3e10e01058cb13d8a9a24e2461852945d4e1946a04a71e6ba9cc01f734dd",
+      "about": {
+        "@id": "fixtures/in/VCV000017661-BRCA1.xml"
+      },
+      "sameAs": {
+        "@id": "https://github.com/the-cascade-protocol/conformance/blob/0ea48bb1c044ac9bf8086d456601357135cf79e6/fixtures/genomics/clinvar/VCV000017661-BRCA1.expected.ttl"
+      },
+      "license": {
+        "@id": "https://spdx.org/licenses/Apache-2.0"
+      },
+      "description": "The Cascade RDF the input produces through cascade-cli's ClinVar converter, as committed to the conformance repository at 8a5e203 (2026-05-06) and copied byte for byte from 0ea48bb. 951 triples, 84 IRI subjects named urn:uuid: by the converter."
+    },
+    {
+      "@id": "fixtures/expected/VCV000055448-BRCA2-pathogenic.ttl",
+      "@type": "File",
+      "name": "Expected graph for VCV000055448",
+      "encodingFormat": "text/turtle",
+      "contentSize": "12993",
+      "sha256": "62e372af0447efb8297dad3d0859521fb8c9954e8618c132a32dc1a1b8d04f02",
+      "about": {
+        "@id": "fixtures/in/VCV000055448-BRCA2-pathogenic.xml"
+      },
+      "sameAs": {
+        "@id": "https://github.com/the-cascade-protocol/conformance/blob/0ea48bb1c044ac9bf8086d456601357135cf79e6/fixtures/genomics/clinvar/VCV000055448-BRCA2-pathogenic.expected.ttl"
+      },
+      "license": {
+        "@id": "https://spdx.org/licenses/Apache-2.0"
+      },
+      "description": "The Cascade RDF the input produces through cascade-cli's ClinVar converter, as committed to the conformance repository at 8a5e203 (2026-05-06) and copied byte for byte from 0ea48bb. 139 triples, 12 IRI subjects named urn:uuid: by the converter."
+    },
+    {
+      "@id": "fixtures/expected/VCV000208804-MLH1-LynchSyndrome.ttl",
+      "@type": "File",
+      "name": "Expected graph for VCV000208804",
+      "encodingFormat": "text/turtle",
+      "contentSize": "4192",
+      "sha256": "8bcd108941d8cb4c8b1b879789bc65305c12f3377de44c65c2aafb8f1a089289",
+      "about": {
+        "@id": "fixtures/in/VCV000208804-MLH1-LynchSyndrome.xml"
+      },
+      "sameAs": {
+        "@id": "https://github.com/the-cascade-protocol/conformance/blob/0ea48bb1c044ac9bf8086d456601357135cf79e6/fixtures/genomics/clinvar/VCV000208804-MLH1-LynchSyndrome.expected.ttl"
+      },
+      "license": {
+        "@id": "https://spdx.org/licenses/Apache-2.0"
+      },
+      "description": "The Cascade RDF the input produces through cascade-cli's ClinVar converter, as committed to the conformance repository at 8a5e203 (2026-05-06) and copied byte for byte from 0ea48bb. 42 triples, 3 IRI subjects named urn:uuid: by the converter."
+    },
+    {
+      "@id": "fixtures/findings/VCV000007105-CFTR-deltaF508.gaps.json",
+      "@type": "File",
+      "name": "Expected findings for VCV000007105",
+      "encodingFormat": "application/json",
+      "contentSize": "248158",
+      "sha256": "b6310d2447f6a97d3fdcac970931a59c98057f60f65f0baeeba1e62c99c18dda",
+      "about": {
+        "@id": "fixtures/in/VCV000007105-CFTR-deltaF508.xml"
+      },
+      "sameAs": {
+        "@id": "https://github.com/the-cascade-protocol/conformance/blob/0ea48bb1c044ac9bf8086d456601357135cf79e6/fixtures/genomics/clinvar/VCV000007105-CFTR-deltaF508.gaps.json"
+      },
+      "license": {
+        "@id": "https://spdx.org/licenses/Apache-2.0"
+      },
+      "description": "The vocabulary-gap sidecar the input produces: 732 entries of {sourceField, reason, severity, context}, sorted by sourceField, severity, reason. Copied byte for byte from the conformance repository at 0ea48bb (last changed at 8a5e203, 2026-05-06). Cites genomics v1-draft.0.1 terms with v1-draft.0.2 candidates."
+    },
+    {
+      "@id": "fixtures/findings/VCV000017661-BRCA1.gaps.json",
+      "@type": "File",
+      "name": "Expected findings for VCV000017661",
+      "encodingFormat": "application/json",
+      "contentSize": "167309",
+      "sha256": "fd7741b748d745adc4c2f6034aa7f3c8c25100df5b47dcbb885ce3831efcc96b",
+      "about": {
+        "@id": "fixtures/in/VCV000017661-BRCA1.xml"
+      },
+      "sameAs": {
+        "@id": "https://github.com/the-cascade-protocol/conformance/blob/0ea48bb1c044ac9bf8086d456601357135cf79e6/fixtures/genomics/clinvar/VCV000017661-BRCA1.gaps.json"
+      },
+      "license": {
+        "@id": "https://spdx.org/licenses/Apache-2.0"
+      },
+      "description": "The vocabulary-gap sidecar the input produces: 502 entries of {sourceField, reason, severity, context}, sorted by sourceField, severity, reason. Copied byte for byte from the conformance repository at 0ea48bb (last changed at 8a5e203, 2026-05-06). Cites genomics v1-draft.0.1 terms with v1-draft.0.2 candidates."
+    },
+    {
+      "@id": "fixtures/findings/VCV000055448-BRCA2-pathogenic.gaps.json",
+      "@type": "File",
+      "name": "Expected findings for VCV000055448",
+      "encodingFormat": "application/json",
+      "contentSize": "19521",
+      "sha256": "0a5f0d1ccd52ccfc6fb4c68d175d7a10e2cf4ded11bc75205d12aeb05fddc108",
+      "about": {
+        "@id": "fixtures/in/VCV000055448-BRCA2-pathogenic.xml"
+      },
+      "sameAs": {
+        "@id": "https://github.com/the-cascade-protocol/conformance/blob/0ea48bb1c044ac9bf8086d456601357135cf79e6/fixtures/genomics/clinvar/VCV000055448-BRCA2-pathogenic.gaps.json"
+      },
+      "license": {
+        "@id": "https://spdx.org/licenses/Apache-2.0"
+      },
+      "description": "The vocabulary-gap sidecar the input produces: 58 entries of {sourceField, reason, severity, context}, sorted by sourceField, severity, reason. Copied byte for byte from the conformance repository at 0ea48bb (last changed at 8a5e203, 2026-05-06). Cites genomics v1-draft.0.1 terms with v1-draft.0.2 candidates."
+    },
+    {
+      "@id": "fixtures/findings/VCV000208804-MLH1-LynchSyndrome.gaps.json",
+      "@type": "File",
+      "name": "Expected findings for VCV000208804",
+      "encodingFormat": "application/json",
+      "contentSize": "4812",
+      "sha256": "9854c350374d50adf97e9e97e3256e6c3f1aac4b8f765b416b45821fbe906807",
+      "about": {
+        "@id": "fixtures/in/VCV000208804-MLH1-LynchSyndrome.xml"
+      },
+      "sameAs": {
+        "@id": "https://github.com/the-cascade-protocol/conformance/blob/0ea48bb1c044ac9bf8086d456601357135cf79e6/fixtures/genomics/clinvar/VCV000208804-MLH1-LynchSyndrome.gaps.json"
+      },
+      "license": {
+        "@id": "https://spdx.org/licenses/Apache-2.0"
+      },
+      "description": "The vocabulary-gap sidecar the input produces: 14 entries of {sourceField, reason, severity, context}, sorted by sourceField, severity, reason. Copied byte for byte from the conformance repository at 0ea48bb (last changed at 8a5e203, 2026-05-06). Cites genomics v1-draft.0.1 terms with v1-draft.0.2 candidates."
+    },
+    {
+      "@id": "https://ftp.ncbi.nlm.nih.gov/pub/clinvar/xml/ClinVarVCVRelease_2026-09.xml.gz",
+      "@type": "Dataset",
+      "identifier": "clinvar-vcv-release-2026-09",
+      "name": "ClinVar VCV monthly release, 2026-09",
+      "contentUrl": "https://ftp.ncbi.nlm.nih.gov/pub/clinvar/xml/ClinVarVCVRelease_2026-09.xml.gz",
+      "encodingFormat": "application/gzip",
+      "contentSize": "5849397646",
+      "md5": "5da42f3becdd8e9a90cd46b1727c08b8",
+      "version": "2026-09",
+      "datePublished": "2026-09-03",
+      "license": {
+        "@id": "https://www.ncbi.nlm.nih.gov/home/about/policies/"
+      },
+      "description": "Every VariationArchive in ClinVar at ReleaseDate 2026-08-29, in the ClinVarVariationRelease envelope (#envelope-release), declaring xsi:noNamespaceSchemaLocation http://ftp.ncbi.nlm.nih.gov/pub/clinvar/xsd_public/ClinVar_VCV_2.6.xsd (read from the first 256 KB of the file on 2026-09-06). md5 is NCBI's, from the sibling .md5 file. Size and date are from the HTTPS headers (Last-Modified 2026-09-03T04:07:26Z). Referenced by its dated name; ClinVarVCVRelease_00-latest.xml.gz is a symlink to it and is never the reference. Monthly releases are generated on the first Thursday of the month. Not committed."
+    },
+    {
+      "@id": "#clinvar-vcv-weekly",
+      "@type": "Dataset",
+      "identifier": "clinvar-vcv-weekly",
+      "name": "ClinVar VCV weekly release",
+      "url": "https://ftp.ncbi.nlm.nih.gov/pub/clinvar/xml/weekly_release/ClinVarVCVRelease_00-latest_weekly.xml.gz",
+      "sameAs": {
+        "@id": "https://ftp.ncbi.nlm.nih.gov/pub/clinvar/xml/ClinVarVCVRelease_2026-09.xml.gz"
+      },
+      "encodingFormat": "application/gzip",
+      "license": {
+        "@id": "https://www.ncbi.nlm.nih.gov/home/about/policies/"
+      },
+      "description": "Weekly releases are named ClinVarVCVRelease_YYYY-MMDD.xml.gz under weekly_release/, and NCBI clears that directory when the monthly release is generated. Listed over FTP on 2026-09-06, the directory held only the symlink ClinVarVCVRelease_00-latest_weekly.xml.gz -> ../ClinVarVCVRelease_2026-09.xml.gz and its .md5 (same digest as the monthly), so the weekly is currently the monthly file (sameAs) and has no content of its own. This entity therefore carries no contentUrl, contentSize, md5, version or datePublished: a Bridge must not resolve it into a second pass over the monthly release. When a dated weekly exists, record its contentUrl, md5 (from the sibling .md5), contentSize and datePublished (from the HTTPS headers) and version here, and drop sameAs."
+    },
+    {
+      "@id": "https://ftp.ncbi.nlm.nih.gov/pub/clinvar/xsd_public/ClinVar_VCV_2.6.xsd",
+      "@type": "File",
+      "identifier": "clinvar-vcv-xsd-2.6",
+      "name": "ClinVar VCV XSD, version 2.6",
+      "encodingFormat": "application/xml",
+      "contentSize": "159754",
+      "md5": "a7b65e5a166dc5f36a7eea9127d56f4e",
+      "sha256": "de01424a0c495babd69d08f4bed1c1271aaeed5e4f441b59d0b1e3e16793d658",
+      "version": "2.6",
+      "dateModified": "2026-02-27",
+      "license": {
+        "@id": "https://www.ncbi.nlm.nih.gov/home/about/policies/"
+      },
+      "description": "NCBI's published schema, pinned byte for byte as schema/ClinVar_VCV_2.6.xsd. Its version attribute reads \"2.6; February 26, 2026\"; dateModified is the HTTPS Last-Modified. md5 is NCBI's sibling .md5 file, checked against the download; sha256 is computed locally. ClinVar_VCV.xsd and ClinVar_VCV_weekly.xsd on the same site publish the same md5. It supersedes 2.5 (md5 169e958e2f06c6a3ba8a96aae3a949a9, \"2.5; August 6, 2025\"); the whole difference is one optional derived_by attribute, enumerated to NCBI, on SetElementSetType. The 2026-09 monthly release declares 2.6, which is why 2.6 and not 2.5 is pinned."
+    },
+    {
+      "@id": "docs/format.md",
+      "@type": "File",
+      "name": "ClinVar VCV XML, as the adapter sees it",
+      "encodingFormat": "text/markdown",
+      "license": {
+        "@id": "https://spdx.org/licenses/Apache-2.0"
+      },
+      "description": "What a record is, the two envelopes, the schema and why 2.6 is pinned, the releases, and what is not known about the committed inputs. Verified against ftp.ncbi.nlm.nih.gov on 2026-09-06."
+    },
+    {
+      "@id": "docs/stages.md",
+      "@type": "File",
+      "name": "Engine stages as Enterprise Integration Patterns",
+      "encodingFormat": "text/markdown",
+      "license": {
+        "@id": "https://spdx.org/licenses/Apache-2.0"
+      },
+      "description": "The RFC's engine stages named with their Enterprise Integration Patterns equivalents, and what this adapter contributes to each stage and in which phase."
+    },
+    {
+      "@id": "https://github.com/the-cascade-protocol/conformance/tree/0ea48bb1c044ac9bf8086d456601357135cf79e6/fixtures/genomics/clinvar",
+      "@type": "CreativeWork",
+      "name": "conformance fixtures/genomics/clinvar at 0ea48bb",
+      "version": "0ea48bb1c044ac9bf8086d456601357135cf79e6",
+      "license": {
+        "@id": "https://spdx.org/licenses/Apache-2.0"
+      },
+      "description": "The four input / expected / gaps triplets the committed oracles are copied from, unchanged. A contextual entity: the source of the fixtures, not part of the crate. The directory last changed at 8a5e203 (2026-05-06, \"feat(conformance): clinvar VCV expected.ttl + gaps.json oracles for 4 VCVs\"). The conformance suite validates the expected graphs against the spec revision in scripts/SPEC_PIN (e77ba5e8004bf57f34d42a1bee69d1cfb95f86e3), which this adapter pins too (bridge:vocabularyPin)."
+    },
+    {
+      "@id": "https://spdx.org/licenses/Apache-2.0",
+      "@type": "CreativeWork",
+      "name": "Apache License 2.0",
+      "identifier": "Apache-2.0",
+      "sameAs": {
+        "@id": "https://www.apache.org/licenses/LICENSE-2.0"
+      },
+      "description": "The licence of the adapter package: what conformance and cascade-cli use, because XSLT executes and a content licence sits awkwardly on files that execute. The SPDX identifier is the entity's identifier; the text is at the sameAs URL and in LICENSE."
+    },
+    {
+      "@id": "https://www.ncbi.nlm.nih.gov/home/about/policies/",
+      "@type": "CreativeWork",
+      "name": "NCBI Website and Data Usage Policies and Disclaimers",
+      "description": "The terms under which NCBI distributes ClinVar data. Questions about the data go to clinvar@ncbi.nlm.nih.gov, per NCBI's README files."
+    }
+  ]
+}

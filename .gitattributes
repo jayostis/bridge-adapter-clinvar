@@ -15,7 +15,7 @@
 *.rq     text eol=lf
 
 # Verbatim copies. Their bytes must keep matching the digests recorded in
-# fixtures/ro-crate-metadata.json, so git must never normalise them.
+# ro-crate-metadata.json, so git must never normalise them.
 schema/ClinVar_VCV_*.xsd  -text
 fixtures/in/**            -text
 fixtures/expected/**      -text
