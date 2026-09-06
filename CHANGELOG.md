@@ -7,7 +7,7 @@ semantic versioning and are the root entity's `version` in
 
 ## [0.1.0] - 2026-09-06
 
-Phase 1 of [#1](https://github.com/jayostis/bridge-adapter-clinvar/issues/1):
+Phase 1 of [#1](https://github.com/jayostis/cascade-bridge-adapter-clinvar/issues/1):
 the adapter laid out, with no mapping and nothing that executes.
 
 ### Added
@@ -22,12 +22,14 @@ the adapter laid out, with no mapping and nothing that executes.
 - `ro-crate-metadata.json` (RO-Crate 1.2), the adapter manifest and the
   provenance record in one graph. Its root entity is a `Dataset` and a
   `bridge:Adapter`: format id `clinvar`, name, version, licence (SPDX
-  Apache-2.0, as an entity), the RFC it conforms to, the `universal` tier,
-  the `xslt-3` profile requirement, the vocabulary pin (spec `e77ba5e`, an
-  entity naming the fork and why the commit is there) and the two
-  vocabularies it writes (`genomics v1-draft`, `core 3.13`, as entities),
-  the source media type and schema, the two envelopes (`#envelope-efetch`
-  with its wrapper schema, `#envelope-release`) as entities, the
+  Apache-2.0, as an entity), the RFC it conforms to, the `xslt-3` profile
+  requirement (no tier: an adapter declares what it needs, and its tier is
+  measured by the catalog from which Bridges pass its test manifest, RFC
+  section 11), the vocabulary pin (spec `e77ba5e`, an entity naming the
+  fork and why the commit is there) and the two vocabularies it writes
+  (`genomics v1-draft`, `core 3.13`, as entities), the source media type
+  and schema, the two envelopes (`#envelope-efetch` with its wrapper
+  schema, `#envelope-release`) as entities, the
   `VariationArchive` unit, the detect rule as one XPath 3.1 expression,
   and the test manifest. Its data entities carry provenance, digest,
   version, date and licence for every committed fixture file, the pinned
@@ -41,7 +43,7 @@ the adapter laid out, with no mapping and nothing that executes.
 - `schema/manifest/bridge.ttl`, the `bridge:` Cascade Bridge vocabulary
   (`https://ns.cascadeprotocol.org/bridge/v1-draft#`), with an
   `rdfs:comment` on every term: the adapter terms the crate's root entity
-  and envelopes use (four classes, three individuals, fifteen properties,
+  and envelopes use (three classes, one individual, thirteen properties,
   two of them, `bridge:table` and `bridge:extensionVocabulary`, declared for
   phase 2 and not yet used) and, on top of W3C's `mf:` test-manifest
   vocabulary, the test terms the test manifest uses (three test types that
@@ -82,4 +84,4 @@ the adapter laid out, with no mapping and nothing that executes.
   `.gitattributes` (LF everywhere; verbatim copies never normalised).
 - `LICENSE` (Apache-2.0), `README.md`, `CLAUDE.md`.
 
-[0.1.0]: https://github.com/jayostis/bridge-adapter-clinvar/releases/tag/v0.1.0
+[0.1.0]: https://github.com/jayostis/cascade-bridge-adapter-clinvar/releases/tag/v0.1.0

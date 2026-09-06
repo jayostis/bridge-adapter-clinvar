@@ -4,7 +4,6 @@
     {
       "md5": "https://w3id.org/ro/terms/workflow-run#md5",
       "bridge": "https://ns.cascadeprotocol.org/bridge/v1-draft#",
-      "bridge:tier": "bridge:tier",
       "bridge:profileRequired": "bridge:profileRequired",
       "bridge:vocabularyPin": "bridge:vocabularyPin",
       "bridge:vocabulary": "bridge:vocabulary",
@@ -45,9 +44,6 @@
       },
       "isBasedOn": {
         "@id": "https://github.com/jayostis/conformance/tree/0ea48bb1c044ac9bf8086d456601357135cf79e6/fixtures/genomics/clinvar"
-      },
-      "bridge:tier": {
-        "@id": "bridge:Universal"
       },
       "bridge:profileRequired": [
         {
@@ -170,12 +166,6 @@
       "name": "release",
       "bridge:rootElement": "ClinVarVariationRelease",
       "description": "The monthly and weekly release files, ClinVarVCVRelease_*.xml.gz. Declared by NCBI's XSD directly, so no document schema beyond the source schema is needed. The root element is still ClinVarVariationRelease although the file name family changed to ClinVarVCVRelease in August 2025; docs/format.md, \"The two envelopes\"."
-    },
-    {
-      "@id": "bridge:Universal",
-      "@type": "bridge:Tier",
-      "name": "universal",
-      "description": "RFC section 9: no code, Core only, runs on every conforming Bridge. The other tier, bridge:Limited, names the Bridges and profiles it binds to and the code components it carries. Declared in schema/manifest/bridge.ttl."
     },
     {
       "@id": "bridge:xslt-3",

@@ -1,4 +1,4 @@
-# bridge-adapter-clinvar
+# cascade-bridge-adapter-clinvar
 
 The **Cascade Bridge Adapter** for ClinVar VCV XML: the package of data a
 **Cascade Bridge** runs to turn NCBI ClinVar variation records into Cascade
@@ -21,7 +21,7 @@ VS Code with everything validating and nothing executes.
 
 | phase | what | where | done when |
 |---|---|---|---|
-| 1 | this layout | here ([#1](https://github.com/jayostis/bridge-adapter-clinvar/issues/1)) | it opens in VS Code with everything validating |
+| 1 | this layout | here ([#1](https://github.com/jayostis/cascade-bridge-adapter-clinvar/issues/1)) | it opens in VS Code with everything validating |
 | 2 | the first mapping (XSLT 3, one module per record class) and the engine that runs it | here and `bridge-engine-java` (Camel YAML route, Saxon-HE, riot) | the four committed cases compare isomorphic |
 | 3 | the same mapping as SPARQL CONSTRUCT over the Bridge's XML lift | `in/sparql/` | the two graphs are diffed; the result is a finding for spec#43 |
 | 4 | the same adapter, byte for byte, through JavaScript engines | `bridge-engine-browser` | the same `manifest.ttl` passes in both |
@@ -58,7 +58,7 @@ Pattern; `docs/format.md` describes the format the first three stages see.
 ## Layout
 
 ```
-bridge-adapter-clinvar/
+cascade-bridge-adapter-clinvar/
   README.md                  this file
   LICENSE                    Apache-2.0
   CHANGELOG.md
@@ -96,7 +96,7 @@ the extension vocabulary as `bridge:extensionVocabulary`.
 
 ## Decisions
 
-The reasoning is in [issue #1](https://github.com/jayostis/bridge-adapter-clinvar/issues/1);
+The reasoning is in [issue #1](https://github.com/jayostis/cascade-bridge-adapter-clinvar/issues/1);
 the outcomes:
 
 - **Standards, not inventions.** Enterprise Integration Patterns for stage
@@ -115,9 +115,12 @@ the outcomes:
   terms where they exist (`identifier`, `name`, `version`, `license`),
   Dublin Core's `conformsTo` (the key the RO-Crate context expands to
   `dcterms:conformsTo`, not a schema.org term), Bridge terms where neither
-  has one (tier, profiles, vocabulary pin and vocabularies, source media
-  type and schema, envelopes, unit, detect rule, test manifest, and the
-  tables and extension vocabulary phase 2 adds). The licence is the SPDX entity, the pin is
+  has one (profiles, vocabulary pin and vocabularies, source media type and
+  schema, envelopes, unit, detect rule, test manifest, and the tables and
+  extension vocabulary phase 2 adds). No tier: the adapter requires the
+  `xslt-3` profile, and which tier that makes it is measured, not declared
+  (RFC section 11); phase 3's SPARQL CONSTRUCT rewrite is the experiment
+  that decides whether XSLT 3 is Core or a profile. The licence is the SPDX entity, the pin is
   the commit, the vocabularies are their namespaces, the envelopes are
   entities the test manifest refers to by IRI, and the test manifest points
   back at the root, so every reference that used to be a string is a link

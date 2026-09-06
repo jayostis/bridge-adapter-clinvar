@@ -1,4 +1,4 @@
-# bridge-adapter-clinvar — Agent Context
+# cascade-bridge-adapter-clinvar — Agent Context
 
 ## Repository purpose
 
@@ -11,7 +11,7 @@ proposes in its section 16. Import-only.
 
 Phase 1 (this layout, version 0.1.0) has no mapping and nothing that executes.
 The phases and every decision behind the layout are in
-[issue #1](https://github.com/jayostis/bridge-adapter-clinvar/issues/1); the
+[issue #1](https://github.com/jayostis/cascade-bridge-adapter-clinvar/issues/1); the
 README summarises them. Do not re-derive them.
 
 ## The rules

@@ -63,7 +63,7 @@
 @prefix prov:    <http://www.w3.org/ns/prov#> .
 
 <> a mf:Manifest ;
-  rdfs:label "bridge-adapter-clinvar fixture cases" ;
+  rdfs:label "cascade-bridge-adapter-clinvar fixture cases" ;
   bridge:adapter <../> ; # the crate's root entity, the adapter; its bridge:testManifest is <>
   bridge:ignorePredicate cascade:dataProvenance, cascade:schemaVersion, prov:generatedAtTime ; # the stamp set every entry inherits; see the header
   mf:entries (

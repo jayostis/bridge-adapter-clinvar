@@ -7,10 +7,13 @@
 # can (identifier, name, version, license), Dublin Core carries conformsTo
 # (the RO-Crate context expands that key to dct:conformsTo, not a schema.org
 # term; a query written with schema:conformsTo matches nothing), and the
-# terms below carry what has no equivalent in either: the tier, the profiles
-# required, the vocabulary pin and vocabularies, the source media type,
-# schema, envelopes and unit, the detect rule, the tables and extension
-# vocabulary phase 2 adds, and the test manifest.
+# terms below carry what has no equivalent in either: the profiles required,
+# the vocabulary pin and vocabularies, the source media type, schema,
+# envelopes and unit, the detect rule, the tables and extension vocabulary
+# phase 2 adds, and the test manifest. No tier: an adapter does not declare
+# one. Its tier is measured, by the catalog that records which published
+# Bridges pass its test manifest (RFC section 11); what the adapter declares
+# is what it needs, bridge:profileRequired.
 #
 # Test terms: a small set on top of W3C's mf: test-manifest vocabulary (the
 # one every W3C RDF-family test suite is written in), the way the SHACL test
@@ -34,7 +37,7 @@
 
 <https://ns.cascadeprotocol.org/bridge/v1-draft#> a owl:Ontology ;
   dct:title "Cascade Bridge Vocabulary"@en ;
-  dct:description "Terms for an adapter's manifest and its test manifest. Adapter terms: the classes bridge:Adapter, bridge:Envelope, bridge:Profile and bridge:Tier, and the properties that carry what schema.org cannot about an adapter package described as an RO-Crate. Test terms: three test types that carry the comparison rule, and the properties that name a test's input, expected output and the stamp predicates ignored when comparing, used with W3C's mf: test-manifest vocabulary (mf:Manifest, mf:entries, mf:name, mf:action, mf:result)."@en ;
+  dct:description "Terms for an adapter's manifest and its test manifest. Adapter terms: the classes bridge:Adapter, bridge:Envelope and bridge:Profile, and the properties that carry what schema.org cannot about an adapter package described as an RO-Crate. Test terms: three test types that carry the comparison rule, and the properties that name a test's input, expected output and the stamp predicates ignored when comparing, used with W3C's mf: test-manifest vocabulary (mf:Manifest, mf:entries, mf:name, mf:action, mf:result)."@en ;
   dct:created "2026-09-06"^^xsd:date ;
   owl:versionInfo "v1-draft" ;
   rdfs:comment "DRAFT. The seed of the Bridge specification's vocabulary (the-cascade-protocol/spec#43); moves to a bridge-spec repository unchanged when one exists. Formerly two namespaces in name only: the test terms were bt: (bridge-test) before the adapter terms joined them."@en ;
@@ -63,24 +66,9 @@ bridge:Profile a owl:Class ;
   rdfs:comment "An optional Bridge profile (RFC section 9) beyond Core: a capability a Bridge may offer and an adapter may require, such as xslt-3, sparql-construct or streaming."@en ;
   rdfs:isDefinedBy <https://ns.cascadeprotocol.org/bridge/v1-draft#> .
 
-bridge:Tier a owl:Class ;
-  rdfs:label "Tier"@en ;
-  rdfs:comment "An adapter's conformance tier (RFC section 9): bridge:Universal or bridge:Limited."@en ;
-  rdfs:isDefinedBy <https://ns.cascadeprotocol.org/bridge/v1-draft#> .
-
 # ----------------------------------------------------------------------------
 # Individuals
 # ----------------------------------------------------------------------------
-
-bridge:Universal a bridge:Tier ;
-  rdfs:label "universal"@en ;
-  rdfs:comment "RFC section 9: the adapter contains no code, needs Core only, and runs on every conforming Bridge."@en ;
-  rdfs:isDefinedBy <https://ns.cascadeprotocol.org/bridge/v1-draft#> .
-
-bridge:Limited a bridge:Tier ;
-  rdfs:label "limited"@en ;
-  rdfs:comment "RFC section 9: the adapter names the Bridges and profiles it binds to, and the code components it carries."@en ;
-  rdfs:isDefinedBy <https://ns.cascadeprotocol.org/bridge/v1-draft#> .
 
 bridge:xslt-3 a bridge:Profile ;
   rdfs:label "xslt-3"@en ;
@@ -91,16 +79,9 @@ bridge:xslt-3 a bridge:Profile ;
 # On the adapter
 # ----------------------------------------------------------------------------
 
-bridge:tier a owl:ObjectProperty ;
-  rdfs:label "tier"@en ;
-  rdfs:comment "The adapter's conformance tier, exactly one: bridge:Universal or bridge:Limited."@en ;
-  rdfs:domain bridge:Adapter ;
-  rdfs:range bridge:Tier ;
-  rdfs:isDefinedBy <https://ns.cascadeprotocol.org/bridge/v1-draft#> .
-
 bridge:profileRequired a owl:ObjectProperty ;
   rdfs:label "profile required"@en ;
-  rdfs:comment "A Bridge profile the adapter needs beyond Core, by IRI; repeatable, zero or more. A bridge:Universal adapter needs Core only and names none."@en ;
+  rdfs:comment "A Bridge profile the adapter needs beyond Core, by IRI; repeatable, zero or more. An adapter that needs Core only names none. This is all an adapter declares about where it runs: its tier is not declared here but measured, by the catalog that records which published Bridges pass its test manifest (RFC section 11)."@en ;
   rdfs:domain bridge:Adapter ;
   rdfs:range bridge:Profile ;
   rdfs:isDefinedBy <https://ns.cascadeprotocol.org/bridge/v1-draft#> .

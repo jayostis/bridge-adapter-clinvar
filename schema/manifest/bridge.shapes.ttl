@@ -9,7 +9,8 @@
 #
 # The adapter: the root entity, a bridge:Adapter, carries exactly one of each
 # single-valued fact, at least one envelope and one vocabulary, and zero or
-# more profiles (a bridge:Universal adapter needs Core only and names none),
+# more profiles (an adapter that needs Core only names none; it declares no
+# tier, which is measured, not declared, RFC section 11),
 # with links where the value is an entity (licence, specification, pin,
 # vocabularies, source schema, envelopes, tables, extension vocabulary, test
 # manifest) and literals where it is a string (identifier, version, media
@@ -101,17 +102,10 @@
     sh:message "The adapter carries at least one conformsTo, by IRI: the Bridge specification it is written against."
   ] ;
   sh:property [
-    sh:path bridge:tier ;
-    sh:minCount 1 ;
-    sh:maxCount 1 ;
-    sh:in ( bridge:Universal bridge:Limited ) ;
-    sh:message "The adapter carries exactly one bridge:tier, bridge:Universal or bridge:Limited."
-  ] ;
-  sh:property [
     sh:path bridge:profileRequired ;
     sh:nodeKind sh:IRI ;
     sh:class bridge:Profile ;
-    sh:message "Each bridge:profileRequired is a bridge:Profile by IRI. Zero or more: a bridge:Universal adapter needs Core only and names none."
+    sh:message "Each bridge:profileRequired is a bridge:Profile by IRI. Zero or more: an adapter that needs Core only names none."
   ] ;
   sh:property [
     sh:path bridge:vocabularyPin ;
