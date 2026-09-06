@@ -1,0 +1,124 @@
+# yaml-language-server: $schema=../schema/manifest/cases.schema.json
+#
+# The cases a Bridge's harness executes for this adapter, and how each is
+# judged. Nothing here executes in this repository: version 1 of the harness
+# runs in bridge-engine-java, version 2 in bridge-engine-browser. Paths are
+# relative to this directory. Where every file and dataset named here came
+# from is in ro-crate-metadata.json.
+#
+# The comparison rule, stated once (RFC section 16 says it comes first):
+#   graph: isomorphic  blank nodes relabelled, IRIs and literals exact. The
+#                      existing oracle in cascade-cli/tests/clinvar-conformance.test.ts
+#                      compares `riot --output=nq | sort` byte for byte, which
+#                      assumes the same thing; RDFC-1.0 decides it properly.
+#   ignore-predicates  the stamp triples a Bridge adds after the mapping (RFC
+#                      section 5, "stamp"; EIP Message History), removed from
+#                      both sides first. cascade:dataProvenance and
+#                      cascade:schemaVersion are what cascade-cli's
+#                      commonTriples() writes and what the oracles carry.
+#                      Import time is the third thing the RFC's stamp stage
+#                      names; no oracle carries one and the cli emits none, so
+#                      prov:generatedAtTime is a placeholder for the Bridge to
+#                      confirm or replace.
+#   findings: exact    the findings array equals the expected one entry for
+#                      entry, in the conformance repository's sort order
+#                      (sourceField, severity, reason).
+
+adapter: clinvar
+
+prefixes:
+  cascade: https://ns.cascadeprotocol.org/core/v1#
+  prov: http://www.w3.org/ns/prov#
+
+cases:
+  # The four conformance oracles. File names are the conformance repository's
+  # and are kept so each copy stays traceable; two of them do not describe the
+  # record inside (noted per case). Content is byte-identical to conformance.
+
+  - id: VCV000007105-CFTR-deltaF508
+    description: >-
+      NM_000492.3(CFTR):c.1521_1523del (p.Phe508del), version 206, last
+      updated 2026-05-03. The largest oracle: 99 submissions.
+    input: in/VCV000007105-CFTR-deltaF508.xml
+    envelope: efetch
+    expected:
+      graph: expected/VCV000007105-CFTR-deltaF508.ttl
+      findings: findings/VCV000007105-CFTR-deltaF508.gaps.json
+    compare: &compare
+      graph: isomorphic
+      ignore-predicates:
+        - cascade:dataProvenance
+        - cascade:schemaVersion
+        - prov:generatedAtTime
+      findings: exact
+
+  - id: VCV000017661-BRCA1
+    description: >-
+      NM_007294.4(BRCA1):c.181T>G (p.Cys61Gly), version 157, last updated
+      2026-05-03. The RFC's worked example (about eighty IRI subjects).
+    input: in/VCV000017661-BRCA1.xml
+    envelope: efetch
+    expected:
+      graph: expected/VCV000017661-BRCA1.ttl
+      findings: findings/VCV000017661-BRCA1.gaps.json
+    compare: *compare
+
+  - id: VCV000055448-BRCA2-pathogenic
+    description: >-
+      NM_007294.4(BRCA1):c.5193+1G>C, version 15, last updated 2026-04-13.
+      The file name says BRCA2; the record is a BRCA1 variant.
+    input: in/VCV000055448-BRCA2-pathogenic.xml
+    envelope: efetch
+    expected:
+      graph: expected/VCV000055448-BRCA2-pathogenic.ttl
+      findings: findings/VCV000055448-BRCA2-pathogenic.gaps.json
+    compare: *compare
+
+  - id: VCV000208804-MLH1-LynchSyndrome
+    description: >-
+      NM_001017980.4(VMA21):c.164-6T>G, version 2, last updated 2025-08-23,
+      one submission. The file name says MLH1 and Lynch syndrome; the record
+      is a VMA21 variant interpreted for MONDO:0010684. The smallest oracle.
+    input: in/VCV000208804-MLH1-LynchSyndrome.xml
+    envelope: efetch
+    expected:
+      graph: expected/VCV000208804-MLH1-LynchSyndrome.ttl
+      findings: findings/VCV000208804-MLH1-LynchSyndrome.gaps.json
+    compare: *compare
+
+  # NCBI's official efetch sample: the one input whose provenance is
+  # unimpeachable. No expected output has been produced for it.
+  - id: VCV_XML_VCV000091629
+    description: >-
+      NM_007294.4(BRCA1):c.4357+2T>G, version 19, last updated 2026-02-15,
+      from pub/clinvar/xml/sample_xml/. Parsed and validated; the graph a
+      Bridge produces is recorded, not judged.
+    input: in/VCV_XML_VCV000091629.xml
+    envelope: efetch
+    status: input-only
+    expected: none
+
+  # Referenced datasets, too large to commit. A multi-gigabyte expected output
+  # fits in one line: the record count and a digest of the canonical output.
+  # Both are null until the first run in bridge-engine-java records them.
+  - id: clinvar-vcv-release-2026-09
+    description: >-
+      The monthly VCV release of 2026-09 (ReleaseDate 2026-08-29), about
+      5.8 GB gzipped, in the ClinVarVariationRelease envelope.
+    dataset: clinvar-vcv-release-2026-09
+    envelope: release
+    expected:
+      completes: true
+      records: null # number of VariationArchive units; filled in after the first run
+      output-digest: null # sha256:<hex> of the canonical N-Quads output, stamp triples removed
+
+  - id: clinvar-vcv-weekly
+    description: >-
+      The weekly VCV release. On 2026-09-06 the weekly symlink resolved to
+      the 2026-09 monthly file; re-resolve before running (see the crate).
+    dataset: clinvar-vcv-weekly
+    envelope: release
+    expected:
+      completes: true
+      records: null
+      output-digest: null

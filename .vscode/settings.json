@@ -1,0 +1,27 @@
+{
+  // Every fixture input validates live against the pinned NCBI schema. The
+  // association points at the envelope wrapper, which includes NCBI's XSD and
+  // adds the one root element (ClinVarResult-Set) that NCBI's schema does not
+  // declare; see schema/ClinVarResult-Set.xsd.
+  "xml.fileAssociations": [
+    {
+      "pattern": "**/fixtures/in/*.xml",
+      "systemId": "${workspaceFolder}/schema/ClinVarResult-Set.xsd"
+    }
+  ],
+  "xml.validation.enabled": true,
+  // The manifests carry a `# yaml-language-server: $schema=` header too; this
+  // association is the belt to that header's braces.
+  "yaml.schemas": {
+    "./schema/manifest/adapter.schema.json": "adapter.yaml",
+    "./schema/manifest/cases.schema.json": "fixtures/cases.yaml"
+  },
+  "files.eol": "\n",
+  "files.insertFinalNewline": true,
+  "files.trimTrailingWhitespace": true,
+  // Verbatim copies (see .editorconfig): no save-time rewriting.
+  "[xml]": {
+    "files.insertFinalNewline": false,
+    "files.trimTrailingWhitespace": false
+  }
+}

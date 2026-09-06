@@ -1,0 +1,174 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/the-cascade-protocol/bridge-adapter-clinvar/schema/manifest/adapter.schema.json",
+  "title": "Cascade Bridge Adapter manifest",
+  "description": "The Bridge-facing manifest of an adapter package (adapter.yaml), in the shape sketched by section 6 of the Cascade Bridge RFC, the-cascade-protocol/spec#43. This schema is the seed of the Bridge specification's manifest schema and moves to a bridge-spec repository unchanged when one exists. Paths are relative to the adapter's root directory.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["id", "name", "version", "licence", "bridge-spec", "tier", "vocabularies", "source", "detect", "profiles-required", "fixtures"],
+  "properties": {
+    "id": {
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9-]*$",
+      "description": "The format id a Bridge routes on. The same string cascade-cli accepts for --from."
+    },
+    "name": {
+      "type": "string",
+      "description": "Human name of the source format."
+    },
+    "version": {
+      "type": "string",
+      "pattern": "^\\d+\\.\\d+\\.\\d+(-[0-9A-Za-z.-]+)?$",
+      "description": "Version of this adapter package (semantic versioning)."
+    },
+    "licence": {
+      "type": "string",
+      "description": "SPDX licence identifier of the adapter package itself. Licences of data the package carries are recorded per file in fixtures/ro-crate-metadata.json."
+    },
+    "bridge-spec": {
+      "type": "string",
+      "description": "The Bridge specification version this adapter is written against. While no numbered specification exists, the RFC that stands in for it."
+    },
+    "tier": {
+      "type": "string",
+      "enum": ["universal", "limited"],
+      "description": "RFC section 9. universal: no code, Core only, runs on every conforming Bridge. limited: names the Bridges and profiles it binds to, and the code components it carries."
+    },
+    "vocabularies": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["pin", "versions"],
+      "description": "The Cascade vocabularies the adapter writes, and the spec revision they are pinned to. The same pin conformance/scripts/SPEC_PIN carries.",
+      "properties": {
+        "pin": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["repo", "commit"],
+          "properties": {
+            "repo": { "type": "string", "description": "Repository the pinned commit is on, as owner/name." },
+            "commit": { "type": "string", "pattern": "^[0-9a-f]{40}$", "description": "Full SHA of the pinned spec revision." }
+          }
+        },
+        "versions": {
+          "type": "object",
+          "description": "Vocabulary name to version, as spec/VOCAB_VERSIONS records them; pre-stable drafts are named by their draft label.",
+          "propertyNames": { "pattern": "^[a-z][a-z0-9-]*$" },
+          "additionalProperties": { "type": "string" }
+        }
+      }
+    },
+    "source": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["media-type", "schema", "envelopes", "unit"],
+      "description": "What the source format looks like to a Bridge's read stage.",
+      "properties": {
+        "media-type": { "type": "string", "description": "IANA media type of the source documents." },
+        "schema": { "$ref": "#/$defs/path", "description": "The pinned source-side schema (XSD, JSON Schema, Schematron) a Bridge validates every unit against." },
+        "envelopes": {
+          "type": "array",
+          "minItems": 1,
+          "description": "The document roots the source format arrives in. A Bridge accepts any of them and splits each on `unit`.",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["id", "root"],
+            "properties": {
+              "id": { "type": "string", "pattern": "^[a-z][a-z0-9-]*$", "description": "Short name fixtures/cases.yaml refers to." },
+              "root": { "type": "string", "description": "Local name of the document element." },
+              "schema": { "$ref": "#/$defs/path", "description": "A schema that validates a whole document in this envelope, when the pinned schema alone does not declare its root." },
+              "description": { "type": "string" }
+            }
+          }
+        },
+        "unit": { "type": "string", "description": "The element a Bridge splits a document on and hands to the mapping one at a time (Enterprise Integration Patterns: Splitter). The unit's raw bytes are preserved." }
+      }
+    },
+    "detect": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["root-element"],
+      "description": "The rule a Bridge's content-based router applies to decide this adapter handles an input.",
+      "properties": {
+        "root-element": {
+          "type": "array",
+          "minItems": 1,
+          "items": { "type": "string" },
+          "description": "The input's document element is one of these."
+        },
+        "contains": { "type": "string", "description": "And the document contains at least one of this element." }
+      }
+    },
+    "profiles-required": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": { "type": "string", "pattern": "^[a-z][a-z0-9-]*$" },
+      "description": "Optional Bridge profiles (RFC section 9) the adapter needs beyond Core: for example xslt-3, sparql-construct, streaming."
+    },
+    "in": {
+      "$ref": "#/$defs/mapping",
+      "description": "Source to Cascade RDF. Absent until the first mapping is written."
+    },
+    "out": {
+      "$ref": "#/$defs/mapping",
+      "description": "Cascade RDF to source. Absent means import-only."
+    },
+    "tables": {
+      "type": "array",
+      "description": "Tables a mapping reads, each with its source and licence.",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["path", "source"],
+        "properties": {
+          "path": { "$ref": "#/$defs/path" },
+          "source": { "type": "string", "description": "Where the table's rows came from." },
+          "licence": { "type": "string" }
+        }
+      }
+    },
+    "vocab": {
+      "type": "array",
+      "description": "Extension vocabulary files in the adapter's own namespace, for values that have no Cascade term.",
+      "items": { "$ref": "#/$defs/path" }
+    },
+    "fixtures": {
+      "$ref": "#/$defs/path",
+      "description": "The cases file a Bridge's harness executes; see cases.schema.json."
+    }
+  },
+  "$defs": {
+    "path": {
+      "type": "string",
+      "pattern": "^[^/\\\\][^\\\\]*$",
+      "description": "A path relative to the adapter root, with forward slashes."
+    },
+    "mapping": {
+      "type": "object",
+      "additionalProperties": false,
+      "minProperties": 1,
+      "description": "One entry per mapping language the direction is written in.",
+      "properties": {
+        "xslt": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["entry"],
+          "properties": {
+            "entry": { "$ref": "#/$defs/path", "description": "The stylesheet a Bridge runs." },
+            "modules": { "type": "array", "items": { "$ref": "#/$defs/path" }, "description": "Stylesheets the entry includes or imports, listed so the package is enumerable." },
+            "findings": { "$ref": "#/$defs/path", "description": "The stylesheet, or secondary result document, that writes the findings sidecar." }
+          }
+        },
+        "sparql": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["entry"],
+          "properties": {
+            "entry": { "$ref": "#/$defs/path", "description": "The CONSTRUCT query, or the file listing them in order, run over the Bridge's generic lift of the source." },
+            "lift": { "type": "string", "description": "Which lift vocabulary the queries expect (for example xml)." }
+          }
+        }
+      }
+    }
+  }
+}

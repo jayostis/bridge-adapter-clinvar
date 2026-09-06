@@ -1,0 +1,134 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/the-cascade-protocol/bridge-adapter-clinvar/schema/manifest/cases.schema.json",
+  "title": "Cascade Bridge Adapter fixture cases",
+  "description": "The cases a Bridge's harness executes for an adapter (fixtures/cases.yaml), and how each is judged. The judging rule is declared here rather than assumed by a harness. Paths are relative to the directory the cases file is in.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["adapter", "cases"],
+  "properties": {
+    "adapter": {
+      "type": "string",
+      "description": "The adapter id these cases belong to; must equal `id` in adapter.yaml."
+    },
+    "prefixes": {
+      "type": "object",
+      "description": "Prefix to namespace IRI, for the CURIEs used in compare.ignore-predicates.",
+      "propertyNames": { "pattern": "^[A-Za-z][\\w.-]*$" },
+      "additionalProperties": { "type": "string", "format": "uri" }
+    },
+    "cases": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "oneOf": [
+          { "$ref": "#/$defs/committed-case" },
+          { "$ref": "#/$defs/input-only-case" },
+          { "$ref": "#/$defs/dataset-case" }
+        ]
+      }
+    }
+  },
+  "$defs": {
+    "id": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9_.-]*$"
+    },
+    "path": {
+      "type": "string",
+      "pattern": "^[^/\\\\][^\\\\]*$"
+    },
+    "envelope": {
+      "type": "string",
+      "description": "The envelope id from adapter.yaml `source.envelopes` the input arrives in."
+    },
+    "curie": {
+      "type": "string",
+      "pattern": "^[A-Za-z][\\w.-]*:\\S+$"
+    },
+    "committed-case": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "input", "envelope", "expected", "compare"],
+      "description": "A committed input with a committed expected graph and findings sidecar.",
+      "properties": {
+        "id": { "$ref": "#/$defs/id" },
+        "description": { "type": "string" },
+        "input": { "$ref": "#/$defs/path" },
+        "envelope": { "$ref": "#/$defs/envelope" },
+        "expected": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["graph", "findings"],
+          "properties": {
+            "graph": { "$ref": "#/$defs/path", "description": "The Cascade RDF the input must produce (Turtle)." },
+            "findings": { "$ref": "#/$defs/path", "description": "The findings sidecar the input must produce (the conformance repository's gaps.json shape)." }
+          }
+        },
+        "compare": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["graph", "findings"],
+          "properties": {
+            "graph": {
+              "type": "string",
+              "enum": ["isomorphic"],
+              "description": "isomorphic: blank nodes relabelled, IRIs and literals exact. This is what the existing `riot --output=nq | sort` oracle assumes, and what RDF Dataset Canonicalization (RDFC-1.0) decides."
+            },
+            "ignore-predicates": {
+              "type": "array",
+              "uniqueItems": true,
+              "items": { "$ref": "#/$defs/curie" },
+              "description": "Predicates removed from both graphs before comparison: the stamp triples a Bridge adds after the mapping."
+            },
+            "findings": {
+              "type": "string",
+              "enum": ["exact"],
+              "description": "exact: the findings array equals the expected one entry for entry, in the conformance repository's sort order (sourceField, severity, reason)."
+            }
+          }
+        }
+      }
+    },
+    "input-only-case": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "input", "envelope", "status", "expected"],
+      "description": "A committed input with no expected output yet. A Bridge must parse and validate it; the graph it produces is recorded, not judged.",
+      "properties": {
+        "id": { "$ref": "#/$defs/id" },
+        "description": { "type": "string" },
+        "input": { "$ref": "#/$defs/path" },
+        "envelope": { "$ref": "#/$defs/envelope" },
+        "status": { "type": "string", "const": "input-only" },
+        "expected": { "type": "string", "const": "none" }
+      }
+    },
+    "dataset-case": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "dataset", "envelope", "expected"],
+      "description": "A remote dataset referenced from fixtures/ro-crate-metadata.json, too large to commit. Its expected output fits in one line: a record count and a digest of the canonical output.",
+      "properties": {
+        "id": { "$ref": "#/$defs/id" },
+        "description": { "type": "string" },
+        "dataset": { "type": "string", "description": "The `identifier` of a Dataset entity in fixtures/ro-crate-metadata.json." },
+        "envelope": { "$ref": "#/$defs/envelope" },
+        "expected": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["completes", "records", "output-digest"],
+          "properties": {
+            "completes": { "type": "boolean", "description": "The run finishes without the Bridge rejecting the input." },
+            "records": { "type": ["integer", "null"], "minimum": 0, "description": "Number of units (VariationArchive) processed. null until the first run records it." },
+            "output-digest": {
+              "type": ["string", "null"],
+              "pattern": "^sha256:[0-9a-f]{64}$",
+              "description": "sha256 of the canonical N-Quads output, stamp triples removed. null until the first run records it."
+            }
+          }
+        }
+      }
+    }
+  }
+}

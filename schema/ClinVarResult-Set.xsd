@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  The E-utilities efetch envelope for ClinVar VCV records.
+
+  NCBI's ClinVar_VCV_2.6.xsd declares one document root, ClinVarVariationRelease
+  (the monthly and weekly release files), and declares VariationArchive as a
+  global element. It does not declare ClinVarResult-Set, the root that
+  efetch (db=clinvar, rettype=vcv) wraps records in, so an efetch response
+  cannot be validated as a whole document against NCBI's schema alone. Each
+  VariationArchive inside it can.
+
+  This schema adds that one root and nothing else. It includes NCBI's XSD
+  unchanged, so every VariationArchive is validated by NCBI's own declarations.
+  The five inputs under fixtures/in/ validate against it; .vscode/settings.json
+  associates them with it.
+
+  Source of the envelope shape: NCBI's own sample,
+  https://ftp.ncbi.nlm.nih.gov/pub/clinvar/xml/sample_xml/VCV_XML_VCV000091629.xml,
+  and its README, which describes it as "a single ClinVarResult-Set, from the
+  VCV XML and as retrieved by efetch".
+-->
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+           attributeFormDefault="unqualified"
+           elementFormDefault="qualified">
+  <xs:include schemaLocation="ClinVar_VCV_2.6.xsd"/>
+  <xs:element name="ClinVarResult-Set">
+    <xs:annotation>
+      <xs:documentation>The element efetch groups VariationArchive elements in. Not declared by NCBI's schema.</xs:documentation>
+    </xs:annotation>
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="VariationArchive" minOccurs="1" maxOccurs="unbounded"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+</xs:schema>
