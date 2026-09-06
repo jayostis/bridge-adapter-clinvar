@@ -20,6 +20,13 @@
 # walk, not a string match. Where every file and dataset named here came
 # from is in the crate.
 #
+# A comparison is insensitive to everything the format does not mean. That is
+# the one principle the rules below apply twice: an RDF graph does not mean
+# its blank node labels, so they are relabelled before comparing; a JSON array
+# of findings does not mean its element order, so it is compared as a
+# multiset. A stricter rule than the format's meaning does not catch more
+# mapping errors, it only fails harnesses that are right.
+#
 # The comparison rule, stated once (RFC section 16 says it comes first):
 #   bridge:IsomorphicConversionTest
 #                      graph isomorphic: blank nodes relabelled, IRIs and
@@ -27,9 +34,42 @@
 #                      cascade-cli/tests/clinvar-conformance.test.ts compares
 #                      `riot --output=nq | sort` byte for byte, which assumes
 #                      the same thing; RDFC-1.0 decides it properly.
-#                      findings exact: the findings array equals the expected
-#                      one entry for entry, in the conformance repository's
-#                      sort order (sourceField, severity, reason).
+#                      findings as a multiset: the array a Bridge produces
+#                      must hold exactly the entries the expected sidecar
+#                      holds, with the same multiplicity and no others. Order
+#                      is not compared. Two entries are equal when they have
+#                      the same member names and equal values (JSON object
+#                      equality), not when their bytes match. Multiplicity is
+#                      compared: entries do repeat, the repeats are identical,
+#                      and a set comparison would silently lose them.
+#                        Order is left out deliberately, and this is a change
+#                        from the rule this file first carried. The committed
+#                        sidecars are in the order cascade-cli's authoring
+#                        script left them: localeCompare on (sourceField,
+#                        severity, reason), which is ICU collation, in which
+#                        '/' sorts before '@' even though U+002F is above
+#                        U+0040. A harness comparing with String.compareTo in
+#                        Java, or with < in JavaScript, puts the same
+#                        correctly-mapped entries in a different order and
+#                        would report a false failure on every entry here.
+#                        Requiring the committed order instead would make
+#                        every Bridge carry ICU to compare a bookkeeping
+#                        array, and would pin a CLDR version nothing states.
+#                        Nothing in the findings model refers to a position,
+#                        so the order carries no meaning and is not part of
+#                        the contract.
+#                        Separately, and as file hygiene rather than
+#                        judgement: a sidecar written from scratch SHOULD be
+#                        sorted by Unicode code point on (sourceField,
+#                        severity, reason), because every language reproduces
+#                        code point order identically and it keeps
+#                        regeneration diffs readable. This is a property of
+#                        the file, never of the comparison. The four sidecars
+#                        here do not follow it and are not re-sorted: they are
+#                        verbatim copies whose digests the crate records and
+#                        whose blobs must stay identical to conformance at
+#                        0ea48bb. Under the rule above their order is simply
+#                        incidental, which is the point.
 #   bridge:ignorePredicate
 #                      the stamp triples a Bridge adds after the mapping (RFC
 #                      section 5, "stamp"; EIP Message History), removed from

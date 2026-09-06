@@ -89,7 +89,7 @@ changing a pin; NCBI publishes a `.md5` beside every release and XSD.
 ## Layout
 
 ```
-ro-crate-metadata.json           the adapter manifest and the provenance of every file and dataset (RO-Crate 1.2)
+ro-crate-metadata.json           the adapter manifest, and the provenance of every committed fixture, schema and document, and every dataset (RO-Crate 1.2)
 schema/ClinVar_VCV_2.6.xsd       NCBI's schema, pinned byte for byte
 schema/ClinVarResult-Set.xsd     efetch envelope wrapper: includes NCBI's, adds the root it lacks
 schema/manifest/                 the bridge: vocabulary (adapter and test terms) and its SHACL shapes
@@ -114,10 +114,13 @@ is checkable with generic tools, and say which of these ran:
   entity lists; the manifest's `bridge:adapter` is the root entity and the
   root's `bridge:testManifest` is the manifest; every `bridge:dataset` is a
   crate `Dataset` with a `contentUrl`.
-- In that graph: every `bridge:input`, `bridge:graph` and `bridge:findings`
-  IRI is a crate `File` entity; `bridge:sourceSchema` and each
-  `bridge:documentSchema` are crate `File`s that exist on disk. A short
-  rdflib script or SPARQL `ASK` is the floor; say which ran.
+- In that graph, the shapes already require every IRI that names a committed
+  file to be a crate `File` entity: `bridge:input`, `bridge:graph`,
+  `bridge:findings`, `bridge:sourceSchema` and each `bridge:documentSchema`
+  (`sh:class schema:MediaObject`, what the RO-Crate context expands `File`
+  to). A typo that names no entity fails the SHACL run, so there is no script
+  to write for it. SHACL cannot see the filesystem, so check by hand that each
+  of those crate `File`s exists on disk, and say that you did.
 - The crate validates with the RO-Crate validator
   (`rocrate-validator validate . --profile-identifier ro-crate-1.2`, from the
   root); where that cannot run, a JSON-LD parse is the floor and the commit

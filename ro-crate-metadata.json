@@ -457,7 +457,7 @@
       "license": {
         "@id": "https://spdx.org/licenses/Apache-2.0"
       },
-      "description": "The vocabulary-gap sidecar the input produces: 732 entries of {sourceField, reason, severity, context}, sorted by sourceField, severity, reason. Copied byte for byte from the conformance repository at 0ea48bb (last changed at 8a5e203, 2026-05-06). Cites genomics v1-draft.0.1 terms with v1-draft.0.2 candidates."
+      "description": "The vocabulary-gap sidecar the input produces: 732 entries of {sourceField, reason, severity, context}. The file is in the order cascade-cli's authoring script left it, ICU collation on (sourceField, severity, reason); that order is incidental, because fixtures/manifest.ttl compares findings as a multiset, not entry for entry. Copied byte for byte from the conformance repository at 0ea48bb (last changed at 8a5e203, 2026-05-06). Cites genomics v1-draft.0.1 terms with v1-draft.0.2 candidates."
     },
     {
       "@id": "fixtures/findings/VCV000017661-BRCA1.gaps.json",
@@ -475,7 +475,7 @@
       "license": {
         "@id": "https://spdx.org/licenses/Apache-2.0"
       },
-      "description": "The vocabulary-gap sidecar the input produces: 502 entries of {sourceField, reason, severity, context}, sorted by sourceField, severity, reason. Copied byte for byte from the conformance repository at 0ea48bb (last changed at 8a5e203, 2026-05-06). Cites genomics v1-draft.0.1 terms with v1-draft.0.2 candidates."
+      "description": "The vocabulary-gap sidecar the input produces: 502 entries of {sourceField, reason, severity, context}. The file is in the order cascade-cli's authoring script left it, ICU collation on (sourceField, severity, reason); that order is incidental, because fixtures/manifest.ttl compares findings as a multiset, not entry for entry. Copied byte for byte from the conformance repository at 0ea48bb (last changed at 8a5e203, 2026-05-06). Cites genomics v1-draft.0.1 terms with v1-draft.0.2 candidates."
     },
     {
       "@id": "fixtures/findings/VCV000055448-BRCA2-pathogenic.gaps.json",
@@ -493,7 +493,7 @@
       "license": {
         "@id": "https://spdx.org/licenses/Apache-2.0"
       },
-      "description": "The vocabulary-gap sidecar the input produces: 58 entries of {sourceField, reason, severity, context}, sorted by sourceField, severity, reason. Copied byte for byte from the conformance repository at 0ea48bb (last changed at 8a5e203, 2026-05-06). Cites genomics v1-draft.0.1 terms with v1-draft.0.2 candidates."
+      "description": "The vocabulary-gap sidecar the input produces: 58 entries of {sourceField, reason, severity, context}. The file is in the order cascade-cli's authoring script left it, ICU collation on (sourceField, severity, reason); that order is incidental, because fixtures/manifest.ttl compares findings as a multiset, not entry for entry. Copied byte for byte from the conformance repository at 0ea48bb (last changed at 8a5e203, 2026-05-06). Cites genomics v1-draft.0.1 terms with v1-draft.0.2 candidates."
     },
     {
       "@id": "fixtures/findings/VCV000208804-MLH1-LynchSyndrome.gaps.json",
@@ -511,7 +511,7 @@
       "license": {
         "@id": "https://spdx.org/licenses/Apache-2.0"
       },
-      "description": "The vocabulary-gap sidecar the input produces: 14 entries of {sourceField, reason, severity, context}, sorted by sourceField, severity, reason. Copied byte for byte from the conformance repository at 0ea48bb (last changed at 8a5e203, 2026-05-06). Cites genomics v1-draft.0.1 terms with v1-draft.0.2 candidates."
+      "description": "The vocabulary-gap sidecar the input produces: 14 entries of {sourceField, reason, severity, context}. The file is in the order cascade-cli's authoring script left it, ICU collation on (sourceField, severity, reason); that order is incidental, because fixtures/manifest.ttl compares findings as a multiset, not entry for entry. Copied byte for byte from the conformance repository at 0ea48bb (last changed at 8a5e203, 2026-05-06). Cites genomics v1-draft.0.1 terms with v1-draft.0.2 candidates."
     },
     {
       "@id": "https://ftp.ncbi.nlm.nih.gov/pub/clinvar/xml/ClinVarVCVRelease_2026-09.xml.gz",

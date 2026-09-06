@@ -48,7 +48,8 @@ VS Code with everything validating and nothing executes.
 5. In test, executes `fixtures/manifest.ttl`: for each
    `bridge:IsomorphicConversionTest`, compares the produced graph with the
    expected one up to blank-node relabelling with the stamp predicates
-   removed, and the produced findings with the expected sidecar exactly. For
+   removed, and the produced findings with the expected sidecar as a multiset -
+   the same entries with the same multiplicity, in any order. For
    each `bridge:DatasetCompletionTest`, streams the referenced release and
    records the record count and output digest.
 
@@ -63,7 +64,7 @@ cascade-bridge-adapter-clinvar/
   LICENSE                    Apache-2.0
   CHANGELOG.md
   CLAUDE.md                  agent context: the rules and the sibling checkouts
-  ro-crate-metadata.json     the adapter manifest, and provenance for every file and remote dataset (RO-Crate 1.2)
+  ro-crate-metadata.json     the adapter manifest, and provenance for every committed fixture, schema and document, and every remote dataset (RO-Crate 1.2)
   .gitattributes             LF everywhere; verbatim copies never normalised
   .editorconfig
   .vscode/
@@ -185,9 +186,12 @@ exists, with generic tools:
   action is one the root lists, the manifest's `bridge:adapter` is the root
   and the root's `bridge:testManifest` is the manifest, and every
   `bridge:dataset` is a crate `Dataset` with a `contentUrl`;
-- in that graph, every `bridge:input`, `bridge:graph` and `bridge:findings`
-  IRI is a crate `File` entity, and `bridge:sourceSchema` and each
-  `bridge:documentSchema` are crate `File`s that exist on disk;
+- that the SHACL run above already covers every IRI naming a committed file:
+  `bridge:input`, `bridge:graph`, `bridge:findings`, `bridge:sourceSchema` and
+  each `bridge:documentSchema` must be a crate `File` entity, so a typo that
+  names nothing fails the shapes rather than passing quietly. What SHACL
+  cannot see is the filesystem, so the one thing still to check by hand is
+  that each of those crate `File`s exists on disk;
 - the crate validates with the RO-Crate validator
   (`rocrate-validator validate . --profile-identifier ro-crate-1.2`);
 - every `fixtures/in/*.xml` validates against `schema/ClinVarResult-Set.xsd`,

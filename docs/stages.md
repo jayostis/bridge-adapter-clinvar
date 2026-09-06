@@ -56,11 +56,15 @@ a name minted by the rule spec#38 settles on) is the phase 2 naming decision;
 the pattern is the same either way.
 
 **Message History.** The stamp is the Bridge's, not the adapter's. This is why
-`fixtures/manifest.ttl` declares `bridge:ignorePredicate` on each
-`bridge:IsomorphicConversionTest`: the oracles were produced by
-cascade-cli, which stamps `cascade:dataProvenance` and `cascade:schemaVersion`
-itself, and a Bridge stamps its own, so the comparison removes them from both
-sides.
+`fixtures/manifest.ttl` declares `bridge:ignorePredicate` at all: the oracles
+were produced by cascade-cli, which stamps `cascade:dataProvenance` and
+`cascade:schemaVersion` itself, and a Bridge stamps its own, so the comparison
+removes them from both sides. The stamp set is a property of the Bridge's stamp
+stage, not of any one fixture, so it is declared exactly once, on the
+`mf:Manifest` itself, and every entry inherits it; none of the four
+`bridge:IsomorphicConversionTest` entries carries its own. An entry that did
+would replace the manifest's set for that entry alone, which is the only reason
+the property is allowed on an entry.
 
 **Message Validator and Invalid Message Channel.** D-OPENWORLD-1, restated by
 RFC section 8: validation reports; it never refuses and never destroys. A unit

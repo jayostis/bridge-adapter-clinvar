@@ -178,7 +178,7 @@ bridge:documentSchema a owl:ObjectProperty ;
 bridge:IsomorphicConversionTest a owl:Class ;
   rdfs:subClassOf mf:ManifestEntry ;
   rdfs:label "Isomorphic conversion test"@en ;
-  rdfs:comment "Run the mapping on bridge:input; the produced graph must be isomorphic to bridge:graph (blank nodes relabelled, IRIs and literals exact) after every triple whose predicate is a bridge:ignorePredicate (the test's own if it carries any, else the manifest's) is removed from both sides; the produced findings must equal bridge:findings entry for entry in the conformance sort order (sourceField, severity, reason)."@en ;
+  rdfs:comment "Run the mapping on bridge:input; the produced graph must be isomorphic to bridge:graph (blank nodes relabelled, IRIs and literals exact) after every triple whose predicate is a bridge:ignorePredicate (the test's own if it carries any, else the manifest's) is removed from both sides; the produced findings must equal bridge:findings as a multiset: the same entries with the same multiplicity, in any order, two entries being equal when they have the same member names and equal values (JSON object equality). Order is deliberately not compared. A sidecar is written in whatever collation its authoring script used - the ClinVar oracles are in ICU collation order, where '/' precedes '@' against their code points - so requiring the committed order would make every harness depend on ICU and on a CLDR version no adapter states, to compare an array in which no entry refers to a position. Multiplicity is compared, because entries repeat and the repeats are identical. A sidecar written from scratch SHOULD be sorted by Unicode code point on (sourceField, severity, reason), which every language reproduces identically and which keeps regeneration diffs readable, but that is a property of the file and never of this comparison."@en ;
   rdfs:isDefinedBy <https://ns.cascadeprotocol.org/bridge/v1-draft#> .
 
 bridge:InputOnlyTest a owl:Class ;
@@ -232,7 +232,7 @@ bridge:graph a owl:ObjectProperty ;
 
 bridge:findings a owl:ObjectProperty ;
   rdfs:label "findings"@en ;
-  rdfs:comment "The expected findings sidecar (the conformance repository's gaps.json shape), by IRI. In the mf:result of a bridge:IsomorphicConversionTest."@en ;
+  rdfs:comment "The expected findings sidecar (the conformance repository's gaps.json shape), by IRI, a crate File entity. In the mf:result of a bridge:IsomorphicConversionTest, where it is compared as a multiset; the order the file happens to be written in is not part of the comparison."@en ;
   rdfs:isDefinedBy <https://ns.cascadeprotocol.org/bridge/v1-draft#> .
 
 bridge:records a owl:DatatypeProperty ;

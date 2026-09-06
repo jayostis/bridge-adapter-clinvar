@@ -64,7 +64,8 @@ the adapter laid out, with no mapping and nothing that executes.
 - `fixtures/manifest.ttl`, a W3C-style test manifest in Turtle: the four
   conformance oracles as `bridge:IsomorphicConversionTest` (blank nodes
   relabelled, IRIs and literals exact, the stamp predicates ignored, findings
-  exact), NCBI's official sample as `bridge:InputOnlyTest`, and the monthly
+  compared as a multiset), NCBI's official sample as `bridge:InputOnlyTest`,
+  and the monthly
   release as a `bridge:DatasetCompletionTest` naming the crate's Dataset
   entity by IRI, its record count and output digest absent until the first
   run. The stamp predicates are stated once, on the manifest, and every
@@ -83,5 +84,28 @@ the adapter laid out, with no mapping and nothing that executes.
   `fixtures/in/`, no save-time rewriting of XML or Turtle), `.editorconfig`,
   `.gitattributes` (LF everywhere; verbatim copies never normalised).
 - `LICENSE` (Apache-2.0), `README.md`, `CLAUDE.md`.
+
+### Decided
+
+- **Findings are compared as a multiset, not entry for entry.** The rule this
+  repository first wrote, "in the conformance repository's sort order
+  (sourceField, severity, reason)", was derived from cascade-cli's
+  `localeCompare` sort and is under-specified: `localeCompare` is ICU
+  collation, in which `/` precedes `@` against their code points, so a
+  `bridge-engine-java` harness using `String.compareTo` or a browser harness
+  using `<` orders the same correctly-mapped findings differently and reports
+  a false failure. Nothing outside this repository required the ordering: the
+  RFC ([spec#43](https://github.com/the-cascade-protocol/spec/issues/43)
+  section 11) only describes the cli's byte assertion as current practice, and
+  issue #1 said `compare.findings: exact` with no order. The contract is now
+  the same entries with the same multiplicity in any order, entries compared
+  as JSON objects. Multiplicity is kept because entries repeat. A sidecar
+  written from scratch SHOULD be sorted by Unicode code point, as file hygiene
+  and never as part of the comparison; the four committed sidecars are
+  verbatim copies and are not re-sorted, so their order is incidental. To be
+  carried to `jayostis/cascade-bridge-spec` and to spec#43.
+- The general form of that rule, stated in the manifest header: a comparison
+  is insensitive to everything the format does not mean. Blank node labels on
+  the graph side, element order on the findings side.
 
 [0.1.0]: https://github.com/jayostis/cascade-bridge-adapter-clinvar/releases/tag/v0.1.0
