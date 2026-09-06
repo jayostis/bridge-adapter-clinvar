@@ -112,10 +112,12 @@ the outcomes:
   sketch names an `adapter.yaml`; this adapter has none. Everything the
   adapter says about itself is in one graph, `ro-crate-metadata.json`, whose
   root entity is the adapter (`Dataset` and `bridge:Adapter`): schema.org
-  terms where they exist (`identifier`, `name`, `version`, `license`,
-  `conformsTo`), Bridge terms where they do not (tier, profiles, vocabulary
-  pin and vocabularies, source media type and schema, envelopes, unit,
-  detect rule, test manifest). The licence is the SPDX entity, the pin is
+  terms where they exist (`identifier`, `name`, `version`, `license`),
+  Dublin Core's `conformsTo` (the key the RO-Crate context expands to
+  `dcterms:conformsTo`, not a schema.org term), Bridge terms where neither
+  has one (tier, profiles, vocabulary pin and vocabularies, source media
+  type and schema, envelopes, unit, detect rule, test manifest, and the
+  tables and extension vocabulary phase 2 adds). The licence is the SPDX entity, the pin is
   the commit, the vocabularies are their namespaces, the envelopes are
   entities the test manifest refers to by IRI, and the test manifest points
   back at the root, so every reference that used to be a string is a link
@@ -175,14 +177,14 @@ exists, with generic tools:
 - every JSON and Turtle file parses; the crate (parsed as JSON-LD) and
   `fixtures/manifest.ttl`, loaded into one graph with their own locations as
   base, validate, conforming, against `schema/manifest/bridge.shapes.ttl`
-  with a SHACL engine (pySHACL or Jena);
-- in that graph, every `bridge:envelope` in a test action is a
-  `bridge:Envelope` the root lists, the manifest's `bridge:adapter` is the
-  root and the root's `bridge:testManifest` is the manifest, every
-  `bridge:input`, `bridge:graph` and `bridge:findings` IRI is a crate `File`
-  entity, every `bridge:dataset` IRI is a crate `Dataset` entity, and
-  `bridge:sourceSchema` and each `bridge:documentSchema` are crate `File`s
-  that exist on disk;
+  with a SHACL engine that supports SHACL-SPARQL (pySHACL or Jena). The
+  shapes check the links between the two: every `bridge:envelope` in a test
+  action is one the root lists, the manifest's `bridge:adapter` is the root
+  and the root's `bridge:testManifest` is the manifest, and every
+  `bridge:dataset` is a crate `Dataset` with a `contentUrl`;
+- in that graph, every `bridge:input`, `bridge:graph` and `bridge:findings`
+  IRI is a crate `File` entity, and `bridge:sourceSchema` and each
+  `bridge:documentSchema` are crate `File`s that exist on disk;
 - the crate validates with the RO-Crate validator
   (`rocrate-validator validate . --profile-identifier ro-crate-1.2`);
 - every `fixtures/in/*.xml` validates against `schema/ClinVarResult-Set.xsd`,
@@ -192,7 +194,12 @@ exists, with generic tools:
 - every digest in the crate matches its file, and the XSD's md5 matches
   NCBI's published `.md5`;
 - the four oracle triplets are byte-identical to
-  `conformance/fixtures/genomics/clinvar/` at `0ea48bb`;
+  `conformance/fixtures/genomics/clinvar/` at `0ea48bb`, compared against
+  the blobs (`git hash-object` here against
+  `git -C ../conformance ls-tree 0ea48bb fixtures/genomics/clinvar/`, or
+  `git -C ../conformance show 0ea48bb:<path> | cmp - <file>`), never against
+  the sibling checkout's worktree, whose files a `core.autocrlf=true` clone
+  holds as CRLF;
 - opening the repository in VS Code with the recommended extensions shows
   XSD validation on a fixture input and Turtle support in the manifest.
 
@@ -202,10 +209,16 @@ rather than described.
 
 ## Related repositories
 
-- [spec](https://github.com/the-cascade-protocol/spec): the vocabularies,
-  pinned at `e77ba5e`; the RFC (spec#43) and the identity RFC (spec#38).
+- [spec](https://github.com/the-cascade-protocol/spec): the vocabularies;
+  the RFC (spec#43) and the identity RFC (spec#38). The pin,
+  [`e77ba5e`](https://github.com/jayostis/spec/commit/e77ba5e8004bf57f34d42a1bee69d1cfb95f86e3),
+  is on the fork `jayostis/spec` and not yet on the org's `main`; the crate's
+  pin entity says why, and the crate links the fork for that reason.
 - [conformance](https://github.com/the-cascade-protocol/conformance):
-  `fixtures/genomics/clinvar/`, the source of the four oracles.
+  `fixtures/genomics/clinvar/`, the source of the four oracles, at
+  [`0ea48bb`](https://github.com/jayostis/conformance/tree/0ea48bb1c044ac9bf8086d456601357135cf79e6/fixtures/genomics/clinvar),
+  likewise a commit on the fork `jayostis/conformance`; the files last
+  changed at `8a5e203`, which is on the org's `main` with identical blobs.
 - [cascade-cli](https://github.com/the-cascade-protocol/cascade-cli):
   `src/lib/clinvar-converter/`, the converter this adapter re-expresses, and
   `tests/clinvar-conformance.test.ts`, the comparison the test manifest restates.

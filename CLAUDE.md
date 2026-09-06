@@ -62,12 +62,17 @@ Expected beside this repository, as sister directories:
 
 - `../spec` — the vocabularies; pinned at `e77ba5e8004bf57f34d42a1bee69d1cfb95f86e3`
   by the crate's `bridge:vocabularyPin` (the same pin as
-  `../conformance/scripts/SPEC_PIN`). The RFC is spec#43; the identity RFC
-  is spec#38.
+  `../conformance/scripts/SPEC_PIN`). The commit is on the fork,
+  `jayostis/spec`, and not on the org's `main`; the crate links the fork and
+  its pin entity says why. The RFC is spec#43; the identity RFC is spec#38.
 - `../conformance` — `fixtures/genomics/clinvar/` at `0ea48bb` is where the
-  four oracle triplets are copied from. `X.input.xml` becomes `in/X.xml`,
-  `X.expected.ttl` becomes `expected/X.ttl`, and `X.gaps.json` keeps its
-  suffix as `findings/X.gaps.json`.
+  four oracle triplets are copied from. That commit too is on the fork,
+  `jayostis/conformance`, and not on the org's `main`; the files last changed
+  at `8a5e203`, which is on the org's `main` with identical blobs. The crate
+  links the fork.
+  `X.input.xml` becomes `in/X.xml`, `X.expected.ttl` becomes
+  `expected/X.ttl`, and `X.gaps.json` keeps its suffix as
+  `findings/X.gaps.json`.
 - `../cascade-cli` — `src/lib/clinvar-converter/` (about 2,200 lines) is the
   converter the adapter re-expresses as data, and
   `tests/clinvar-conformance.test.ts` is the oracle comparison the test
@@ -104,15 +109,15 @@ is checkable with generic tools, and say which of these ran:
   parsed as JSON-LD with its own location as base) and `fixtures/manifest.ttl`
   (parsed with its location as base) load as one RDF graph and validate,
   conforming, against `schema/manifest/bridge.shapes.ttl` with a SHACL engine
-  (pySHACL or Jena).
-- In that graph: every `bridge:envelope` in a test action is a
-  `bridge:Envelope` the root entity lists; the manifest's `bridge:adapter` is
-  the root entity and the root's `bridge:testManifest` is the manifest; every
-  `bridge:input`, `bridge:graph` and `bridge:findings` IRI is a crate `File`
-  entity; every `bridge:dataset` IRI is a crate `Dataset` entity;
-  `bridge:sourceSchema` and each `bridge:documentSchema` are crate `File`s
-  that exist on disk. A short rdflib script or SPARQL `ASK` is the floor; say
-  which ran.
+  that supports SHACL-SPARQL (pySHACL or Jena). The shapes carry the links
+  between the two: every `bridge:envelope` in a test action is one the root
+  entity lists; the manifest's `bridge:adapter` is the root entity and the
+  root's `bridge:testManifest` is the manifest; every `bridge:dataset` is a
+  crate `Dataset` with a `contentUrl`.
+- In that graph: every `bridge:input`, `bridge:graph` and `bridge:findings`
+  IRI is a crate `File` entity; `bridge:sourceSchema` and each
+  `bridge:documentSchema` are crate `File`s that exist on disk. A short
+  rdflib script or SPARQL `ASK` is the floor; say which ran.
 - The crate validates with the RO-Crate validator
   (`rocrate-validator validate . --profile-identifier ro-crate-1.2`, from the
   root); where that cannot run, a JSON-LD parse is the floor and the commit
@@ -127,9 +132,14 @@ is checkable with generic tools, and say which of these ran:
 - Every `fixtures/expected/*.ttl` parses as Turtle (`riot --validate`, rdflib).
 - Every digest in the crate matches its file (`sha256sum`), and the XSD's md5
   matches NCBI's published `.md5`.
-- The four oracle triplets are byte-identical to conformance at `0ea48bb`
-  (`git diff --no-index`, or compare `git hash-object` output against
-  `git -C ../conformance ls-tree 0ea48bb fixtures/genomics/clinvar/`).
+- The four oracle triplets are byte-identical to conformance at `0ea48bb`:
+  compare `git hash-object <file>` here against
+  `git -C ../conformance ls-tree 0ea48bb fixtures/genomics/clinvar/`, or run
+  `git -C ../conformance show 0ea48bb:<path> | cmp - <file>`. Compare
+  against the blobs, never against `../conformance`'s worktree: a clone with
+  `core.autocrlf=true` holds those files as CRLF, so `git diff --no-index`
+  or `cmp` on the worktree reports every input as different at byte 40, and
+  "fixing" that would break the recorded digests.
 
 CI on this project's sibling repositories is Linux and invokes `python3` and
 the JVM tools directly; do not commit any machine-specific way of running

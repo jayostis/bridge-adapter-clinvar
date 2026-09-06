@@ -132,7 +132,10 @@ Under `pub/clinvar/xml/`:
   is generated. On 2026-09-06 it held only the symlink
   `ClinVarVCVRelease_00-latest_weekly.xml.gz -> ../ClinVarVCVRelease_2026-09.xml.gz`
   and its `.md5`. Resolve the symlink (FTP `LIST` shows the target; HTTPS
-  does not) and record the dated name before a run.
+  does not) and record the dated name before a run. The crate lists no
+  weekly entity and the test manifest no weekly test until a dated file
+  exists to record: an entity that only resolves to the monthly would be a
+  second pass over the same bytes.
 - **Sample**: `sample_xml/VCV_XML_VCV000091629.xml`, NCBI's one published
   efetch example, 193,155 bytes, committed as `fixtures/in/VCV_XML_VCV000091629.xml`.
   NCBI publishes no `.md5` for it. The directory also holds

@@ -4,10 +4,13 @@
 # Adapter terms: what an adapter says about itself in its RO-Crate
 # (ro-crate-metadata.json at the adapter's root). The crate's root entity is
 # a bridge:Adapter beside its schema:Dataset type; schema.org carries what it
-# can (identifier, name, version, license, conformsTo) and the terms below
-# carry what has no schema.org equivalent: the tier, the profiles required,
-# the vocabulary pin and vocabularies, the source media type, schema,
-# envelopes and unit, the detect rule and the test manifest.
+# can (identifier, name, version, license), Dublin Core carries conformsTo
+# (the RO-Crate context expands that key to dct:conformsTo, not a schema.org
+# term; a query written with schema:conformsTo matches nothing), and the
+# terms below carry what has no equivalent in either: the tier, the profiles
+# required, the vocabulary pin and vocabularies, the source media type,
+# schema, envelopes and unit, the detect rule, the tables and extension
+# vocabulary phase 2 adds, and the test manifest.
 #
 # Test terms: a small set on top of W3C's mf: test-manifest vocabulary (the
 # one every W3C RDF-family test suite is written in), the way the SHACL test
@@ -97,7 +100,7 @@ bridge:tier a owl:ObjectProperty ;
 
 bridge:profileRequired a owl:ObjectProperty ;
   rdfs:label "profile required"@en ;
-  rdfs:comment "A Bridge profile the adapter needs beyond Core, by IRI; repeatable, at least one."@en ;
+  rdfs:comment "A Bridge profile the adapter needs beyond Core, by IRI; repeatable, zero or more. A bridge:Universal adapter needs Core only and names none."@en ;
   rdfs:domain bridge:Adapter ;
   rdfs:range bridge:Profile ;
   rdfs:isDefinedBy <https://ns.cascadeprotocol.org/bridge/v1-draft#> .
@@ -147,6 +150,18 @@ bridge:detectXPath a owl:DatatypeProperty ;
   rdfs:range xsd:string ;
   rdfs:isDefinedBy <https://ns.cascadeprotocol.org/bridge/v1-draft#> .
 
+bridge:table a owl:ObjectProperty ;
+  rdfs:label "table"@en ;
+  rdfs:comment "A lookup table the mapping reads, by IRI: a schema:File entity in the crate whose schema:isBasedOn names where its rows came from and whose schema:license is stated where it differs from the package's. Repeatable, zero or more; none until phase 2 adds the mapping."@en ;
+  rdfs:domain bridge:Adapter ;
+  rdfs:isDefinedBy <https://ns.cascadeprotocol.org/bridge/v1-draft#> .
+
+bridge:extensionVocabulary a owl:ObjectProperty ;
+  rdfs:label "extension vocabulary"@en ;
+  rdfs:comment "The adapter's own namespace for values that have no Cascade term, by IRI: a schema:DefinedTermSet entity in the crate, its file a schema:File in hasPart. At most one; absent until phase 2 adds it. Terms in it are the adapter's, never cascade: or genomics: terms."@en ;
+  rdfs:domain bridge:Adapter ;
+  rdfs:isDefinedBy <https://ns.cascadeprotocol.org/bridge/v1-draft#> .
+
 bridge:testManifest a owl:ObjectProperty ;
   rdfs:label "test manifest"@en ;
   rdfs:comment "The test manifest a Bridge's harness executes, by IRI: a schema:File entity in the crate that is an mf:Manifest whose entries are typed with the test terms below, and whose bridge:adapter is this adapter. Exactly one."@en ;
@@ -182,7 +197,7 @@ bridge:documentSchema a owl:ObjectProperty ;
 bridge:IsomorphicConversionTest a owl:Class ;
   rdfs:subClassOf mf:ManifestEntry ;
   rdfs:label "Isomorphic conversion test"@en ;
-  rdfs:comment "Run the mapping on bridge:input; the produced graph must be isomorphic to bridge:graph (blank nodes relabelled, IRIs and literals exact) after every triple whose predicate is a bridge:ignorePredicate is removed from both sides; the produced findings must equal bridge:findings entry for entry in the conformance sort order (sourceField, severity, reason)."@en ;
+  rdfs:comment "Run the mapping on bridge:input; the produced graph must be isomorphic to bridge:graph (blank nodes relabelled, IRIs and literals exact) after every triple whose predicate is a bridge:ignorePredicate (the test's own if it carries any, else the manifest's) is removed from both sides; the produced findings must equal bridge:findings entry for entry in the conformance sort order (sourceField, severity, reason)."@en ;
   rdfs:isDefinedBy <https://ns.cascadeprotocol.org/bridge/v1-draft#> .
 
 bridge:InputOnlyTest a owl:Class ;
@@ -252,11 +267,10 @@ bridge:outputDigest a owl:DatatypeProperty ;
   rdfs:isDefinedBy <https://ns.cascadeprotocol.org/bridge/v1-draft#> .
 
 # ----------------------------------------------------------------------------
-# On the test
+# On the manifest, inherited by every test; on a test, an override
 # ----------------------------------------------------------------------------
 
 bridge:ignorePredicate a owl:ObjectProperty ;
   rdfs:label "ignore predicate"@en ;
-  rdfs:comment "A stamp predicate (a triple a Bridge adds after the mapping: RFC section 5, \"stamp\"; EIP Message History) removed from both sides before comparison. On the test, by IRI; repeatable."@en ;
-  rdfs:domain mf:ManifestEntry ;
+  rdfs:comment "A stamp predicate (a triple a Bridge adds after the mapping: RFC section 5, \"stamp\"; EIP Message History) removed from both sides before comparison. By IRI; repeatable. The stamp set is a property of the Bridge's stamp stage, not of any one fixture, so it is stated on the mf:Manifest and every entry inherits it; an entry that carries its own replaces the manifest's set for that entry alone."@en ;
   rdfs:isDefinedBy <https://ns.cascadeprotocol.org/bridge/v1-draft#> .

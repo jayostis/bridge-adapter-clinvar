@@ -32,22 +32,26 @@ the adapter laid out, with no mapping and nothing that executes.
   and the test manifest. Its data entities carry provenance, digest,
   version, date and licence for every committed fixture file, the pinned
   XSD (a local `File` based on NCBI's URL entity), the wrapper schema, the
-  vocabulary and shapes files, the docs, the monthly release and the weekly
-  release. The weekly is an entity with a `url` and a `sameAs` to the
-  monthly file it currently resolves to, and no content fields of its own
-  until a dated weekly exists. It states that the four oracle inputs have no
-  recorded fetch date or method.
+  vocabulary and shapes files, the docs and the monthly release. No weekly
+  release is listed: on 2026-09-06 the weekly symlink resolved to the
+  monthly file, and an entity with no content of its own is not something a
+  Bridge can run; a dated weekly is added when one exists. It states that
+  the four oracle inputs have no recorded fetch date or method, and links
+  the conformance commit they were copied from on the fork that holds it.
 - `schema/manifest/bridge.ttl`, the `bridge:` Cascade Bridge vocabulary
   (`https://ns.cascadeprotocol.org/bridge/v1-draft#`), with an
   `rdfs:comment` on every term: the adapter terms the crate's root entity
-  and envelopes use (four classes, three individuals, thirteen properties)
-  and, on top of W3C's `mf:` test-manifest vocabulary, the test terms the
-  test manifest uses (three test types that carry the comparison rule and
-  eight properties; `bridge:envelope` and `bridge:adapter` serve both). And
-  `schema/manifest/bridge.shapes.ttl`, the SHACL shapes the crate and the
-  test manifest validate against as one graph. Both are the seed of the
-  Bridge specification's vocabulary; no `cascade:` or `genomics:` term is
-  minted.
+  and envelopes use (four classes, three individuals, fifteen properties,
+  two of them, `bridge:table` and `bridge:extensionVocabulary`, declared for
+  phase 2 and not yet used) and, on top of W3C's `mf:` test-manifest
+  vocabulary, the test terms the test manifest uses (three test types that
+  carry the comparison rule and eight properties; `bridge:envelope` and
+  `bridge:adapter` serve both). And `schema/manifest/bridge.shapes.ttl`, the
+  SHACL shapes the crate and the test manifest validate against as one
+  graph, including, as SHACL-SPARQL constraints, the links between the two:
+  the adapter and manifest point at each other, and every envelope a test
+  names is one the adapter lists. Both are the seed of the Bridge
+  specification's vocabulary; no `cascade:` or `genomics:` term is minted.
 - `schema/ClinVar_VCV_2.6.xsd`, NCBI's schema pinned byte for byte
   (md5 `a7b65e5a166dc5f36a7eea9127d56f4e`, NCBI's own). 2.6 rather than the
   2.5 the issue named, because the 2026-09 monthly release declares 2.6; the
@@ -59,9 +63,10 @@ the adapter laid out, with no mapping and nothing that executes.
   conformance oracles as `bridge:IsomorphicConversionTest` (blank nodes
   relabelled, IRIs and literals exact, the stamp predicates ignored, findings
   exact), NCBI's official sample as `bridge:InputOnlyTest`, and the monthly
-  and weekly releases as `bridge:DatasetCompletionTest` naming the crate's
-  Dataset entities by IRI, their record count and output digest absent until
-  the first run. It names the crate's root entity as its `bridge:adapter`
+  release as a `bridge:DatasetCompletionTest` naming the crate's Dataset
+  entity by IRI, its record count and output digest absent until the first
+  run. The stamp predicates are stated once, on the manifest, and every
+  entry inherits them. It names the crate's root entity as its `bridge:adapter`
   and each action's envelope by the crate entity's IRI, so the manifest and
   the crate load as one graph and every link is checkable in it.
 - `fixtures/in/`: the four conformance inputs, byte-identical to
