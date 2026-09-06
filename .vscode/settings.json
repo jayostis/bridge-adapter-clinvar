@@ -1,0 +1,34 @@
+{
+  // Every fixture input validates live against the pinned NCBI schema. The
+  // association points at the envelope wrapper, which includes NCBI's XSD and
+  // adds the one root element (ClinVarResult-Set) that NCBI's schema does not
+  // declare; see schema/ClinVarResult-Set.xsd.
+  "xml.fileAssociations": [
+    {
+      "pattern": "**/fixtures/in/*.xml",
+      "systemId": "${workspaceFolder}/schema/ClinVarResult-Set.xsd"
+    }
+  ],
+  "xml.validation.enabled": true,
+  // The adapter manifest is ro-crate-metadata.json (JSON-LD) and the test
+  // manifest is fixtures/manifest.ttl (Turtle); both are validated by SHACL
+  // (schema/manifest/bridge.shapes.ttl) and the crate by the RO-Crate
+  // validator, not by a JSON Schema, so there is no schema association here.
+  "files.eol": "\n",
+  "files.insertFinalNewline": true,
+  "files.trimTrailingWhitespace": true,
+  // Verbatim copies (see .editorconfig): no save-time rewriting. A language
+  // override reaches every file in that language, so only languages whose
+  // files are verbatim copies (or nearly all are) get one. The .gaps.json
+  // sidecars are JSON, and a [json] override would also reach the crate;
+  // they rely on the EditorConfig extension recommended in extensions.json,
+  // which applies .editorconfig's path-scoped rules.
+  "[xml]": {
+    "files.insertFinalNewline": false,
+    "files.trimTrailingWhitespace": false
+  },
+  "[turtle]": {
+    "files.insertFinalNewline": false,
+    "files.trimTrailingWhitespace": false
+  }
+}

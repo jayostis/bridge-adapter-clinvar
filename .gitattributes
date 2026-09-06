@@ -1,0 +1,22 @@
+# Text files are stored and checked out with LF line endings on every platform,
+# so the bytes a Linux Bridge reads are the bytes a Windows editor wrote.
+* text=auto eol=lf
+*.md     text eol=lf
+*.xml    text eol=lf
+*.xsd    text eol=lf
+*.xsl    text eol=lf
+*.xslt   text eol=lf
+*.ttl    text eol=lf
+*.yaml   text eol=lf
+*.yml    text eol=lf
+*.json   text eol=lf
+*.csv    text eol=lf
+*.sparql text eol=lf
+*.rq     text eol=lf
+
+# Verbatim copies. Their bytes must keep matching the digests recorded in
+# ro-crate-metadata.json, so git must never normalise them.
+schema/ClinVar_VCV_*.xsd  -text
+fixtures/in/**            -text
+fixtures/expected/**      -text
+fixtures/findings/**      -text

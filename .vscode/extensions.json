@@ -1,0 +1,24 @@
+{
+  // The formats in this repository are open standards, so the editor support
+  // already exists. Nothing here needs a plugin written for it.
+  "recommendations": [
+    // XML: validates fixtures/in/*.xml live against the pinned NCBI schema
+    // through xml.fileAssociations in settings.json; edits XSD and XSLT.
+    "redhat.vscode-xml",
+    // XSLT 3.0 / XPath 3.1 language support, and Saxon-JS tasks, for the
+    // mapping that arrives in phase 2 under in/xslt/.
+    "deltaxml.xslt-xpath",
+    // Turtle, with a language server, for the test manifest
+    // fixtures/manifest.ttl, the bridge: vocabulary and SHACL shapes under
+    // schema/manifest/, and the expected graphs under fixtures/expected/.
+    // (stardog-union.stardog-rdf-grammars is the grammar-only alternative.)
+    "faubulous.mentor",
+    // EditorConfig: without it VS Code ignores .editorconfig, and its
+    // path-scoped rules are what keep the verbatim copies under fixtures/
+    // and the pinned XSD untouched on save (see settings.json).
+    "EditorConfig.EditorConfig",
+    // Kaoto: the Apache Camel route designer and DataMapper, so the route in
+    // bridge-engine-java opens beside this adapter once that repository exists.
+    "redhat.vscode-kaoto"
+  ]
+}
