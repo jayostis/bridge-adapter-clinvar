@@ -35,9 +35,9 @@ VS Code with everything validating and nothing executes.
    must offer, the vocabulary pin, and the test manifest, every one of them
    a link to an entity in the same graph.
 2. Routes an input here when the detect XPath,
-   `exists(/(ClinVarResult-Set|ClinVarVariationRelease)/VariationArchive)`,
-   is true: the document element is one of the two envelope roots and it
-   contains a `VariationArchive`.
+   `exists(/ClinVarResult-Set/(VariationArchive|set)) or exists(/ClinVarVariationRelease/VariationArchive)`,
+   is true: an efetch envelope holding records or the empty `set` efetch
+   returns when a query matched none, or a release envelope holding records.
 3. Splits the document on `VariationArchive` and validates each unit against
    `schema/ClinVar_VCV_2.6.xsd`. A unit that fails is a finding; it still goes
    through.
@@ -132,10 +132,14 @@ the outcomes:
   are the checks instead. That the manifest should be an RO-Crate and not a
   YAML dialect is a finding to report on spec#43.
 - **The detect rule is one XPath expression**,
-  `exists(/(ClinVarResult-Set|ClinVarVariationRelease)/VariationArchive)`,
+  `exists(/ClinVarResult-Set/(VariationArchive|set)) or exists(/ClinVarVariationRelease/VariationArchive)`,
   an XPath 3.1 boolean a Bridge's content-based router evaluates against the
   document, in place of a two-field root-element / contains rule of the
-  project's own.
+  project's own. It keys on an envelope holding something the adapter
+  recognises rather than on the root element alone, so a response in another
+  shape under the same root is not claimed; the `set` branch is there because
+  an efetch response that matched no record is a response, not an error
+  (`docs/format.md`).
 - **The cases are a W3C-style test manifest in Turtle**,
   `fixtures/manifest.ttl`, not a YAML dialect of the project's own. Every W3C
   RDF-family test suite is an `mf:` manifest whose entry type carries the

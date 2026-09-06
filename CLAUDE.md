@@ -130,8 +130,11 @@ is checkable with generic tools, and say which of these ran:
   lxml, the Red Hat XML extension in VS Code), and the crate's
   `bridge:detectXPath` is true for each of them (an XPath 3.1 evaluator such
   as Saxon; XPath 1.0's
-  `boolean(/ClinVarResult-Set/VariationArchive | /ClinVarVariationRelease/VariationArchive)`
-  is an acceptable stand-in, and the note says so).
+  `boolean(/ClinVarResult-Set/VariationArchive | /ClinVarResult-Set/set | /ClinVarVariationRelease/VariationArchive)`
+  is an acceptable stand-in, and the note says so). It must also be true for
+  `<ClinVarResult-Set><set/></ClinVarResult-Set>`, the response efetch
+  returns when a query matched no record, and false for a document under a
+  known root that holds neither (`docs/stages.md`, Content-Based Router).
 - Every `fixtures/expected/*.ttl` parses as Turtle (`riot --validate`, rdflib).
 - Every digest in the crate matches its file (`sha256sum`), and the XSD's md5
   matches NCBI's published `.md5`.

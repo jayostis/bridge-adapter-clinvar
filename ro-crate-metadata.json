@@ -74,7 +74,7 @@
         }
       ],
       "bridge:unit": "VariationArchive",
-      "bridge:detectXPath": "exists(/(ClinVarResult-Set|ClinVarVariationRelease)/VariationArchive)",
+      "bridge:detectXPath": "exists(/ClinVarResult-Set/(VariationArchive|set)) or exists(/ClinVarVariationRelease/VariationArchive)",
       "bridge:testManifest": {
         "@id": "fixtures/manifest.ttl"
       },

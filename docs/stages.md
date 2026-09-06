@@ -31,9 +31,15 @@ unit validates on its own; the Bridge need not validate the multi-gigabyte
 release as a single document.
 
 **Content-Based Router.** The rule is one XPath 3.1 boolean expression,
-`exists(/(ClinVarResult-Set|ClinVarVariationRelease)/VariationArchive)`,
-evaluated against the document: the document element is one of the two
-envelope roots and it contains the unit. cascade-cli's detector matches
+`exists(/ClinVarResult-Set/(VariationArchive|set)) or exists(/ClinVarVariationRelease/VariationArchive)`,
+evaluated against the document: an envelope root holding something this
+adapter recognises. Keying on the root alone would claim any document under
+that root, including an efetch response of another `rettype`; keying on the
+unit alone would refuse an efetch response that matched no record, which
+arrives as `<ClinVarResult-Set><set/></ClinVarResult-Set>` and must route
+here and yield zero units rather than go unrecognised. The release envelope
+needs no such branch: NCBI's `ReleaseType` requires at least one
+`VariationArchive`, so a release file is never empty. cascade-cli's detector matches
 a different set of five roots (`ClinVarResult-Set`, `ReleaseSet`,
 `ClinVarSet`, `VariationArchive`, `VariationReport`): three belong to older
 or different ClinVar shapes, one is the bare unit, and `ClinVarVariationRelease`
