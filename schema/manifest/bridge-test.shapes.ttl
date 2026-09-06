@@ -1,0 +1,212 @@
+# SHACL shapes for an adapter's test manifest (fixtures/manifest.ttl): what
+# the cases JSON Schema enforced per case kind, now per test type. Required
+# properties and cardinalities per type; bt:outputDigest matches
+# ^sha256:[0-9a-f]{64}$; bt:records is a non-negative integer; every
+# mf:entries member has exactly one of the three types; bt:adapter is present
+# exactly once on the manifest; bt:envelope is a string. The action and result
+# nodes are closed, as the JSON Schema's objects were: a property they do not
+# declare is a mistake, not an extension.
+#
+# Validate with any SHACL Core engine (pySHACL, Jena), the manifest as the
+# data graph and this file as the shapes graph. Shape IRIs are fragments of
+# this file, so nothing is minted beyond the bt: terms bridge-test.ttl
+# declares. This file moves to a bridge-spec repository with the vocabulary.
+
+@prefix sh:   <http://www.w3.org/ns/shacl#> .
+@prefix rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd:  <http://www.w3.org/2001/XMLSchema#> .
+@prefix mf:   <http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#> .
+@prefix bt:   <https://ns.cascadeprotocol.org/bridge-test/v1-draft#> .
+
+# ----------------------------------------------------------------------------
+# The manifest
+# ----------------------------------------------------------------------------
+
+<#Manifest> a sh:NodeShape ;
+  sh:targetClass mf:Manifest ;
+  rdfs:comment "One bt:adapter, one mf:entries list, and every member of the list is a test of exactly one of the three types." ;
+  sh:property [
+    sh:path bt:adapter ;
+    sh:minCount 1 ;
+    sh:maxCount 1 ;
+    sh:datatype xsd:string ;
+    sh:message "The manifest carries exactly one bt:adapter, a string equal to `id` in adapter.yaml."
+  ] ;
+  sh:property [
+    sh:path mf:entries ;
+    sh:minCount 1 ;
+    sh:maxCount 1 ;
+    sh:nodeKind sh:BlankNodeOrIRI ;
+    sh:message "The manifest carries exactly one mf:entries list."
+  ] ;
+  sh:property [
+    sh:path ( mf:entries [ sh:zeroOrMorePath rdf:rest ] rdf:first ) ;
+    sh:minCount 1 ;
+    sh:node <#Entry> ;
+    sh:message "mf:entries lists at least one test, and every member is a test of exactly one of the three types."
+  ] .
+
+<#Entry> a sh:NodeShape ;
+  sh:nodeKind sh:IRI ;
+  sh:xone (
+    [ sh:class bt:IsomorphicConversionTest ]
+    [ sh:class bt:InputOnlyTest ]
+    [ sh:class bt:DatasetCompletionTest ]
+  ) ;
+  sh:message "A manifest entry is an IRI typed with exactly one of bt:IsomorphicConversionTest, bt:InputOnlyTest, bt:DatasetCompletionTest." .
+
+# ----------------------------------------------------------------------------
+# Every test: a name (the entry's id) and one action
+# ----------------------------------------------------------------------------
+
+<#Test> a sh:NodeShape ;
+  sh:targetClass bt:IsomorphicConversionTest, bt:InputOnlyTest, bt:DatasetCompletionTest ;
+  sh:nodeKind sh:IRI ;
+  sh:property [
+    sh:path mf:name ;
+    sh:minCount 1 ;
+    sh:maxCount 1 ;
+    sh:datatype xsd:string ;
+    sh:pattern "^[A-Za-z0-9][A-Za-z0-9_.-]*$" ;
+    sh:message "A test carries exactly one mf:name, the id that is also its fragment IRI."
+  ] ;
+  sh:property [
+    sh:path mf:action ;
+    sh:minCount 1 ;
+    sh:maxCount 1 ;
+    sh:nodeKind sh:BlankNodeOrIRI ;
+    sh:message "A test carries exactly one mf:action."
+  ] .
+
+# ----------------------------------------------------------------------------
+# Per test type
+# ----------------------------------------------------------------------------
+
+<#IsomorphicConversionTest> a sh:NodeShape ;
+  sh:targetClass bt:IsomorphicConversionTest ;
+  rdfs:comment "A committed input with a committed expected graph and findings sidecar, compared isomorphic with the stamp predicates removed." ;
+  sh:property [
+    sh:path mf:action ;
+    sh:node <#CommittedAction>
+  ] ;
+  sh:property [
+    sh:path mf:result ;
+    sh:minCount 1 ;
+    sh:maxCount 1 ;
+    sh:node <#ConversionResult> ;
+    sh:message "An isomorphic conversion test carries exactly one mf:result naming the expected graph and findings."
+  ] ;
+  sh:property [
+    sh:path bt:ignorePredicate ;
+    sh:nodeKind sh:IRI ;
+    sh:message "bt:ignorePredicate names a predicate by IRI."
+  ] .
+
+<#InputOnlyTest> a sh:NodeShape ;
+  sh:targetClass bt:InputOnlyTest ;
+  rdfs:comment "A committed input with no expected output yet: parsed and validated, the produced graph and findings recorded, nothing judged." ;
+  sh:property [
+    sh:path mf:action ;
+    sh:node <#CommittedAction>
+  ] ;
+  sh:property [
+    sh:path mf:result ;
+    sh:maxCount 0 ;
+    sh:message "An input-only test has no mf:result: nothing is judged."
+  ] ;
+  sh:property [
+    sh:path bt:ignorePredicate ;
+    sh:maxCount 0 ;
+    sh:message "An input-only test has no bt:ignorePredicate: nothing is compared."
+  ] .
+
+<#DatasetCompletionTest> a sh:NodeShape ;
+  sh:targetClass bt:DatasetCompletionTest ;
+  rdfs:comment "A remote dataset described in the crate, too large to commit. Its expected output fits in one line, a record count and an output digest, and is absent until the first run records it." ;
+  sh:property [
+    sh:path mf:action ;
+    sh:node <#DatasetAction>
+  ] ;
+  sh:property [
+    sh:path mf:result ;
+    sh:maxCount 1 ;
+    sh:node <#DatasetResult> ;
+    sh:message "A dataset completion test carries at most one mf:result, holding bt:records and bt:outputDigest once a run has recorded them."
+  ] .
+
+# ----------------------------------------------------------------------------
+# Action and result nodes, closed
+# ----------------------------------------------------------------------------
+
+<#CommittedAction> a sh:NodeShape ;
+  sh:closed true ;
+  sh:ignoredProperties ( rdf:type ) ;
+  sh:property [
+    sh:path bt:input ;
+    sh:minCount 1 ;
+    sh:maxCount 1 ;
+    sh:nodeKind sh:IRI ;
+    sh:message "The action of a committed-input test names exactly one bt:input, by IRI."
+  ] ;
+  sh:property [
+    sh:path bt:envelope ;
+    sh:minCount 1 ;
+    sh:maxCount 1 ;
+    sh:datatype xsd:string ;
+    sh:message "The action names exactly one bt:envelope, a string that is an envelope id in adapter.yaml."
+  ] .
+
+<#DatasetAction> a sh:NodeShape ;
+  sh:closed true ;
+  sh:ignoredProperties ( rdf:type ) ;
+  sh:property [
+    sh:path bt:dataset ;
+    sh:minCount 1 ;
+    sh:maxCount 1 ;
+    sh:nodeKind sh:IRI ;
+    sh:message "The action of a dataset completion test names exactly one bt:dataset, by the crate entity's IRI."
+  ] ;
+  sh:property [
+    sh:path bt:envelope ;
+    sh:minCount 1 ;
+    sh:maxCount 1 ;
+    sh:datatype xsd:string ;
+    sh:message "The action names exactly one bt:envelope, a string that is an envelope id in adapter.yaml."
+  ] .
+
+<#ConversionResult> a sh:NodeShape ;
+  sh:closed true ;
+  sh:ignoredProperties ( rdf:type ) ;
+  sh:property [
+    sh:path bt:graph ;
+    sh:minCount 1 ;
+    sh:maxCount 1 ;
+    sh:nodeKind sh:IRI ;
+    sh:message "The result names exactly one bt:graph, the expected Turtle, by IRI."
+  ] ;
+  sh:property [
+    sh:path bt:findings ;
+    sh:minCount 1 ;
+    sh:maxCount 1 ;
+    sh:nodeKind sh:IRI ;
+    sh:message "The result names exactly one bt:findings, the expected sidecar, by IRI."
+  ] .
+
+<#DatasetResult> a sh:NodeShape ;
+  sh:closed true ;
+  sh:ignoredProperties ( rdf:type ) ;
+  sh:property [
+    sh:path bt:records ;
+    sh:maxCount 1 ;
+    sh:datatype xsd:integer ;
+    sh:minInclusive 0 ;
+    sh:message "bt:records is a non-negative xsd:integer, at most once; absent until the first run records it."
+  ] ;
+  sh:property [
+    sh:path bt:outputDigest ;
+    sh:maxCount 1 ;
+    sh:datatype xsd:string ;
+    sh:pattern "^sha256:[0-9a-f]{64}$" ;
+    sh:message "bt:outputDigest is the string sha256:<64 lowercase hex>, at most once; absent until the first run records it."
+  ] .

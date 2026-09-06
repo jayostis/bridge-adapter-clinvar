@@ -31,7 +31,7 @@
       },
       "hasPart": [
         {
-          "@id": "cases.yaml"
+          "@id": "manifest.ttl"
         },
         {
           "@id": "in/VCV000007105-CFTR-deltaF508.xml"
@@ -84,11 +84,11 @@
       ]
     },
     {
-      "@id": "cases.yaml",
+      "@id": "manifest.ttl",
       "@type": "File",
-      "name": "Fixture cases",
-      "encodingFormat": "application/yaml",
-      "description": "The cases a Bridge's harness executes and how each is judged. Its schema is ../schema/manifest/cases.schema.json. Every input, expected graph, findings file and dataset it names is described in this crate.",
+      "name": "Test manifest",
+      "encodingFormat": "text/turtle",
+      "description": "The cases a Bridge's harness executes and how each is judged: a W3C-style test manifest (mf: test-manifest vocabulary) whose entries are typed with the bt: Bridge-test vocabulary, declared in ../schema/manifest/bridge-test.ttl and constrained by the SHACL shapes in ../schema/manifest/bridge-test.shapes.ttl. Every input, expected graph, findings file and dataset it names is described in this crate, by the same IRI, so the manifest and this crate load as one graph.",
       "license": {
         "@id": "https://www.apache.org/licenses/LICENSE-2.0"
       }

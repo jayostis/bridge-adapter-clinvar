@@ -159,7 +159,7 @@ stay traceable, do not describe the record inside:
 | `VCV000055448-BRCA2-pathogenic` | `NM_007294.4(BRCA1):c.5193+1G>C`, v15 | BRCA1, not BRCA2 |
 | `VCV000208804-MLH1-LynchSyndrome` | `NM_001017980.4(VMA21):c.164-6T>G`, v2 | VMA21 interpreted for MONDO:0010684, not MLH1 |
 
-`cases.yaml` and the crate state the actual record for each.
+`manifest.ttl` and the crate state the actual record for each.
 
 ## What the mapping will read (phase 2)
 

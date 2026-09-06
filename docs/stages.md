@@ -15,7 +15,7 @@ phase.
 | transform | **Message Translator** | the XSLT under `in/xslt/` (phase 2); the same mapping as SPARQL CONSTRUCT under `in/sparql/` (phase 3) |
 | Cascade RDF as target | **Canonical Data Model** | writes it, in the vocabularies `adapter.yaml` pins |
 | link within the batch | **Aggregator** | the interpretation (RCV) and submitter assertion (SCV) records link to their Variant; the mapping emits the links, the Bridge resolves them within one import |
-| stamp | **Message History** | receives it: `cascade:dataProvenance`, `cascade:schemaVersion`, source identity, import time are added by the Bridge, and `cases.yaml` ignores them when comparing |
+| stamp | **Message History** | receives it: `cascade:dataProvenance`, `cascade:schemaVersion`, source identity, import time are added by the Bridge, and `fixtures/manifest.ttl` ignores them (`bt:ignorePredicate`) when comparing |
 | check, validate | **Message Validator**, findings to an **Invalid Message Channel** | declares the XSD every unit is validated against (`source.schema`, phase 1) |
 | findings | **Dead Letter Channel** / **Invalid Message Channel** | the findings sidecar, `fixtures/findings/*.gaps.json`, is the expected content of that channel |
 | re-import as no-op | **Idempotent Receiver** | follows from input-derived names, whichever way naming is decided in phase 2 |
@@ -54,7 +54,8 @@ a name minted by the rule spec#38 settles on) is the phase 2 naming decision;
 the pattern is the same either way.
 
 **Message History.** The stamp is the Bridge's, not the adapter's. This is why
-`cases.yaml` declares `compare.ignore-predicates`: the oracles were produced by
+`fixtures/manifest.ttl` declares `bt:ignorePredicate` on each
+`bt:IsomorphicConversionTest`: the oracles were produced by
 cascade-cli, which stamps `cascade:dataProvenance` and `cascade:schemaVersion`
 itself, and a Bridge stamps its own, so the comparison removes them from both
 sides.

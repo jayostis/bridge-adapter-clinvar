@@ -10,11 +10,12 @@
     }
   ],
   "xml.validation.enabled": true,
-  // The manifests carry a `# yaml-language-server: $schema=` header too; this
-  // association is the belt to that header's braces.
+  // adapter.yaml carries a `# yaml-language-server: $schema=` header too; this
+  // association is the belt to that header's braces. fixtures/manifest.ttl is
+  // Turtle, validated by SHACL (schema/manifest/bridge-test.shapes.ttl), not
+  // by a JSON Schema.
   "yaml.schemas": {
-    "./schema/manifest/adapter.schema.json": "adapter.yaml",
-    "./schema/manifest/cases.schema.json": "fixtures/cases.yaml"
+    "./schema/manifest/adapter.schema.json": "adapter.yaml"
   },
   "files.eol": "\n",
   "files.insertFinalNewline": true,

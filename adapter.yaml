@@ -56,4 +56,4 @@ profiles-required: [xslt-3]
 # tables:            # phase 2: tables/review-status.csv, from cascade-cli's review-status-map.ts
 # vocab:             # phase 2: vocab/clinvar-ext.ttl
 
-fixtures: fixtures/cases.yaml
+fixtures: fixtures/manifest.ttl # W3C-style test manifest (mf: plus bt:); its shape is schema/manifest/bridge-test.shapes.ttl

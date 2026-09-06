@@ -1,0 +1,163 @@
+# The cases a Bridge's harness executes for this adapter, and how each is
+# judged, as a test manifest in the shape every W3C RDF test suite uses:
+# W3C's mf: test-manifest vocabulary, and on top of it the small Bridge-test
+# vocabulary bt:, declared in ../schema/manifest/bridge-test.ttl and
+# constrained by ../schema/manifest/bridge-test.shapes.ttl (SHACL), the way
+# the SHACL test suite adds sht:. Each entry has a type, an mf:action (the
+# input) and an mf:result (the expected output); the comparison rule is
+# carried by the entry's type. Nothing here executes in this repository:
+# version 1 of the harness runs in bridge-engine-java, version 2 in
+# bridge-engine-browser.
+#
+# Relative IRIs resolve against this file's location, so <in/VCV000017661-BRCA1.xml>
+# names the same file the crate (ro-crate-metadata.json) names as
+# in/VCV000017661-BRCA1.xml, a dataset is named by the crate's own @id, and
+# <> is this file, the crate's manifest.ttl entity. Loaded together, the
+# manifest and the crate are one graph: from an entry to its input's digest
+# and licence is a walk, not a string match. Where every file and dataset
+# named here came from is in the crate.
+#
+# The comparison rule, stated once (RFC section 16 says it comes first):
+#   bt:IsomorphicConversionTest
+#                      graph isomorphic: blank nodes relabelled, IRIs and
+#                      literals exact. The existing oracle in
+#                      cascade-cli/tests/clinvar-conformance.test.ts compares
+#                      `riot --output=nq | sort` byte for byte, which assumes
+#                      the same thing; RDFC-1.0 decides it properly.
+#                      findings exact: the findings array equals the expected
+#                      one entry for entry, in the conformance repository's
+#                      sort order (sourceField, severity, reason).
+#   bt:ignorePredicate the stamp triples a Bridge adds after the mapping (RFC
+#                      section 5, "stamp"; EIP Message History), removed from
+#                      both sides first. cascade:dataProvenance and
+#                      cascade:schemaVersion are what cascade-cli's ClinVar
+#                      converter writes on every IRI subject (inline, in
+#                      simple-allele.ts, rcv-interpretation.ts and
+#                      scv-submitter-assertion.ts; it has no shared helper)
+#                      and what the oracles carry.
+#                      Import time is the third thing the RFC's stamp stage
+#                      names; no oracle carries one and the cli emits none, so
+#                      prov:generatedAtTime is a placeholder for the Bridge to
+#                      confirm or replace.
+#   bt:InputOnlyTest   parse and validate the input; the graph and findings a
+#                      Bridge produces are recorded, not judged.
+#   bt:DatasetCompletionTest
+#                      stream the dataset in its envelope; the run must
+#                      complete without rejection; the record count and output
+#                      digest must match where present and are recorded where
+#                      absent.
+
+@prefix rdfs:    <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix mf:      <http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#> .
+@prefix bt:      <https://ns.cascadeprotocol.org/bridge-test/v1-draft#> .
+@prefix cascade: <https://ns.cascadeprotocol.org/core/v1#> .
+@prefix prov:    <http://www.w3.org/ns/prov#> .
+
+<> a mf:Manifest ;
+  rdfs:label "bridge-adapter-clinvar fixture cases" ;
+  bt:adapter "clinvar" ; # must equal `id` in ../adapter.yaml
+  mf:entries (
+    <#VCV000007105-CFTR-deltaF508>
+    <#VCV000017661-BRCA1>
+    <#VCV000055448-BRCA2-pathogenic>
+    <#VCV000208804-MLH1-LynchSyndrome>
+    <#VCV_XML_VCV000091629>
+    <#clinvar-vcv-release-2026-09>
+    <#clinvar-vcv-weekly>
+  ) .
+
+# The four conformance oracles. File names are the conformance repository's
+# and are kept so each copy stays traceable; two of them do not describe the
+# record inside (noted per entry). Content is byte-identical to conformance.
+# Every entry ignores the same three stamp predicates; see the header.
+
+<#VCV000007105-CFTR-deltaF508> a bt:IsomorphicConversionTest ;
+  mf:name "VCV000007105-CFTR-deltaF508" ;
+  rdfs:comment "NM_000492.3(CFTR):c.1521_1523del (p.Phe508del), version 206, last updated 2026-05-03. The largest oracle: 99 submissions." ;
+  mf:action [
+    bt:input <in/VCV000007105-CFTR-deltaF508.xml> ;
+    bt:envelope "efetch"
+  ] ;
+  mf:result [
+    bt:graph <expected/VCV000007105-CFTR-deltaF508.ttl> ;
+    bt:findings <findings/VCV000007105-CFTR-deltaF508.gaps.json>
+  ] ;
+  bt:ignorePredicate cascade:dataProvenance, cascade:schemaVersion, prov:generatedAtTime .
+
+<#VCV000017661-BRCA1> a bt:IsomorphicConversionTest ;
+  mf:name "VCV000017661-BRCA1" ;
+  rdfs:comment "NM_007294.4(BRCA1):c.181T>G (p.Cys61Gly), version 157, last updated 2026-05-03. The RFC's worked example (about eighty IRI subjects)." ;
+  mf:action [
+    bt:input <in/VCV000017661-BRCA1.xml> ;
+    bt:envelope "efetch"
+  ] ;
+  mf:result [
+    bt:graph <expected/VCV000017661-BRCA1.ttl> ;
+    bt:findings <findings/VCV000017661-BRCA1.gaps.json>
+  ] ;
+  bt:ignorePredicate cascade:dataProvenance, cascade:schemaVersion, prov:generatedAtTime .
+
+<#VCV000055448-BRCA2-pathogenic> a bt:IsomorphicConversionTest ;
+  mf:name "VCV000055448-BRCA2-pathogenic" ;
+  rdfs:comment "NM_007294.4(BRCA1):c.5193+1G>C, version 15, last updated 2026-04-13. The file name says BRCA2; the record is a BRCA1 variant." ;
+  mf:action [
+    bt:input <in/VCV000055448-BRCA2-pathogenic.xml> ;
+    bt:envelope "efetch"
+  ] ;
+  mf:result [
+    bt:graph <expected/VCV000055448-BRCA2-pathogenic.ttl> ;
+    bt:findings <findings/VCV000055448-BRCA2-pathogenic.gaps.json>
+  ] ;
+  bt:ignorePredicate cascade:dataProvenance, cascade:schemaVersion, prov:generatedAtTime .
+
+<#VCV000208804-MLH1-LynchSyndrome> a bt:IsomorphicConversionTest ;
+  mf:name "VCV000208804-MLH1-LynchSyndrome" ;
+  rdfs:comment "NM_001017980.4(VMA21):c.164-6T>G, version 2, last updated 2025-08-23, one submission. The file name says MLH1 and Lynch syndrome; the record is a VMA21 variant interpreted for MONDO:0010684. The smallest oracle." ;
+  mf:action [
+    bt:input <in/VCV000208804-MLH1-LynchSyndrome.xml> ;
+    bt:envelope "efetch"
+  ] ;
+  mf:result [
+    bt:graph <expected/VCV000208804-MLH1-LynchSyndrome.ttl> ;
+    bt:findings <findings/VCV000208804-MLH1-LynchSyndrome.gaps.json>
+  ] ;
+  bt:ignorePredicate cascade:dataProvenance, cascade:schemaVersion, prov:generatedAtTime .
+
+# NCBI's official efetch sample: the one input whose provenance is
+# unimpeachable. No expected output has been produced for it, so the entry
+# carries no mf:result.
+
+<#VCV_XML_VCV000091629> a bt:InputOnlyTest ;
+  mf:name "VCV_XML_VCV000091629" ;
+  rdfs:comment "NM_007294.4(BRCA1):c.4357+2T>G, version 19, last updated 2026-02-15, from pub/clinvar/xml/sample_xml/. Parsed and validated; the graph a Bridge produces is recorded, not judged." ;
+  mf:action [
+    bt:input <in/VCV_XML_VCV000091629.xml> ;
+    bt:envelope "efetch"
+  ] .
+
+# Referenced datasets, too large to commit. A multi-gigabyte expected output
+# fits in one line: the record count and a digest of the canonical output.
+# RDF has no null, so both are absent until the first run in
+# bridge-engine-java records them, as
+#   mf:result [ bt:records <n> ; bt:outputDigest "sha256:<hex>" ]
+# where bt:records is the number of VariationArchive units processed and
+# bt:outputDigest the sha256 of the canonical N-Quads output, stamp triples
+# removed.
+
+<#clinvar-vcv-release-2026-09> a bt:DatasetCompletionTest ;
+  mf:name "clinvar-vcv-release-2026-09" ;
+  rdfs:comment "The monthly VCV release of 2026-09 (ReleaseDate 2026-08-29), about 5.8 GB gzipped, in the ClinVarVariationRelease envelope." ;
+  mf:action [
+    bt:dataset <https://ftp.ncbi.nlm.nih.gov/pub/clinvar/xml/ClinVarVCVRelease_2026-09.xml.gz> ;
+    bt:envelope "release"
+  ] .
+  # mf:result absent until the first run records bt:records and bt:outputDigest.
+
+<#clinvar-vcv-weekly> a bt:DatasetCompletionTest ;
+  mf:name "clinvar-vcv-weekly" ;
+  rdfs:comment "The weekly VCV release. On 2026-09-06 the weekly symlink resolved to the 2026-09 monthly file, so the crate entity has no contentUrl of its own and this test cannot be resolved until a dated weekly is recorded there (see the crate). It is not a second run of the monthly." ;
+  mf:action [
+    bt:dataset <ro-crate-metadata.json#clinvar-vcv-weekly> ;
+    bt:envelope "release"
+  ] .
+  # mf:result absent until the first run records bt:records and bt:outputDigest.

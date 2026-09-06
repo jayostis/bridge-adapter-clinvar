@@ -74,7 +74,7 @@
             "additionalProperties": false,
             "required": ["id", "root"],
             "properties": {
-              "id": { "type": "string", "pattern": "^[a-z][a-z0-9-]*$", "description": "Short name fixtures/cases.yaml refers to." },
+              "id": { "type": "string", "pattern": "^[a-z][a-z0-9-]*$", "description": "Short name the test manifest's bt:envelope refers to." },
               "root": { "type": "string", "description": "Local name of the document element." },
               "schema": { "$ref": "#/$defs/path", "description": "A schema that validates a whole document in this envelope, when the pinned schema alone does not declare its root." },
               "description": { "type": "string" }
@@ -134,7 +134,7 @@
     },
     "fixtures": {
       "$ref": "#/$defs/path",
-      "description": "The cases file a Bridge's harness executes; see cases.schema.json."
+      "description": "The test manifest a Bridge's harness executes: a W3C-style mf: manifest in Turtle whose entries are typed with the bt: test vocabulary (bridge-test.ttl) and validate against bridge-test.shapes.ttl (SHACL)."
     }
   },
   "$defs": {

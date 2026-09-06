@@ -20,10 +20,17 @@ the adapter laid out, with no mapping and nothing that executes.
 - `adapter.yaml`, the Bridge-facing manifest: format id `clinvar`, the two
   envelopes and the `VariationArchive` unit, the detect rule, the `xslt-3`
   profile requirement, the vocabulary pin (spec `e77ba5e`, `genomics
-  v1-draft`, `core 3.13`), and the path to the cases file.
-- `schema/manifest/adapter.schema.json` and `schema/manifest/cases.schema.json`,
-  JSON Schemas for the two manifests, referenced from each YAML file's
-  `# yaml-language-server: $schema=` header and from `.vscode/settings.json`.
+  v1-draft`, `core 3.13`), and the path to the test manifest.
+- `schema/manifest/adapter.schema.json`, the JSON Schema for `adapter.yaml`,
+  referenced from its `# yaml-language-server: $schema=` header and from
+  `.vscode/settings.json`.
+- `schema/manifest/bridge-test.ttl`, the `bt:` Bridge-test vocabulary
+  (`https://ns.cascadeprotocol.org/bridge-test/v1-draft#`) on top of W3C's
+  `mf:` test-manifest vocabulary, with an `rdfs:comment` on every term: three
+  test types that carry the comparison rule and nine properties. And
+  `schema/manifest/bridge-test.shapes.ttl`, the SHACL shapes a test manifest
+  validates against. Both are the seed of the Bridge specification's test
+  vocabulary; no `cascade:` or `genomics:` term is minted.
 - `schema/ClinVar_VCV_2.6.xsd`, NCBI's schema pinned byte for byte
   (md5 `a7b65e5a166dc5f36a7eea9127d56f4e`, NCBI's own). 2.6 rather than the
   2.5 the issue named, because the 2026-09 monthly release declares 2.6; the
@@ -31,11 +38,14 @@ the adapter laid out, with no mapping and nothing that executes.
 - `schema/ClinVarResult-Set.xsd`, a wrapper that includes NCBI's schema and
   declares the efetch envelope root NCBI's schema leaves undeclared, so a
   whole efetch response validates and not only the records inside it.
-- `fixtures/cases.yaml`: the four conformance oracles with the comparison
-  rule declared (`isomorphic`, stamp predicates ignored, findings `exact`),
-  NCBI's official sample as an input-only case, and the monthly and weekly
-  releases as dataset cases whose record count and output digest are `null`
-  until the first run.
+- `fixtures/manifest.ttl`, a W3C-style test manifest in Turtle: the four
+  conformance oracles as `bt:IsomorphicConversionTest` (blank nodes
+  relabelled, IRIs and literals exact, the stamp predicates ignored, findings
+  exact), NCBI's official sample as `bt:InputOnlyTest`, and the monthly and
+  weekly releases as `bt:DatasetCompletionTest` naming the crate's Dataset
+  entities by IRI, their record count and output digest absent until the
+  first run. Every file it names is the crate's own IRI for that file, so the
+  manifest and the crate load as one graph.
 - `fixtures/ro-crate-metadata.json` (RO-Crate 1.2): provenance, digest,
   version, date and licence for every committed fixture file, the monthly
   release and the pinned XSD. The weekly release is an entity with a `url`
@@ -51,7 +61,7 @@ the adapter laid out, with no mapping and nothing that executes.
   Integration Patterns equivalents.
 - Editor configuration: `.vscode/extensions.json` (XML, XSLT/XPath, YAML,
   Turtle, EditorConfig, Kaoto), `.vscode/settings.json` (XSD association for
-  `fixtures/in/`, YAML schema associations, no save-time rewriting of XML
+  `fixtures/in/`, YAML schema association, no save-time rewriting of XML
   or Turtle), `.editorconfig`,
   `.gitattributes` (LF everywhere; verbatim copies never normalised).
 - `LICENSE` (Apache-2.0), `README.md`, `CLAUDE.md`.

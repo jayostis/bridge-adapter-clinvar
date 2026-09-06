@@ -22,13 +22,15 @@ README summarises them. Do not re-derive them.
   (RFC section 6, "a universal adapter contains no code"). If something seems
   to need code, it is a finding for the Bridge specification, not a file here.
 - **No tests here.** The adapter declares its fixtures and how to judge them
-  as data, in `fixtures/cases.yaml`. A Bridge's harness executes them:
+  as data, in `fixtures/manifest.ttl`, a W3C-style test manifest (`mf:` plus
+  the `bt:` Bridge-test vocabulary). A Bridge's harness executes them:
   version 1 in `bridge-engine-java`, version 2 in `bridge-engine-browser`.
   Neither repository exists yet. Do not add a test runner, CI workflow that
   runs fixtures, or scripts directory to this repository.
 - **Big datasets are referenced, not committed.** Small inputs are checked in.
   A multi-gigabyte release is a URL, a version, a digest and a licence in
-  `fixtures/ro-crate-metadata.json`, and a dataset case in `cases.yaml`.
+  `fixtures/ro-crate-metadata.json`, and a `bt:DatasetCompletionTest` in
+  `fixtures/manifest.ttl` naming that entity by its IRI.
 - **Verbatim copies are never edited.** `schema/ClinVar_VCV_2.6.xsd` and
   everything under `fixtures/in/`, `fixtures/expected/` and
   `fixtures/findings/` are byte-for-byte copies whose digests the crate
@@ -57,9 +59,9 @@ Expected beside this repository, as sister directories:
   suffix as `findings/X.gaps.json`.
 - `../cascade-cli` — `src/lib/clinvar-converter/` (about 2,200 lines) is the
   converter the adapter re-expresses as data, and
-  `tests/clinvar-conformance.test.ts` is the oracle comparison the cases
-  file's `compare` rule restates. Format id `clinvar` comes from its
-  `registry-entry.ts`.
+  `tests/clinvar-conformance.test.ts` is the oracle comparison the test
+  manifest's `bt:IsomorphicConversionTest` restates. Format id `clinvar`
+  comes from its `registry-entry.ts`.
 - `../sdk-typescript` — the runtime lineage the RFC positions the Bridge
   beside; not read by anything here yet.
 
@@ -74,8 +76,8 @@ changing a pin; NCBI publishes a `.md5` beside every release and XSD.
 adapter.yaml                     Bridge-facing manifest (schema/manifest/adapter.schema.json)
 schema/ClinVar_VCV_2.6.xsd       NCBI's schema, pinned byte for byte
 schema/ClinVarResult-Set.xsd     efetch envelope wrapper: includes NCBI's, adds the root it lacks
-schema/manifest/                 JSON Schemas for adapter.yaml and fixtures/cases.yaml
-fixtures/cases.yaml              the cases and how each is judged
+schema/manifest/                 JSON Schema for adapter.yaml; the bt: test vocabulary and its SHACL shapes
+fixtures/manifest.ttl            the test manifest: the cases and how each is judged (W3C mf: plus bt:)
 fixtures/ro-crate-metadata.json  provenance for every fixture file and remote dataset (RO-Crate 1.2)
 fixtures/in|expected|findings/   inputs, expected graphs, expected findings
 docs/format.md                   ClinVar VCV XML as the adapter sees it
@@ -88,8 +90,16 @@ in/xslt/, in/sparql/, tables/, vocab/   phase 2 and 3; not yet created
 There is no test suite by design. Before claiming a change works, check what
 is checkable with generic tools, and say which of these ran:
 
-- Every YAML and JSON file parses, and the two manifests validate against
-  their JSON Schemas (`jsonschema`, draft 2020-12).
+- Every YAML, JSON and Turtle file parses; `adapter.yaml` validates against
+  its JSON Schema (`jsonschema`, draft 2020-12); `fixtures/manifest.ttl`
+  validates, conforming, against `schema/manifest/bridge-test.shapes.ttl`
+  with a SHACL engine (pySHACL or Jena).
+- With the manifest and the crate (JSON-LD) loaded into one graph: every
+  `bt:input`, `bt:graph` and `bt:findings` IRI is a crate `File` entity;
+  every `bt:dataset` IRI is a crate `Dataset` entity; every `bt:envelope`
+  literal is an envelope `id` in `adapter.yaml`; `bt:adapter` equals
+  `adapter.yaml` `id`. A short rdflib script or SPARQL `ASK` is the floor;
+  say which ran.
 - The crate validates with the RO-Crate validator
   (`rocrate-validator validate fixtures/ --profile-identifier ro-crate-1.2`);
   where that cannot run, a JSON-LD parse is the floor and the commit says so.

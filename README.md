@@ -24,13 +24,13 @@ VS Code with everything validating and nothing executes.
 | 1 | this layout | here ([#1](https://github.com/jayostis/bridge-adapter-clinvar/issues/1)) | it opens in VS Code with everything validating |
 | 2 | the first mapping (XSLT 3, one module per record class) and the engine that runs it | here and `bridge-engine-java` (Camel YAML route, Saxon-HE, riot) | the four committed cases compare isomorphic |
 | 3 | the same mapping as SPARQL CONSTRUCT over the Bridge's XML lift | `in/sparql/` | the two graphs are diffed; the result is a finding for spec#43 |
-| 4 | the same adapter, byte for byte, through JavaScript engines | `bridge-engine-browser` | the same `cases.yaml` passes in both |
+| 4 | the same adapter, byte for byte, through JavaScript engines | `bridge-engine-browser` | the same `manifest.ttl` passes in both |
 
 ## How a Bridge runs it
 
 1. Reads `adapter.yaml`: format id `clinvar`, the two envelopes, the unit
    `VariationArchive`, the detect rule, the `xslt-3` profile it must offer,
-   the vocabulary pin, and the path to the cases.
+   the vocabulary pin, and the path to the test manifest.
 2. Routes an input here when its document element is `ClinVarResult-Set`
    (efetch) or `ClinVarVariationRelease` (a release file) and it contains a
    `VariationArchive`.
@@ -41,10 +41,11 @@ VS Code with everything validating and nothing executes.
    submitter-assertion records to their Variant, stamps provenance, checks
    every predicate against the pinned vocabularies, validates with SHACL,
    and hands the graph and findings to the runtime.
-5. In test, executes `fixtures/cases.yaml`: for each committed case, compares
-   the produced graph with the expected one up to blank-node relabelling with
-   the stamp predicates removed, and the produced findings with the expected
-   sidecar exactly. For each dataset case, streams the referenced release and
+5. In test, executes `fixtures/manifest.ttl`: for each
+   `bt:IsomorphicConversionTest`, compares the produced graph with the
+   expected one up to blank-node relabelling with the stamp predicates
+   removed, and the produced findings with the expected sidecar exactly. For
+   each `bt:DatasetCompletionTest`, streams the referenced release and
    records the record count and output digest.
 
 `docs/stages.md` names each of those stages with its Enterprise Integration
@@ -63,7 +64,7 @@ bridge-adapter-clinvar/
   .editorconfig
   .vscode/
     extensions.json          XML, XSLT/XPath, YAML, Turtle, Kaoto
-    settings.json            XSD association for fixtures/in, YAML schema associations
+    settings.json            XSD association for fixtures/in, YAML schema association
   docs/
     format.md                ClinVar VCV XML as the adapter sees it
     stages.md                the RFC's engine stages as Enterprise Integration Patterns
@@ -72,9 +73,10 @@ bridge-adapter-clinvar/
     ClinVarResult-Set.xsd    the efetch envelope root NCBI's schema does not declare; includes the above
     manifest/
       adapter.schema.json    JSON Schema for adapter.yaml
-      cases.schema.json      JSON Schema for fixtures/cases.yaml
+      bridge-test.ttl        the bt: Bridge-test vocabulary, on top of W3C's mf:
+      bridge-test.shapes.ttl SHACL shapes for fixtures/manifest.ttl
   fixtures/
-    cases.yaml               the cases and how to judge each
+    manifest.ttl             the test manifest: the cases and how to judge each
     ro-crate-metadata.json   provenance for every file under fixtures/ and every remote dataset
     in/                      four conformance inputs and NCBI's official sample
     expected/                the four expected graphs, byte-identical to conformance
@@ -95,12 +97,25 @@ the outcomes:
 
 - **Standards, not inventions.** Enterprise Integration Patterns for stage
   names; XSLT 3, XSD and Schematron for the map and validation; RO-Crate 1.2
-  for provenance; BagIt-style digests for inputs; the RFC's section 6 layout;
-  the conformance repository's input / expected / gaps triplet as the fixture
-  shape. The reason is the editor: every one of these already has tooling, so
-  the repository lights up in VS Code without anyone writing a plugin, and
-  every later choice is weighed against whether the standard editor still
-  understands it.
+  for provenance; BagIt-style digests for inputs; W3C's test-manifest
+  vocabulary (`mf:`) for the cases and SHACL for their shape; the RFC's
+  section 6 layout; the conformance repository's input / expected / gaps
+  triplet as the fixture shape. The reason is the editor: every one of these
+  already has tooling, so the repository lights up in VS Code without anyone
+  writing a plugin, and every later choice is weighed against whether the
+  standard editor still understands it.
+- **The cases are a W3C-style test manifest in Turtle**,
+  `fixtures/manifest.ttl`, not a YAML dialect of the project's own. Every W3C
+  RDF-family test suite is an `mf:` manifest whose entry type carries the
+  comparison rule; the small `bt:` vocabulary on top of it
+  (`schema/manifest/bridge-test.ttl`, constrained by
+  `bridge-test.shapes.ttl`) is the seed of the Bridge specification's test
+  vocabulary. The manifest and the crate load as one graph, so a dataset test
+  names the release by the crate's own IRI and a query walks from a test to
+  its input's digest and licence; validation is SHACL, the project's own
+  language; and every RDF engine reads the file identically, which is the
+  property the "same adapter, every runtime" claim rests on. One contract,
+  not a menu: an adapter does not choose among test conventions.
 - **Naming is deferred, and the layout does not care.** The converter mints
   record IRIs by SHA-1 over `genomics:Variant:clinvar:VCV…`; XSLT 3 has no
   hash function. Whether the mapping writes the recipe and the Bridge mints
@@ -123,16 +138,22 @@ the outcomes:
   official sample, the one input whose provenance is unimpeachable, committed
   input-only. Two of the four oracle file names do not describe the record
   inside (a BRCA1 variant named BRCA2, a VMA21 variant named MLH1); the names
-  are conformance's, kept for traceability, and the crate and cases state the
-  actual record.
+  are conformance's, kept for traceability, and the crate and the test
+  manifest state the actual record.
 
 ## Verification
 
 There is no test suite here by design. What can be checked before a Bridge
 exists, with generic tools:
 
-- every YAML and JSON file parses, and the two manifests validate against
-  `schema/manifest/*.schema.json`;
+- every YAML, JSON and Turtle file parses; `adapter.yaml` validates against
+  `schema/manifest/adapter.schema.json`; `fixtures/manifest.ttl` validates,
+  conforming, against `schema/manifest/bridge-test.shapes.ttl` with a SHACL
+  engine (pySHACL or Jena);
+- with the manifest and the crate loaded into one graph, every `bt:input`,
+  `bt:graph` and `bt:findings` IRI is a crate `File` entity, every
+  `bt:dataset` IRI is a crate `Dataset` entity, every `bt:envelope` is an
+  envelope id in `adapter.yaml`, and `bt:adapter` equals its `id`;
 - the crate validates with the RO-Crate validator
   (`rocrate-validator validate fixtures/ --profile-identifier ro-crate-1.2`);
 - every `fixtures/in/*.xml` validates against `schema/ClinVarResult-Set.xsd`;
@@ -144,7 +165,7 @@ exists, with generic tools:
 - opening the repository in VS Code with the recommended extensions shows
   XSD validation on a fixture input and schema completion in `adapter.yaml`.
 
-The real verification is phase 2: `bridge-engine-java` runs `cases.yaml` and
+The real verification is phase 2: `bridge-engine-java` runs `manifest.ttl` and
 the four graphs compare isomorphic, which is the moment the adapter is proven
 rather than described.
 
@@ -156,7 +177,7 @@ rather than described.
   `fixtures/genomics/clinvar/`, the source of the four oracles.
 - [cascade-cli](https://github.com/the-cascade-protocol/cascade-cli):
   `src/lib/clinvar-converter/`, the converter this adapter re-expresses, and
-  `tests/clinvar-conformance.test.ts`, the comparison the cases file restates.
+  `tests/clinvar-conformance.test.ts`, the comparison the test manifest restates.
 - `bridge-engine-java`, `bridge-engine-browser`: the Bridges that will run
   this adapter; not yet created.
 
