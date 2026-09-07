@@ -68,7 +68,6 @@ Pattern; `docs/format.md` describes the format the first three stages see.
 cascade-bridge-adapter-clinvar/
   README.md                  this file
   LICENSE                    Apache-2.0
-  CHANGELOG.md
   CLAUDE.md                  agent context: the rules and the sibling checkouts
   ro-crate-metadata.json     the adapter manifest, and provenance for every committed fixture, schema and document, and every remote dataset (RO-Crate 1.2)
   .gitattributes             LF everywhere; verbatim copies never normalised

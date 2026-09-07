@@ -1,12 +1,9 @@
-# Engine stages, in the vocabulary integration engines already use
+# Engine stages, for this adapter
 
-Section 5 of the Cascade Bridge RFC
-([spec#43](https://github.com/the-cascade-protocol/spec/issues/43)) lists the
-stages a Bridge runs *around* an adapter's mapping. Each is an established
-Enterprise Integration Pattern (Hohpe and Woolf, 2003), so the design reads in
-the terms every integration engine, Apache Camel included, already documents.
-The third column says what this adapter contributes to the stage, and in which
-phase.
+Which stages a Bridge runs around an adapter's mapping, and which Enterprise
+Integration Pattern each one is, is the specification's `docs/stages.md`. Here
+the third column is filled in: what *this* adapter contributes to each stage,
+and in which phase. The notes below it are ClinVar's, not the general case.
 
 | RFC stage | Enterprise Integration Pattern | this adapter |
 |---|---|---|

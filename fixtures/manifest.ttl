@@ -1,101 +1,16 @@
-# The cases a Bridge's harness executes for this adapter, and how each is
-# judged, as a test manifest in the shape every W3C RDF test suite uses:
-# W3C's mf: test-manifest vocabulary, and on top of it the test terms of the
-# Cascade Bridge vocabulary bridge:, declared and constrained by the Cascade
-# Bridge Specification (vocab/bridge.ttl and shapes/bridge.shapes.ttl in
-# cascade-bridge-spec, at the commit this adapter's bridge:specPin names), the
-# way the SHACL test suite adds sht:. Each entry has a type, an mf:action (the
-# input) and an mf:result (the expected output); the comparison rule is
-# carried by the entry's type. Nothing here executes in this repository:
-# version 1 of the harness runs in bridge-engine-java, version 2 in
-# bridge-engine-browser.
+# The cases a Bridge's harness runs for this adapter, as a W3C-style test
+# manifest: W3C's mf: vocabulary plus the test terms of bridge:, declared and
+# constrained by the Cascade Bridge Specification at the commit bridge:specPin
+# names. Each entry has a type, an mf:action and an mf:result; the type carries
+# the comparison rule, and the rule is stated in that type's rdfs:comment there,
+# not here. Nothing in this repository executes it.
 #
-# Relative IRIs resolve against this file's location, so <in/VCV000017661-BRCA1.xml>
-# names the same file the crate (../ro-crate-metadata.json, the adapter's
-# manifest) names as fixtures/in/VCV000017661-BRCA1.xml, a dataset and an
-# envelope are named by the crate's own @id, <../> is the crate's root
-# entity (the adapter, whose bridge:testManifest is this file), and <> is
-# this file, the crate's fixtures/manifest.ttl entity. Loaded together, the
-# manifest and the crate are one graph: from an entry to its input's digest
-# and licence, or from its envelope to the schema that validates it, is a
-# walk, not a string match. Where every file and dataset named here came
-# from is in the crate.
-#
-# A comparison is insensitive to everything the format does not mean. That is
-# the one principle the rules below apply twice: an RDF graph does not mean
-# its blank node labels, so they are relabelled before comparing; a JSON array
-# of findings does not mean its element order, so it is compared as a
-# multiset. A stricter rule than the format's meaning does not catch more
-# mapping errors, it only fails harnesses that are right.
-#
-# The comparison rule, stated once (RFC section 16 says it comes first):
-#   bridge:IsomorphicConversionTest
-#                      graph isomorphic: blank nodes relabelled, IRIs and
-#                      literals exact. The existing oracle in
-#                      cascade-cli/tests/clinvar-conformance.test.ts compares
-#                      `riot --output=nq | sort` byte for byte, which assumes
-#                      the same thing; RDFC-1.0 decides it properly.
-#                      findings as a multiset: the array a Bridge produces
-#                      must hold exactly the entries the expected sidecar
-#                      holds, with the same multiplicity and no others. Order
-#                      is not compared. Two entries are equal when they have
-#                      the same member names and equal values (JSON object
-#                      equality), not when their bytes match. Multiplicity is
-#                      compared: entries do repeat, the repeats are identical,
-#                      and a set comparison would silently lose them.
-#                        Order is left out deliberately, and this is a change
-#                        from the rule this file first carried. The committed
-#                        sidecars are in the order cascade-cli's authoring
-#                        script left them: localeCompare on (sourceField,
-#                        severity, reason), which is ICU collation, in which
-#                        '/' sorts before '@' even though U+002F is above
-#                        U+0040. A harness comparing with String.compareTo in
-#                        Java, or with < in JavaScript, puts the same
-#                        correctly-mapped entries in a different order and
-#                        would report a false failure on every entry here.
-#                        Requiring the committed order instead would make
-#                        every Bridge carry ICU to compare a bookkeeping
-#                        array, and would pin a CLDR version nothing states.
-#                        Nothing in the findings model refers to a position,
-#                        so the order carries no meaning and is not part of
-#                        the contract.
-#                        Separately, and as file hygiene rather than
-#                        judgement: a sidecar written from scratch SHOULD be
-#                        sorted by Unicode code point on (sourceField,
-#                        severity, reason), because every language reproduces
-#                        code point order identically and it keeps
-#                        regeneration diffs readable. This is a property of
-#                        the file, never of the comparison. The four sidecars
-#                        here do not follow it and are not re-sorted: they are
-#                        verbatim copies whose digests the crate records and
-#                        whose blobs must stay identical to conformance at
-#                        0ea48bb. Under the rule above their order is simply
-#                        incidental, which is the point.
-#   bridge:ignorePredicate
-#                      the stamp triples a Bridge adds after the mapping (RFC
-#                      section 5, "stamp"; EIP Message History), removed from
-#                      both sides first. The stamp set is a property of the
-#                      Bridge's stamp stage, not of any one fixture, so it is
-#                      stated once, on the manifest, and every entry inherits
-#                      it; an entry that carries its own bridge:ignorePredicate
-#                      replaces the manifest's set for that entry alone.
-#                      cascade:dataProvenance and cascade:schemaVersion are
-#                      what cascade-cli's ClinVar converter writes on every IRI
-#                      subject (inline, in simple-allele.ts,
-#                      rcv-interpretation.ts and scv-submitter-assertion.ts; it
-#                      has no shared helper) and what the oracles carry.
-#                      Import time is the third thing the RFC's stamp stage
-#                      names; no oracle carries one and the cli emits none, so
-#                      prov:generatedAtTime is a placeholder for the Bridge to
-#                      confirm or replace.
-#   bridge:InputOnlyTest
-#                      parse and validate the input; the graph and findings a
-#                      Bridge produces are recorded, not judged.
-#   bridge:DatasetCompletionTest
-#                      stream the dataset in its envelope; the run must
-#                      complete without rejection; the record count and output
-#                      digest must match where present and are recorded where
-#                      absent.
+# Relative IRIs resolve against this file's location, so <in/X.xml> names the
+# file the crate names as fixtures/in/X.xml, <../> is the crate's root entity
+# and <> is this file. Loaded together, the manifest and the crate are one
+# graph: from an entry to its input's digest, or from its envelope to the
+# schema that validates it, is a walk and not a string match. Where every file
+# and dataset came from is in the crate.
 
 @prefix rdfs:    <http://www.w3.org/2000/01/rdf-schema#> .
 @prefix mf:      <http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#> .
@@ -116,12 +31,9 @@
     <#clinvar-vcv-release-2026-09>
   ) .
 
-# The four conformance oracles. File names are the conformance repository's
-# and are kept so each copy stays traceable; two of them do not describe the
-# record inside (noted per entry). Content is byte-identical to conformance.
-# None carries its own bridge:ignorePredicate: the manifest's stamp set
-# applies to all four. Every entry arrives in the efetch envelope, the crate's
-# #envelope-efetch.
+# The four conformance oracles, byte-identical to the conformance repository.
+# Its file names are kept so each copy stays traceable; two do not describe the
+# record inside, noted per entry.
 
 <#VCV000007105-CFTR-deltaF508> a bridge:IsomorphicConversionTest ;
   mf:name "VCV000007105-CFTR-deltaF508" ;
@@ -171,9 +83,7 @@
     bridge:findings <findings/VCV000208804-MLH1-LynchSyndrome.gaps.json>
   ] .
 
-# NCBI's official efetch sample: the one input whose provenance is
-# unimpeachable. No expected output has been produced for it, so the entry
-# carries no mf:result.
+# NCBI's official sample: the one input whose provenance is unimpeachable.
 
 <#VCV_XML_VCV000091629> a bridge:InputOnlyTest ;
   mf:name "VCV_XML_VCV000091629" ;
@@ -183,20 +93,10 @@
     bridge:envelope <../ro-crate-metadata.json#envelope-efetch>
   ] .
 
-# Referenced datasets, too large to commit, in the release envelope, the
-# crate's #envelope-release. A multi-gigabyte expected output fits in one
-# line: the record count and a digest of the canonical output. RDF has no
-# null, so both are absent until the first run in bridge-engine-java records
-# them, as
-#   mf:result [ bridge:records <n> ; bridge:outputDigest "sha256:<hex>" ]
-# where bridge:records is the number of VariationArchive units processed and
-# bridge:outputDigest the sha256 of the canonical N-Quads output, stamp
-# triples removed. A dataset test names a crate Dataset a Bridge can fetch,
-# one with a contentUrl (the shapes check this), so the weekly release is not
-# listed: on 2026-09-06 its symlink resolved to the monthly file below, and an
-# entry for it would be a second pass over the same bytes. It is added, as a
-# dated file with its own crate entity, when one exists (docs/format.md,
-# "Releases").
+# The weekly release is not listed: on 2026-09-06 its symlink resolved to the
+# monthly file below, so an entry would be a second pass over the same bytes
+# (docs/format.md, "Releases"). mf:result is absent until a first run records
+# bridge:records and bridge:outputDigest; RDF has no null.
 
 <#clinvar-vcv-release-2026-09> a bridge:DatasetCompletionTest ;
   mf:name "clinvar-vcv-release-2026-09" ;
@@ -205,4 +105,3 @@
     bridge:dataset <https://ftp.ncbi.nlm.nih.gov/pub/clinvar/xml/ClinVarVCVRelease_2026-09.xml.gz> ;
     bridge:envelope <../ro-crate-metadata.json#envelope-release>
   ] .
-  # mf:result absent until the first run records bridge:records and bridge:outputDigest.
