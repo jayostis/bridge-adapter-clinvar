@@ -152,9 +152,6 @@
           "@id": "docs/format.md"
         },
         {
-          "@id": "docs/stages.md"
-        },
-        {
           "@id": "fixtures/CLAUDE.md"
         },
         {
@@ -565,16 +562,6 @@
         "@id": "https://spdx.org/licenses/Apache-2.0"
       },
       "description": "What a record is, the two envelopes, the schema and why 2.6 is pinned, the releases, and what is not known about the committed inputs. Verified against ftp.ncbi.nlm.nih.gov on 2026-09-06."
-    },
-    {
-      "@id": "docs/stages.md",
-      "@type": "File",
-      "name": "Engine stages as Enterprise Integration Patterns",
-      "encodingFormat": "text/markdown",
-      "license": {
-        "@id": "https://spdx.org/licenses/Apache-2.0"
-      },
-      "description": "The RFC's engine stages named with their Enterprise Integration Patterns equivalents, and what this adapter contributes to each stage and in which phase."
     },
     {
       "@id": "fixtures/CLAUDE.md",

@@ -42,8 +42,8 @@ workflow that calls the specification's published lint. No mapping, no runner.
    a link to an entity in the same graph.
 2. Routes an input here when the crate's detect rule, one XPath 3.1 boolean, is
    true of it: an efetch envelope holding records, the empty `set` efetch
-   returns when a query matched none, or a release envelope. `docs/stages.md`
-   has the expression and why it keys on the envelope rather than the root.
+   returns when a query matched none, or a release envelope. `docs/format.md`
+   has the expression and which roots were deliberately not claimed.
 3. Splits the document on `VariationArchive` and validates each unit against
    `schema/ClinVar_VCV_2.6.xsd`. A unit that fails is a finding; it still goes
    through.
@@ -55,8 +55,10 @@ workflow that calls the specification's published lint. No mapping, no runner.
    is judged, and the rule is the `rdfs:comment` on that type in the
    specification's vocabulary, not anything this repository states.
 
-`docs/stages.md` names each of those stages with its Enterprise Integration
-Pattern; `docs/format.md` describes the format the first three stages see.
+Those stages are the Bridge's, not this adapter's; the specification's
+[`docs/stages.md`](https://github.com/jayostis/cascade-bridge-spec/blob/main/docs/stages.md)
+names each with its Enterprise Integration Pattern. `docs/format.md` describes
+the format the first three stages see.
 
 ## Layout
 
@@ -75,7 +77,6 @@ cascade-bridge-adapter-clinvar/
     settings.json            XSD association for fixtures/in
   docs/
     format.md                ClinVar VCV XML as the adapter sees it
-    stages.md                the RFC's engine stages as Enterprise Integration Patterns
   schema/
     ClinVar_VCV_2.6.xsd      NCBI's schema, pinned byte for byte (md5 a7b65e5a166dc5f36a7eea9127d56f4e)
     ClinVarResult-Set.xsd    the efetch envelope root NCBI's schema does not declare; includes the above
