@@ -148,12 +148,12 @@ the outcomes:
 - **The cases are a W3C-style test manifest in Turtle**,
   `fixtures/manifest.ttl`, not a YAML dialect of the project's own. Every W3C
   RDF-family test suite is an `mf:` manifest whose entry type carries the
-  comparison rule; the test terms of the `bridge:` vocabulary on top of it live
-  in the Cascade Bridge Specification, which this adapter seeded. The manifest and the
-  crate load as one graph, so a dataset test names the release by the
-  crate's own IRI, an action names its envelope by the crate's entity, and a
-  query walks from a test to its input's digest and licence; validation is
-  SHACL, the project's own language; and every RDF engine reads the file
+  comparison rule; the test terms of the `bridge:` vocabulary on top of it
+  live in the Cascade Bridge Specification, which this adapter seeded. The
+  manifest and the crate load as one graph, so a dataset test names the
+  release by the crate's own IRI, an action names its envelope by the crate's
+  entity, and a query walks from a test to its input's digest and licence;
+  validation is SHACL, the project's own language; and every RDF engine reads the file
   identically, which is the property the "same adapter, every runtime" claim
   rests on. One contract, not a menu: an adapter does not choose among test
   conventions.
