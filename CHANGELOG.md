@@ -5,6 +5,28 @@ All notable changes to this adapter are recorded here. The format follows
 semantic versioning and are the root entity's `version` in
 `ro-crate-metadata.json`.
 
+## [Unreleased]
+
+### Changed
+
+- Agent context split by directory. `CLAUDE.md` at the root, 218 lines to 79,
+  holds only what has to be known before choosing a directory to open; the rest
+  moved to `fixtures/CLAUDE.md`, `schema/CLAUDE.md` and
+  `.github/workflows/CLAUDE.md`, which load only when those directories are
+  touched. The layout section went: the README already carried it. The pinned
+  commits went: the crate already carries them.
+- Three conventions added to both this repository and the specification: say it
+  once, no archaeology, and why never what. They are what the split is measured
+  against.
+- `.github/workflows/validate.yml` keeps two lines of comment instead of
+  seventeen; the reasoning is in the `CLAUDE.md` beside it, stated once.
+
+### Added
+
+- Crate entities for `fixtures/CLAUDE.md` and `schema/CLAUDE.md`. The lint's
+  allowlist matches the root `CLAUDE.md` by exact path, so a nested one is a
+  file the crate must describe or check 3 fails.
+
 ## [0.2.0] - 2026-09-06
 
 [#4](https://github.com/jayostis/cascade-bridge-adapter-clinvar/issues/4): the

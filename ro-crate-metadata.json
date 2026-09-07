@@ -153,6 +153,12 @@
         },
         {
           "@id": "docs/stages.md"
+        },
+        {
+          "@id": "fixtures/CLAUDE.md"
+        },
+        {
+          "@id": "schema/CLAUDE.md"
         }
       ]
     },
@@ -569,6 +575,26 @@
         "@id": "https://spdx.org/licenses/Apache-2.0"
       },
       "description": "The RFC's engine stages named with their Enterprise Integration Patterns equivalents, and what this adapter contributes to each stage and in which phase."
+    },
+    {
+      "@id": "fixtures/CLAUDE.md",
+      "@type": "File",
+      "name": "Agent context for the fixtures directory",
+      "encodingFormat": "text/markdown",
+      "license": {
+        "@id": "https://spdx.org/licenses/Apache-2.0"
+      },
+      "description": "How the fixtures are treated: verbatim copies are never edited, large datasets are referenced rather than committed, and the checks on inputs and expected graphs that the specification's lint cannot run."
+    },
+    {
+      "@id": "schema/CLAUDE.md",
+      "@type": "File",
+      "name": "Agent context for the schema directory",
+      "encodingFormat": "text/markdown",
+      "license": {
+        "@id": "https://spdx.org/licenses/Apache-2.0"
+      },
+      "description": "Which schema is NCBI's verbatim copy and which is this repository's, how each is changed, and why the efetch wrapper exists."
     },
     {
       "@id": "https://github.com/jayostis/conformance/tree/0ea48bb1c044ac9bf8086d456601357135cf79e6/fixtures/genomics/clinvar",
