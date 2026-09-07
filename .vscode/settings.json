@@ -11,9 +11,11 @@
   ],
   "xml.validation.enabled": true,
   // The adapter manifest is ro-crate-metadata.json (JSON-LD) and the test
-  // manifest is fixtures/manifest.ttl (Turtle); both are validated by SHACL
-  // (schema/manifest/bridge.shapes.ttl) and the crate by the RO-Crate
-  // validator, not by a JSON Schema, so there is no schema association here.
+  // manifest is fixtures/manifest.ttl (Turtle); both are validated by SHACL,
+  // against shapes that live in the Cascade Bridge Specification rather than
+  // in this repository, and the crate by the RO-Crate validator. Neither is a
+  // JSON Schema, so there is no schema association here.
+  // .github/workflows/validate.yml runs both on every pull request.
   "files.eol": "\n",
   "files.insertFinalNewline": true,
   "files.trimTrailingWhitespace": true,

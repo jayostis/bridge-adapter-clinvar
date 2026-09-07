@@ -9,8 +9,10 @@
     // mapping that arrives in phase 2 under in/xslt/.
     "deltaxml.xslt-xpath",
     // Turtle, with a language server, for the test manifest
-    // fixtures/manifest.ttl, the bridge: vocabulary and SHACL shapes under
-    // schema/manifest/, and the expected graphs under fixtures/expected/.
+    // fixtures/manifest.ttl and the expected graphs under fixtures/expected/.
+    // (The bridge: vocabulary and its SHACL shapes are not in this
+    // repository; they are in cascade-bridge-spec, at the commit
+    // bridge:specPin names.)
     // (stardog-union.stardog-rdf-grammars is the grammar-only alternative.)
     "faubulous.mentor",
     // EditorConfig: without it VS Code ignores .editorconfig, and its
