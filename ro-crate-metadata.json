@@ -35,19 +35,14 @@
       "identifier": "clinvar",
       "name": "ClinVar VCV XML",
       "version": "0.2.0",
-      "description": "The Cascade Bridge Adapter for ClinVar VCV XML: the package of data a Cascade Bridge runs to turn NCBI ClinVar variation records into Cascade RDF, the pilot adapter section 16 of the Cascade Bridge RFC (the-cascade-protocol/spec#43) proposes. Import-only. Phase 1 (0.1.0) has no mapping and nothing that executes. This crate is the adapter's manifest: a Bridge reads the root entity first, for the format id (identifier, the same string cascade-cli accepts for --from, from src/lib/clinvar-converter/registry-entry.ts), the source schema, the two envelopes, the unit, the detect rule, the profile the Bridge must offer, the vocabulary pin and the test manifest; the data entities carry provenance for every committed fixture, schema and document and for every remote dataset the adapter references. Committed inputs carry a sha256 computed locally over the committed bytes. Remote datasets carry the md5 NCBI publishes in the .md5 file beside each release. Four inputs and their expected graphs and findings are copied byte for byte from the conformance repository; their fetch date and method were not recorded when they were captured, and each entry says so. Dates and sizes for remote files were read from ftp.ncbi.nlm.nih.gov on 2026-09-06. The phase 2 mapping (mainEntity, Workflow RO-Crate), tables (bridge:table) and extension vocabulary (bridge:extensionVocabulary) are absent until the files exist; nothing for the export direction is declared, because ClinVar is import-only.",
+      "description": "The Cascade Bridge Adapter for ClinVar VCV XML: the package of data a Cascade Bridge runs to turn NCBI ClinVar variation records into Cascade RDF, the pilot adapter. Import-only. Phase 1 (0.2.0) has no mapping and nothing that executes. This crate is the adapter's manifest: a Bridge reads the root entity first, for the format id (identifier, the same string cascade-cli accepts for --from, from src/lib/clinvar-converter/registry-entry.ts), the source schema, the two envelopes, the unit, the detect rule, the profile the Bridge must offer, the vocabulary pin and the test manifest; the data entities carry provenance for every committed fixture, schema and document and for every remote dataset the adapter references. Committed inputs carry a sha256 computed locally over the committed bytes. Remote datasets carry the md5 NCBI publishes in the .md5 file beside each release. Four inputs and their expected graphs and findings are copied byte for byte from the conformance repository; their fetch date and method were not recorded when they were captured, and each entry says so. Dates and sizes for remote files were read from ftp.ncbi.nlm.nih.gov on 2026-09-06. The phase 2 mapping (mainEntity, Workflow RO-Crate), tables (bridge:table) and extension vocabulary (bridge:extensionVocabulary) are absent until the files exist; nothing for the export direction is declared, because ClinVar is import-only.",
       "datePublished": "2026-09-06",
       "license": {
         "@id": "https://spdx.org/licenses/Apache-2.0"
       },
-      "conformsTo": [
-        {
-          "@id": "https://ns.cascadeprotocol.org/bridge/v1-draft/adapter-profile/"
-        },
-        {
-          "@id": "https://github.com/the-cascade-protocol/spec/issues/43"
-        }
-      ],
+      "conformsTo": {
+        "@id": "https://ns.cascadeprotocol.org/bridge/v1-draft/adapter-profile/"
+      },
       "isBasedOn": {
         "@id": "https://github.com/jayostis/conformance/tree/0ea48bb1c044ac9bf8086d456601357135cf79e6/fixtures/genomics/clinvar"
       },
@@ -152,7 +147,10 @@
           "@id": "docs/format.md"
         },
         {
-          "@id": "docs/stages.md"
+          "@id": "fixtures/CLAUDE.md"
+        },
+        {
+          "@id": "schema/CLAUDE.md"
         }
       ]
     },
@@ -177,13 +175,13 @@
       "@id": "bridge:xslt-3",
       "@type": "bridge:Profile",
       "name": "xslt-3",
-      "description": "The optional Bridge profile (RFC section 9) under which a Bridge runs an adapter's XSLT 3 mapping. Required here because the phase 2 mapping is XSLT 3, one module per record class. Declared in the Cascade Bridge Specification's vocabulary, vocab/bridge.ttl in cascade-bridge-spec at the commit bridge:specPin names."
+      "description": "The optional Bridge profile under which a Bridge runs an adapter's XSLT 3 mapping. Required here because the phase 2 mapping is XSLT 3, one module per record class. Declared in the Cascade Bridge Specification's vocabulary, vocab/bridge.ttl in cascade-bridge-spec at the commit bridge:specPin names."
     },
     {
       "@id": "https://ns.cascadeprotocol.org/bridge/v1-draft/adapter-profile/",
       "@type": ["CreativeWork", "Profile"],
       "name": "Cascade Bridge Adapter profile",
-      "description": "The RO-Crate 1.2 Profile Crate a conforming adapter package names in conformsTo: the machine-checkable claim that this crate is an adapter package, whose constraints resource is the SHACL shapes in cascade-bridge-spec. The IRI does not dereference yet, which that repository's README records; the Profile Crate describing it is profile/ro-crate-metadata.json there, and bridge:specPin says at which commit. Named beside the RFC rather than instead of it: the profile is what a validator checks, the RFC is the standard being implemented, and RO-Crate permits both."
+      "description": "The RO-Crate 1.2 Profile Crate a conforming adapter package names in conformsTo: the machine-checkable claim that this crate is an adapter package, whose constraints resource is the SHACL shapes in cascade-bridge-spec. The IRI does not dereference yet, which that repository's README records; the Profile Crate describing it is profile/ro-crate-metadata.json there, and bridge:specPin says at which commit."
     },
     {
       "@id": "https://github.com/jayostis/cascade-bridge-spec/commit/0af0fc970f75360d4f84acc2203c26b5fd9d6d23",
@@ -197,12 +195,6 @@
         "@id": "https://spdx.org/licenses/Apache-2.0"
       },
       "description": "The revision of the Cascade Bridge Specification this adapter is written against: the merge commit of cascade-bridge-spec PR #7, released as v0.2.0, which removed that repository's catalogue of adapters and published its lint as a reusable action. The tag v0.2.0 points at this SHA and keeps it reachable if the branch is later reset or rebased, which is why an untagged commit is not pinned (docs/alignment.md there). The same revision is named twice on purpose: here for the reader, and in .github/workflows/validate.yml as the ref the lint is called at, for the machine; the lint fails the run if the two disagree, and they move together in the same pull request. This is also the revision whose vocab/bridge.ttl and shapes/bridge.shapes.ttl replaced this adapter's own copies under schema/manifest/, which were the seed of them. Read on 2026-09-06. A web-based data entity, referenced and not committed, the way the vocabulary pin is: the RO-Crate 1.2 validator reads every SoftwareSourceCode as a script that must be a File in hasPart."
-    },
-    {
-      "@id": "https://github.com/the-cascade-protocol/spec/issues/43",
-      "@type": ["CreativeWork", "Profile"],
-      "name": "Cascade Bridge RFC (draft)",
-      "description": "The Bridge RFC this adapter is written against, named in conformsTo beside the adapter profile. It is the standard being implemented; the profile IRI is the machine-checkable claim, and bridge:specPin names the revision of the specification that holds both. Its section 6 sketches the adapter layout with an adapter.yaml; this crate departs from that sketch by being the manifest itself, which is a finding for the RFC."
     },
     {
       "@id": "https://github.com/jayostis/spec/commit/e77ba5e8004bf57f34d42a1bee69d1cfb95f86e3",
@@ -222,7 +214,7 @@
       "@type": "DefinedTermSet",
       "name": "Cascade genomics vocabulary",
       "version": "v1-draft",
-      "description": "One of the two Cascade vocabularies the adapter writes. Pre-stable: at the pin, ontologies/genomics/v1-draft/genomics.ttl carries owl:versionInfo \"1.0-draft.0.6\"; the version recorded here is the draft label. Its terms go through spec's RFC process; none is minted in this adapter."
+      "description": "One of the two Cascade vocabularies the adapter writes. Pre-stable: at the pin, ontologies/genomics/v1-draft/genomics.ttl carries owl:versionInfo \"1.0-draft.0.6\"; the version recorded here is the draft label. Its terms go through spec's own process; none is minted in this adapter."
     },
     {
       "@id": "https://ns.cascadeprotocol.org/core/v1#",
@@ -561,14 +553,24 @@
       "description": "What a record is, the two envelopes, the schema and why 2.6 is pinned, the releases, and what is not known about the committed inputs. Verified against ftp.ncbi.nlm.nih.gov on 2026-09-06."
     },
     {
-      "@id": "docs/stages.md",
+      "@id": "fixtures/CLAUDE.md",
       "@type": "File",
-      "name": "Engine stages as Enterprise Integration Patterns",
+      "name": "Agent context for the fixtures directory",
       "encodingFormat": "text/markdown",
       "license": {
         "@id": "https://spdx.org/licenses/Apache-2.0"
       },
-      "description": "The RFC's engine stages named with their Enterprise Integration Patterns equivalents, and what this adapter contributes to each stage and in which phase."
+      "description": "How the fixtures are treated: verbatim copies are never edited, large datasets are referenced rather than committed, and the checks on inputs and expected graphs that the specification's lint cannot run."
+    },
+    {
+      "@id": "schema/CLAUDE.md",
+      "@type": "File",
+      "name": "Agent context for the schema directory",
+      "encodingFormat": "text/markdown",
+      "license": {
+        "@id": "https://spdx.org/licenses/Apache-2.0"
+      },
+      "description": "Which schema is NCBI's verbatim copy and which is this repository's, how each is changed, and why the efetch wrapper exists."
     },
     {
       "@id": "https://github.com/jayostis/conformance/tree/0ea48bb1c044ac9bf8086d456601357135cf79e6/fixtures/genomics/clinvar",
