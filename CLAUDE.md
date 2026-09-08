@@ -36,18 +36,10 @@ the layout itself in the README. Do not re-derive them.
   reopen it to make progress on anything else, and do not settle it from a
   discussion thread — ask.
 
-## Sibling checkouts
+## The specification
 
-Expected as sister directories. Which commit each is pinned at is in the crate,
-not here.
-
-| | |
-|---|---|
-| `../cascade-bridge-spec` | the contract: vocabulary, shapes, profile, and the lint CI calls |
-| `../spec` | the Cascade vocabularies this adapter writes to |
-| `../conformance` | where the four oracle triplets came from |
-| `../cascade-cli` | the converter this adapter re-expresses as data |
-| `../sdk-typescript` | runtime lineage; not read by anything here yet |
+`../cascade-bridge-spec` is the contract: the vocabulary, the shapes, the profile
+and the lint CI calls. The commit it is pinned at is in the crate.
 
 ## Before pushing
 

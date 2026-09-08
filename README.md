@@ -117,7 +117,7 @@ Why this adapter is laid out the way it is, and the phases, are in
 [issue #1](https://github.com/jayostis/cascade-bridge-adapter-clinvar/issues/1).
 
 Naming is the one decision still open: how a record's IRI is minted is settled
-in phase 2, on the basis in [spec#38](https://github.com/the-cascade-protocol/spec/issues/38#issuecomment-5555482906).
+in phase 2.
 
 ## Verification
 
@@ -137,21 +137,11 @@ There is no test suite here by design. Executing an adapter's fixtures is a
 Bridge's job, and no Bridge exists yet: phase 2 is when this adapter is proven
 rather than described.
 
-## Related repositories
+## The specification
 
-Which commit of each is pinned, and why a pin points at a fork where it does, is
-recorded in `ro-crate-metadata.json`. It is not repeated here.
-
-- [cascade-bridge-spec](https://github.com/jayostis/cascade-bridge-spec): the
-  contract this adapter is written against, and the lint its CI calls.
-- [spec](https://github.com/the-cascade-protocol/spec): the Cascade
-  vocabularies an adapter writes to.
-- [conformance](https://github.com/the-cascade-protocol/conformance):
-  `fixtures/genomics/clinvar/`, the source of the four oracles.
-- [cascade-cli](https://github.com/the-cascade-protocol/cascade-cli):
-  `src/lib/clinvar-converter/`, the converter this adapter re-expresses as data.
-- `bridge-engine-java`, `bridge-engine-browser`: the Bridges that will run this
-  adapter; neither exists yet.
+[cascade-bridge-spec](https://github.com/jayostis/cascade-bridge-spec) is the
+contract this adapter is written against and the lint its CI calls. The commit
+it is pinned at is in `ro-crate-metadata.json`.
 
 ## Licence
 
