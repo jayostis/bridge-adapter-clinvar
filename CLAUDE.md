@@ -29,24 +29,18 @@ the layout itself in the README. Do not re-derive them.
   `bridge:specPin` and the workflow's ref here in the same commit. The two name
   one commit; the lint fails the run when they differ.
 - **No Cascade terms are minted here.** A value with no Cascade term goes in the
-  adapter's own namespace (`vocab/`, phase 2) or in the findings sidecar. Terms
-  in `cascade:` and `genomics:` go through spec's own process.
+  adapter's own namespace (`vocab/`, phase 2) or in the findings sidecar.
 - **Identity is not a blocker.** How a record's IRI is minted is not settled and
   is decided in phase 2. Nothing in the layout depends on the answer, so do not
   reopen it to make progress on anything else, and do not settle it from a
   discussion thread — ask.
 
-## The specification
-
-`../cascade-bridge-spec` is the contract: the vocabulary, the shapes, the profile
-and the lint CI calls. The commit it is pinned at is in the crate.
-
 ## Before pushing
 
 CI calls the specification's lint at the pinned tag; `docs/adapter/validation.md` there
 says what it checks. SHACL cannot see the filesystem, so by hand: every crate
-`File` exists and every `sha256` matches, then `fixtures/CLAUDE.md` and
-`schema/CLAUDE.md`. A commit says which ran.
+`File` exists and every `sha256` matches, then what `fixtures/CLAUDE.md` and
+`schema/CLAUDE.md` say. A commit says which ran.
 
 ## Where a rule goes
 

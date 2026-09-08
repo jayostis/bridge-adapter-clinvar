@@ -21,7 +21,7 @@
 <> a mf:Manifest ;
   rdfs:label "cascade-bridge-adapter-clinvar fixture cases" ;
   bridge:adapter <../> ; # the crate's root entity, the adapter; its bridge:testManifest is <>
-  bridge:ignorePredicate cascade:dataProvenance, cascade:schemaVersion, prov:generatedAtTime ; # the stamp set every entry inherits; see the header
+  bridge:ignorePredicate cascade:dataProvenance, cascade:schemaVersion, prov:generatedAtTime ;
   mf:entries (
     <#VCV000007105-CFTR-deltaF508>
     <#VCV000017661-BRCA1>

@@ -8,8 +8,7 @@ and four conformance oracles already written.
 
 The contract it is written against is the
 [Cascade Bridge Specification](https://github.com/jayostis/cascade-bridge-spec),
-at the revision the crate pins. That repository is the authority; nothing here
-is derived from a discussion thread, and neither should anything you add be.
+at the revision the crate pins. That repository is the authority.
 
 There is no code here and there will be none. An adapter is mappings, schemas,
 fixtures and a manifest; the thing that runs it is a Bridge. Nothing in this
@@ -45,8 +44,8 @@ workflow that calls the specification's published lint. No mapping, no runner.
    a link to an entity in the same graph.
 2. Routes an input here when the crate's detect rule, one XPath 3.1 boolean, is
    true of it: an efetch envelope holding records, the empty `set` efetch
-   returns when a query matched none, or a release envelope. `docs/format.md`
-   has the expression and which roots were deliberately not claimed.
+   returns when a query matched none, or a release envelope. The expression is in
+   the crate; `docs/format.md` has which roots were deliberately not claimed.
 3. Splits the document on `VariationArchive` and validates each unit against
    `schema/ClinVar_VCV_2.6.xsd`. A unit that fails is a finding; it still goes
    through.
@@ -69,7 +68,7 @@ the format the first three stages see.
 cascade-bridge-adapter-clinvar/
   README.md                  this file
   LICENSE                    Apache-2.0
-  CLAUDE.md                  agent context: the rules and the sibling checkouts
+  CLAUDE.md                  agent context
   ro-crate-metadata.json     the adapter manifest, and provenance for every committed fixture, schema and document, and every remote dataset (RO-Crate 1.2)
   .gitattributes             LF everywhere; verbatim copies never normalised
   .editorconfig
@@ -116,7 +115,7 @@ wrapper schema exists, and what is and is not known about the committed inputs.
 Why this adapter is laid out the way it is, and the phases, are in
 [issue #1](https://github.com/jayostis/cascade-bridge-adapter-clinvar/issues/1).
 
-Naming is the one decision still open: how a record's IRI is minted is settled
+Naming is the one decision still open: how a record's IRI is minted is decided
 in phase 2.
 
 ## Verification
@@ -136,12 +135,6 @@ conformance — are run by hand before pushing; `fixtures/CLAUDE.md` and
 There is no test suite here by design. Executing an adapter's fixtures is a
 Bridge's job, and no Bridge exists yet: phase 2 is when this adapter is proven
 rather than described.
-
-## The specification
-
-[cascade-bridge-spec](https://github.com/jayostis/cascade-bridge-spec) is the
-contract this adapter is written against and the lint its CI calls. The commit
-it is pinned at is in `ro-crate-metadata.json`.
 
 ## Licence
 
