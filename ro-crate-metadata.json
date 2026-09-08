@@ -181,7 +181,7 @@
       "@id": "https://ns.cascadeprotocol.org/bridge/v1-draft/adapter-profile/",
       "@type": ["CreativeWork", "Profile"],
       "name": "Cascade Bridge Adapter profile",
-      "description": "The RO-Crate 1.2 Profile Crate a conforming adapter package names in conformsTo: the machine-checkable claim that this crate is an adapter package, whose constraints resource is the SHACL shapes in cascade-bridge-spec. The IRI does not dereference yet, which that repository's README records; the Profile Crate describing it is profile/ro-crate-metadata.json there, and bridge:specPin says at which commit. Named beside the RFC rather than instead of it: the profile is what a validator checks, the RFC is the standard being implemented, and RO-Crate permits both."
+      "description": "The RO-Crate 1.2 Profile Crate a conforming adapter package names in conformsTo: the machine-checkable claim that this crate is an adapter package, whose constraints resource is the SHACL shapes in cascade-bridge-spec. The IRI does not dereference yet, which that repository's README records; the Profile Crate describing it is profile/ro-crate-metadata.json there, and bridge:specPin says at which commit."
     },
     {
       "@id": "https://github.com/jayostis/cascade-bridge-spec/commit/0af0fc970f75360d4f84acc2203c26b5fd9d6d23",
@@ -214,7 +214,7 @@
       "@type": "DefinedTermSet",
       "name": "Cascade genomics vocabulary",
       "version": "v1-draft",
-      "description": "One of the two Cascade vocabularies the adapter writes. Pre-stable: at the pin, ontologies/genomics/v1-draft/genomics.ttl carries owl:versionInfo \"1.0-draft.0.6\"; the version recorded here is the draft label. Its terms go through spec's RFC process; none is minted in this adapter."
+      "description": "One of the two Cascade vocabularies the adapter writes. Pre-stable: at the pin, ontologies/genomics/v1-draft/genomics.ttl carries owl:versionInfo \"1.0-draft.0.6\"; the version recorded here is the draft label. Its terms go through spec's own process; none is minted in this adapter."
     },
     {
       "@id": "https://ns.cascadeprotocol.org/core/v1#",

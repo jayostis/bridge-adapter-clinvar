@@ -102,7 +102,7 @@ the extension vocabulary as `bridge:extensionVocabulary`.
 ## Decisions
 
 The decisions that shaped this adapter — the manifest being an RO-Crate rather
-than the RFC's `adapter.yaml`, the cases being a W3C `mf:` test manifest, the
+than an `adapter.yaml`, the cases being a W3C `mf:` test manifest, the
 detect rule being one XPath expression, standards over inventions — are not
 restated here. Each is a property of the **adapter package format**, and the
 authority for that format is the Cascade Bridge Specification:

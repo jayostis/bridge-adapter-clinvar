@@ -18,8 +18,7 @@ the layout itself in the README. Do not re-derive them.
   the specification. The lint measures this rather than taking it on trust.
 - **The manifest is the crate.** `ro-crate-metadata.json` is both the adapter's
   manifest and the provenance record for every file and dataset. There is no
-  `adapter.yaml`; the RFC's section 6 sketch names one, and the departure is a
-  finding for the specification, not a reason to add one back.
+  `adapter.yaml`.
 - **No tests here.** Fixtures and how to judge them are declared as data in
   `fixtures/manifest.ttl`; a Bridge's harness executes them, and no Bridge exists
   yet. Do not add a test runner or a workflow that runs fixtures.
@@ -31,7 +30,7 @@ the layout itself in the README. Do not re-derive them.
   one commit; the lint fails the run when they differ.
 - **No Cascade terms are minted here.** A value with no Cascade term goes in the
   adapter's own namespace (`vocab/`, phase 2) or in the findings sidecar. Terms
-  in `cascade:` and `genomics:` go through spec's RFC process.
+  in `cascade:` and `genomics:` go through spec's own process.
 - **Identity is not a blocker.** How a record's IRI is minted is not settled and
   is decided in phase 2. Nothing in the layout depends on the answer, so do not
   reopen it to make progress on anything else, and do not settle it from a

@@ -49,7 +49,7 @@
 
 <#VCV000017661-BRCA1> a bridge:IsomorphicConversionTest ;
   mf:name "VCV000017661-BRCA1" ;
-  rdfs:comment "NM_007294.4(BRCA1):c.181T>G (p.Cys61Gly), version 157, last updated 2026-05-03. The RFC's worked example (about eighty IRI subjects)." ;
+  rdfs:comment "NM_007294.4(BRCA1):c.181T>G (p.Cys61Gly), version 157, last updated 2026-05-03. About eighty IRI subjects." ;
   mf:action [
     bridge:input <in/VCV000017661-BRCA1.xml> ;
     bridge:envelope <../ro-crate-metadata.json#envelope-efetch>
