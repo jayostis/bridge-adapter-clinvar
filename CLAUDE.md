@@ -19,7 +19,7 @@ the layout itself in the README. Do not re-derive them.
 - **The manifest is the crate.** `ro-crate-metadata.json` is both the adapter's
   manifest and the provenance record for every file and dataset. There is no
   `adapter.yaml`; the RFC's section 6 sketch names one, and the departure is a
-  finding for [spec#43](https://github.com/the-cascade-protocol/spec/issues/43).
+  finding for the specification, not a reason to add one back.
 - **No tests here.** Fixtures and how to judge them are declared as data in
   `fixtures/manifest.ttl`; a Bridge's harness executes them, and no Bridge exists
   yet. Do not add a test runner or a workflow that runs fixtures.
@@ -32,10 +32,10 @@ the layout itself in the README. Do not re-derive them.
 - **No Cascade terms are minted here.** A value with no Cascade term goes in the
   adapter's own namespace (`vocab/`, phase 2) or in the findings sidecar. Terms
   in `cascade:` and `genomics:` go through spec's RFC process.
-- **Identity is not a blocker.** How a record's IRI is minted is settled in phase
-  2, on the basis in
-  [spec#38](https://github.com/the-cascade-protocol/spec/issues/38#issuecomment-5555482906).
-  Do not reopen it to make progress on anything else.
+- **Identity is not a blocker.** How a record's IRI is minted is not settled and
+  is decided in phase 2. Nothing in the layout depends on the answer, so do not
+  reopen it to make progress on anything else, and do not settle it from a
+  discussion thread — ask.
 
 ## Sibling checkouts
 
@@ -45,7 +45,7 @@ not here.
 | | |
 |---|---|
 | `../cascade-bridge-spec` | the contract: vocabulary, shapes, profile, and the lint CI calls |
-| `../spec` | the Cascade vocabularies; the RFC is spec#43, identity is spec#38 |
+| `../spec` | the Cascade vocabularies this adapter writes to |
 | `../conformance` | where the four oracle triplets came from |
 | `../cascade-cli` | the converter this adapter re-expresses as data |
 | `../sdk-typescript` | runtime lineage; not read by anything here yet |

@@ -35,19 +35,14 @@
       "identifier": "clinvar",
       "name": "ClinVar VCV XML",
       "version": "0.2.0",
-      "description": "The Cascade Bridge Adapter for ClinVar VCV XML: the package of data a Cascade Bridge runs to turn NCBI ClinVar variation records into Cascade RDF, the pilot adapter section 16 of the Cascade Bridge RFC (the-cascade-protocol/spec#43) proposes. Import-only. Phase 1 (0.1.0) has no mapping and nothing that executes. This crate is the adapter's manifest: a Bridge reads the root entity first, for the format id (identifier, the same string cascade-cli accepts for --from, from src/lib/clinvar-converter/registry-entry.ts), the source schema, the two envelopes, the unit, the detect rule, the profile the Bridge must offer, the vocabulary pin and the test manifest; the data entities carry provenance for every committed fixture, schema and document and for every remote dataset the adapter references. Committed inputs carry a sha256 computed locally over the committed bytes. Remote datasets carry the md5 NCBI publishes in the .md5 file beside each release. Four inputs and their expected graphs and findings are copied byte for byte from the conformance repository; their fetch date and method were not recorded when they were captured, and each entry says so. Dates and sizes for remote files were read from ftp.ncbi.nlm.nih.gov on 2026-09-06. The phase 2 mapping (mainEntity, Workflow RO-Crate), tables (bridge:table) and extension vocabulary (bridge:extensionVocabulary) are absent until the files exist; nothing for the export direction is declared, because ClinVar is import-only.",
+      "description": "The Cascade Bridge Adapter for ClinVar VCV XML: the package of data a Cascade Bridge runs to turn NCBI ClinVar variation records into Cascade RDF, the pilot adapter. Import-only. Phase 1 (0.1.0) has no mapping and nothing that executes. This crate is the adapter's manifest: a Bridge reads the root entity first, for the format id (identifier, the same string cascade-cli accepts for --from, from src/lib/clinvar-converter/registry-entry.ts), the source schema, the two envelopes, the unit, the detect rule, the profile the Bridge must offer, the vocabulary pin and the test manifest; the data entities carry provenance for every committed fixture, schema and document and for every remote dataset the adapter references. Committed inputs carry a sha256 computed locally over the committed bytes. Remote datasets carry the md5 NCBI publishes in the .md5 file beside each release. Four inputs and their expected graphs and findings are copied byte for byte from the conformance repository; their fetch date and method were not recorded when they were captured, and each entry says so. Dates and sizes for remote files were read from ftp.ncbi.nlm.nih.gov on 2026-09-06. The phase 2 mapping (mainEntity, Workflow RO-Crate), tables (bridge:table) and extension vocabulary (bridge:extensionVocabulary) are absent until the files exist; nothing for the export direction is declared, because ClinVar is import-only.",
       "datePublished": "2026-09-06",
       "license": {
         "@id": "https://spdx.org/licenses/Apache-2.0"
       },
-      "conformsTo": [
-        {
-          "@id": "https://ns.cascadeprotocol.org/bridge/v1-draft/adapter-profile/"
-        },
-        {
-          "@id": "https://github.com/the-cascade-protocol/spec/issues/43"
-        }
-      ],
+      "conformsTo": {
+        "@id": "https://ns.cascadeprotocol.org/bridge/v1-draft/adapter-profile/"
+      },
       "isBasedOn": {
         "@id": "https://github.com/jayostis/conformance/tree/0ea48bb1c044ac9bf8086d456601357135cf79e6/fixtures/genomics/clinvar"
       },
@@ -180,7 +175,7 @@
       "@id": "bridge:xslt-3",
       "@type": "bridge:Profile",
       "name": "xslt-3",
-      "description": "The optional Bridge profile (RFC section 9) under which a Bridge runs an adapter's XSLT 3 mapping. Required here because the phase 2 mapping is XSLT 3, one module per record class. Declared in the Cascade Bridge Specification's vocabulary, vocab/bridge.ttl in cascade-bridge-spec at the commit bridge:specPin names."
+      "description": "The optional Bridge profile under which a Bridge runs an adapter's XSLT 3 mapping. Required here because the phase 2 mapping is XSLT 3, one module per record class. Declared in the Cascade Bridge Specification's vocabulary, vocab/bridge.ttl in cascade-bridge-spec at the commit bridge:specPin names."
     },
     {
       "@id": "https://ns.cascadeprotocol.org/bridge/v1-draft/adapter-profile/",
@@ -200,12 +195,6 @@
         "@id": "https://spdx.org/licenses/Apache-2.0"
       },
       "description": "The revision of the Cascade Bridge Specification this adapter is written against: the merge commit of cascade-bridge-spec PR #7, released as v0.2.0, which removed that repository's catalogue of adapters and published its lint as a reusable action. The tag v0.2.0 points at this SHA and keeps it reachable if the branch is later reset or rebased, which is why an untagged commit is not pinned (docs/pinning.md there). The same revision is named twice on purpose: here for the reader, and in .github/workflows/validate.yml as the ref the lint is called at, for the machine; the lint fails the run if the two disagree, and they move together in the same pull request. This is also the revision whose vocab/bridge.ttl and shapes/bridge.shapes.ttl replaced this adapter's own copies under schema/manifest/, which were the seed of them. Read on 2026-09-06. A web-based data entity, referenced and not committed, the way the vocabulary pin is: the RO-Crate 1.2 validator reads every SoftwareSourceCode as a script that must be a File in hasPart."
-    },
-    {
-      "@id": "https://github.com/the-cascade-protocol/spec/issues/43",
-      "@type": ["CreativeWork", "Profile"],
-      "name": "Cascade Bridge RFC (draft)",
-      "description": "The Bridge RFC this adapter is written against, named in conformsTo beside the adapter profile. It is the standard being implemented; the profile IRI is the machine-checkable claim, and bridge:specPin names the revision of the specification that holds both. Its section 6 sketches the adapter layout with an adapter.yaml; this crate departs from that sketch by being the manifest itself, which is a finding for the RFC."
     },
     {
       "@id": "https://github.com/jayostis/spec/commit/e77ba5e8004bf57f34d42a1bee69d1cfb95f86e3",

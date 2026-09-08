@@ -2,11 +2,14 @@
 
 The **Cascade Bridge Adapter** for ClinVar VCV XML: the package of data a
 **Cascade Bridge** runs to turn NCBI ClinVar variation records into Cascade
-RDF. It is the pilot adapter proposed in section 16 of the Cascade Bridge RFC,
-[the-cascade-protocol/spec#43](https://github.com/the-cascade-protocol/spec/issues/43):
-import-only, a published NCBI schema, no vendor quirks, an existing converter
-of about 2,200 lines in cascade-cli to re-express as data, and four conformance
-oracles already written.
+RDF. The pilot adapter: import-only, a published NCBI schema, no vendor quirks,
+an existing converter of about 2,200 lines in cascade-cli to re-express as data,
+and four conformance oracles already written.
+
+The contract it is written against is the
+[Cascade Bridge Specification](https://github.com/jayostis/cascade-bridge-spec),
+at the revision the crate pins. That repository is the authority; nothing here
+is derived from a discussion thread, and neither should anything you add be.
 
 There is no code here and there will be none. An adapter is mappings, schemas,
 fixtures and a manifest; the thing that runs it is a Bridge. Nothing in this
@@ -29,7 +32,7 @@ workflow that calls the specification's published lint. No mapping, no runner.
 |---|---|---|---|
 | 1 | this layout | here ([#1](https://github.com/jayostis/cascade-bridge-adapter-clinvar/issues/1)) | it opens in VS Code with everything validating |
 | 2 | the first mapping (XSLT 3, one module per record class) and the engine that runs it | here and `bridge-engine-java` (Camel YAML route, Saxon-HE, riot) | the four committed cases compare isomorphic |
-| 3 | the same mapping as SPARQL CONSTRUCT over the Bridge's XML lift | `in/sparql/` | the two graphs are diffed; the result is a finding for spec#43 |
+| 3 | the same mapping as SPARQL CONSTRUCT over the Bridge's XML lift | `in/sparql/` | the two graphs are diffed and the difference reported |
 | 4 | the same adapter, byte for byte, through JavaScript engines | `bridge-engine-browser` | the same `manifest.ttl` passes in both |
 
 ## How a Bridge runs it
@@ -142,8 +145,7 @@ recorded in `ro-crate-metadata.json`. It is not repeated here.
 - [cascade-bridge-spec](https://github.com/jayostis/cascade-bridge-spec): the
   contract this adapter is written against, and the lint its CI calls.
 - [spec](https://github.com/the-cascade-protocol/spec): the Cascade
-  vocabularies; the RFC ([#43](https://github.com/the-cascade-protocol/spec/issues/43))
-  and the identity RFC ([#38](https://github.com/the-cascade-protocol/spec/issues/38)).
+  vocabularies an adapter writes to.
 - [conformance](https://github.com/the-cascade-protocol/conformance):
   `fixtures/genomics/clinvar/`, the source of the four oracles.
 - [cascade-cli](https://github.com/the-cascade-protocol/cascade-cli):
