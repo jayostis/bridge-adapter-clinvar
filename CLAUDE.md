@@ -37,7 +37,7 @@ the layout itself in the README. Do not re-derive them.
 
 ## Before pushing
 
-CI calls the specification's lint at the pinned tag; `docs/adapter/validation.md` there
+CI calls the specification's lint at the pinned tag; `docs/validation.md` there
 says what it checks. SHACL cannot see the filesystem, so by hand: every crate
 `File` exists and every `sha256` matches, then what `fixtures/CLAUDE.md` and
 `schema/CLAUDE.md` say. A commit says which ran.
